@@ -1,6 +1,12 @@
 <script setup>
-import { Head, Link } from '@inertiajs/vue3';
+import { ref } from 'vue';
+import { Head } from '@inertiajs/vue3';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
+import LoginForm from './Auth/Partials/LoginForm.vue';
+import RegisterForm from './Auth/Partials/RegisterForm.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+
+const mode = ref('default')
 
 defineProps({
     canLogin: {
@@ -25,6 +31,16 @@ defineProps({
         <Head title="Welcome" />
         <div class="max-w-7xl mx-auto p-6 lg:p-8">
             The app to help take care of your pets
+        </div>
+        <div v-if="mode === 'default'">
+            <PrimaryButton>Register</PrimaryButton>
+            <PrimaryButton>Log In</PrimaryButton>
+        </div>
+        <div v-if="mode === 'login'">
+            <LoginForm />
+        </div>
+        <div v-if="mode === 'register'">
+            <RegisterForm />
         </div>
     </GuestLayout>
 </template>
