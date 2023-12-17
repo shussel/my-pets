@@ -4,43 +4,63 @@ import { Head } from '@inertiajs/vue3';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import LoginForm from './Auth/Partials/LoginForm.vue';
 import RegisterForm from './Auth/Partials/RegisterForm.vue';
+import ForgotPasswordForm from './Auth/Partials/ForgotPasswordForm.vue';
+import ResetPasswordForm from './Auth/Partials/ResetPasswordForm.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 
-const mode = ref('default')
-
-defineProps({
+const props = defineProps({
     canLogin: {
         type: Boolean,
     },
     canRegister: {
         type: Boolean,
     },
-    laravelVersion: {
-        type: String,
-        required: true,
+    canResetPassword: {
+        type: Boolean,
     },
-    phpVersion: {
+    status: {
         type: String,
-        required: true,
+    },
+    route: {
+        type: String,
+        default: 'login'
     },
 });
+
+const form = ref(props.route || 'login')
+
+function loginMode() {
+    form.value = 'login'
+}
+function registerMode() {
+    form.value = 'register'
+}
+function forgotMode() {
+    form.value = 'forgot'
+}
 </script>
 
 <template>
     <GuestLayout>
         <Head title="Welcome" />
-        <div class="max-w-7xl mx-auto p-6 lg:p-8">
+        <div class="text-lg mx-auto p-6 lg:p-8">
             The app to help take care of your pets
         </div>
-        <div v-if="mode === 'default'">
-            <PrimaryButton>Register</PrimaryButton>
-            <PrimaryButton>Log In</PrimaryButton>
+        <div  v-if="canLogin || canRegister" class="flex gap-2 mb-3">
+            <PrimaryButton v-if="canLogin" class="w-full" @click="loginMode" :disabled="form === 'login'">Log In</PrimaryButton>
+            <PrimaryButton v-if="canRegister" @click="registerMode" :disabled="form === 'register'">Register</PrimaryButton>
         </div>
-        <div v-if="mode === 'login'">
-            <LoginForm />
+        <div class="self-stretch" v-if="canLogin && form === 'login'">
+            <LoginForm :status="status" :canResetPassword="canResetPassword"/>
         </div>
-        <div v-if="mode === 'register'">
-            <RegisterForm />
+        <div class="self-stretch" v-if="canRegister && form === 'register'">
+            <RegisterForm :status="status" />
+        </div>
+        <div class="self-stretch" v-if="canResetPassword && form === 'forgot'">
+            <ForgotPasswordForm :status="status" />
+        </div>
+        <div class="self-stretch" v-if="canResetPassword && form === 'reset'">
+            <ResetPasswordForm :status="status" />
         </div>
     </GuestLayout>
 </template>

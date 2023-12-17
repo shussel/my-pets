@@ -4,20 +4,17 @@ import { Link } from '@inertiajs/vue3';
 </script>
 
 <template>
-    <div class="flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
+    <div class="min-h-screen flex flex-col justify-center items-center bg-gray-100">
         <div
-            class="min-h-screen flex flex-col w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg"
+            class="flex flex-col justify-start items-center w-full sm:max-w-md px-8 py-8 bg-white shadow-md overflow-hidden sm:rounded-lg"
         >
-            <div>
+            <div class="mt-3">
                 <Link href="/">
                     <ApplicationLogo class="fill-current text-gray-500" />
                 </Link>
             </div>
-            <div
-                class="relative flex flex-col sm:justify-center sm:items-center bg-dots-darker bg-center bg-gray-100 dark:bg-dots-lighter dark:bg-gray-900 selection:bg-red-500 selection:text-white"
-            >
+            <h1 class="font-sans text-4xl antialiased font-semibold leading-tight tracking-normal text-inherit">MyPets</h1>
             <slot />
-            </div>
         </div>
     </div>
 </template>
