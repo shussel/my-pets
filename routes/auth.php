@@ -11,6 +11,7 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Illuminate\Http\Request;
 
 Route::middleware('guest')->group(function () {
 
@@ -40,6 +41,7 @@ Route::middleware('guest')->group(function () {
             'canRegister' => Route::has('register'),
             'canResetPassword' => Route::has('password.request'),
             'route' => 'login',
+            'status' => session('status'),
         ]);
     })->name('login');
 
@@ -50,8 +52,9 @@ Route::middleware('guest')->group(function () {
 
     Route::get('forgot-password', function () {
         return Inertia::render('Welcome', [
-            'canResetPassword' => Route::has('password.request'),
+            'canResetPassword' => true,
             'route' => 'forgot',
+            'status' => session('status'),
         ]);
     })->name('password.request');
 
@@ -61,10 +64,12 @@ Route::middleware('guest')->group(function () {
     Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])
                 ->name('password.email');
 
-    Route::get('reset-password/{token}', function () {
+    Route::get('reset-password/{token}', function (Request $request) {
         return Inertia::render('Welcome', [
-            'canResetPassword' => Route::has('password.request'),
+            'canResetPassword' => true,
             'route' => 'reset',
+            'email' => $request->email,
+            'token' => $request->route('token'),
         ]);
     })->name('password.reset');
 

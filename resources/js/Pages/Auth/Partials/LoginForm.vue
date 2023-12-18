@@ -4,7 +4,7 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
+import { Head, useForm } from '@inertiajs/vue3';
 
 defineProps({
     canResetPassword: {
@@ -29,11 +29,14 @@ const submit = () => {
 </script>
 
 <template>
+    <Head title="Login" />
+
+    <h2 class="text-center font-bold text-2xl p-2">Log In</h2>
     <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
         {{ status }}
     </div>
 
-    <form @submit.prevent="submit">
+    <form @submit.prevent="submit" class="border px-4 py-2 rounded-lg">
         <div>
             <InputLabel for="email" value="Email" />
 
@@ -73,13 +76,13 @@ const submit = () => {
         </div>
 
         <div class="flex items-center justify-end mt-4">
-            <Link
+            <a
                 v-if="canResetPassword"
-                :href="route('password.request')"
-                class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                @click="$emit('forgot')"
+                class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 cursor-pointer"
             >
                 Forgot your password?
-            </Link>
+            </a>
 
             <PrimaryButton class="ms-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                 Log in

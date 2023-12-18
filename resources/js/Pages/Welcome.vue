@@ -7,6 +7,7 @@ import RegisterForm from './Auth/Partials/RegisterForm.vue';
 import ForgotPasswordForm from './Auth/Partials/ForgotPasswordForm.vue';
 import ResetPasswordForm from './Auth/Partials/ResetPasswordForm.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import BoneButton from '@/Components/BoneButton.vue';
 
 const props = defineProps({
     canLogin: {
@@ -21,46 +22,48 @@ const props = defineProps({
     status: {
         type: String,
     },
+    email: {
+        type: String,
+    },
+    token: {
+        type: String,
+    },
     route: {
         type: String,
-        default: 'login'
+        default: ''
     },
 });
 
-const form = ref(props.route || 'login')
+const form = ref(props.route || '')
 
-function loginMode() {
-    form.value = 'login'
-}
-function registerMode() {
-    form.value = 'register'
-}
-function forgotMode() {
-    form.value = 'forgot'
+function page(route) {
+    form.value = route
 }
 </script>
 
 <template>
-    <GuestLayout>
+    <GuestLayout @home="page('')">
         <Head title="Welcome" />
-        <div class="text-lg mx-auto p-6 lg:p-8">
+        <div class="sm:text-lg mx-auto p-2">
             The app to help take care of your pets
         </div>
-        <div  v-if="canLogin || canRegister" class="flex gap-2 mb-3">
-            <PrimaryButton v-if="canLogin" class="w-full" @click="loginMode" :disabled="form === 'login'">Log In</PrimaryButton>
-            <PrimaryButton v-if="canRegister" @click="registerMode" :disabled="form === 'register'">Register</PrimaryButton>
+        <div  v-if="(form === '') && (canLogin || canRegister)" class="w-1/2 mt-5 mb-6">
+            <h2 class="text-center p-2">Existing Users</h2>
+            <BoneButton v-if="canLogin" @click="page('login')" class="mb-4">Log In</BoneButton>
+            <h2 class="text-center p-2">New Users</h2>
+            <BoneButton v-if="canRegister" @click="page('register')">Register</BoneButton>
         </div>
         <div class="self-stretch" v-if="canLogin && form === 'login'">
-            <LoginForm :status="status" :canResetPassword="canResetPassword"/>
+            <LoginForm @forgot="page('forgot')" :status="status" :canResetPassword="canResetPassword"/>
         </div>
         <div class="self-stretch" v-if="canRegister && form === 'register'">
-            <RegisterForm :status="status" />
+            <RegisterForm @login="page('login')" />
         </div>
         <div class="self-stretch" v-if="canResetPassword && form === 'forgot'">
             <ForgotPasswordForm :status="status" />
         </div>
         <div class="self-stretch" v-if="canResetPassword && form === 'reset'">
-            <ResetPasswordForm :status="status" />
+            <ResetPasswordForm :email="email" :token="token"/>
         </div>
     </GuestLayout>
 </template>
