@@ -10,26 +10,56 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
+use Illuminate\Http\Request;
 
 Route::middleware('guest')->group(function () {
-    Route::get('register', [RegisteredUserController::class, 'create'])
-                ->name('register');
+
+    Route::get('/', function () {
+        return Inertia::render('Welcome', [
+            'canLogin' => Route::has('login'),
+            'canRegister' => Route::has('register'),
+            'canResetPassword' => Route::has('password.request'),
+        ]);
+    })->name('home');
+
+    Route::get('register', function () {
+        return Inertia::render('Welcome', [
+            'canLogin' => Route::has('login'),
+            'canRegister' => true,
+        ]);
+    })->name('register');
 
     Route::post('register', [RegisteredUserController::class, 'store']);
 
-    Route::get('login', [AuthenticatedSessionController::class, 'create'])
-                ->name('login');
+    Route::get('login', function () {
+        return Inertia::render('Welcome', [
+            'canLogin' => true,
+            'canRegister' => Route::has('register'),
+            'canResetPassword' => Route::has('password.request'),
+            'status' => session('status'),
+        ]);
+    })->name('login');
 
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
 
-    Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
-                ->name('password.request');
+    Route::get('forgot-password', function () {
+        return Inertia::render('Welcome', [
+            'canResetPassword' => true,
+            'status' => session('status'),
+        ]);
+    })->name('password.request');
 
     Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])
                 ->name('password.email');
 
-    Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])
-                ->name('password.reset');
+    Route::get('reset-password/{token}', function (Request $request) {
+        return Inertia::render('Auth/ResetPassword', [
+            'canResetPassword' => true,
+            'email' => $request->email,
+            'token' => $request->route('token'),
+        ]);
+    })->name('password.reset');
 
     Route::post('reset-password', [NewPasswordController::class, 'store'])
                 ->name('password.store');
