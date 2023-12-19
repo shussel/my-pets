@@ -1,5 +1,9 @@
 <script setup>
+import {Head} from '@inertiajs/vue3';
 import BoneButton from '@/Components/BoneButton.vue';
+import Layout from '@/Layouts/GuestLayout.vue';
+
+defineOptions({layout: Layout})
 
 const props = defineProps({
     canLogin: {
@@ -12,6 +16,7 @@ const props = defineProps({
 </script>
 
 <template>
+    <Head title="Welcome"/>
     <div class="w-1/2 mt-5 mb-6 self-center">
         <div v-if="canLogin">
             <h2 class="text-center p-2">Existing Users</h2>

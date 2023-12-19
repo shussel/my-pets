@@ -1,5 +1,6 @@
 <script setup xmlns="http://www.w3.org/1999/html">
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
+import {Link} from '@inertiajs/vue3';
 </script>
 
 <template>
@@ -8,9 +9,9 @@ import ApplicationLogo from '@/Components/ApplicationLogo.vue';
             class="sm:mt-8 flex flex-col justify-start items-stretch w-full sm:max-w-md px-8 py-8 bg-white shadow-md overflow-hidden sm:rounded-lg"
         >
             <div class="mt-3 self-center">
-                <a href="/">
-                    <ApplicationLogo class="fill-current text-gray-500" />
-                </a>
+                <Link href="/">
+                    <ApplicationLogo class="fill-current text-gray-500"/>
+                </Link>
             </div>
             <h1 class="self-center font-sans text-4xl antialiased font-semibold leading-tight tracking-normal text-inherit">MyPets</h1>
             <div class="self-center sm:text-lg mx-auto p-2">

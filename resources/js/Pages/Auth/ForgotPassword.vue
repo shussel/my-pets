@@ -3,7 +3,10 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
-import { Head, useForm } from '@inertiajs/vue3';
+import {Head, useForm} from '@inertiajs/vue3';
+import Layout from '@/Layouts/GuestLayout.vue';
+
+defineOptions({layout: Layout})
 
 defineProps({
     status: {
@@ -25,11 +28,10 @@ const submit = () => {
 
     <h2 class="text-center font-bold text-2xl p-2">Forgot Password</h2>
     <div class="mb-4 text-sm text-gray-600">
-        Forgot your password? No problem. Just let us know your email address and we will email you a password reset
-        link that will allow you to choose a new one.
+        Enter your registered email address for a reset password link.
     </div>
 
-    <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
+    <div v-if="status" class="mb-4 font-medium text-sm text-green-600 text-center">
         {{ status }}
     </div>
 
