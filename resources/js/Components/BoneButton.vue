@@ -1,5 +1,5 @@
 <template>
-    <button class="bone inline-flex text-center justify-center leading-none w-full text-xl font-bold text-white p-3 rounded-md" @click="$emit('click')">
+    <button @click="$emit('click')" class="bone inline-flex text-center justify-center leading-none w-full text-xl font-bold text-white p-3 rounded-md">
         <span><slot /></span>
     </button>
 

@@ -21,13 +21,12 @@ Route::middleware('guest')->group(function () {
             'canRegister' => Route::has('register'),
             'canResetPassword' => Route::has('password.request'),
         ]);
-    });
+    })->name('home');
 
     Route::get('register', function () {
         return Inertia::render('Welcome', [
             'canLogin' => Route::has('login'),
             'canRegister' => true,
-            'route' => 'register',
         ]);
     })->name('register');
     /* Route::get('register', [RegisteredUserController::class, 'create'])
@@ -40,7 +39,6 @@ Route::middleware('guest')->group(function () {
             'canLogin' => true,
             'canRegister' => Route::has('register'),
             'canResetPassword' => Route::has('password.request'),
-            'route' => 'login',
             'status' => session('status'),
         ]);
     })->name('login');
@@ -53,7 +51,6 @@ Route::middleware('guest')->group(function () {
     Route::get('forgot-password', function () {
         return Inertia::render('Welcome', [
             'canResetPassword' => true,
-            'route' => 'forgot',
             'status' => session('status'),
         ]);
     })->name('password.request');
@@ -67,7 +64,6 @@ Route::middleware('guest')->group(function () {
     Route::get('reset-password/{token}', function (Request $request) {
         return Inertia::render('Welcome', [
             'canResetPassword' => true,
-            'route' => 'reset',
             'email' => $request->email,
             'token' => $request->route('token'),
         ]);
