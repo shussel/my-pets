@@ -3,6 +3,8 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Enums\SexEnum;
+use App\Enums\SpeciesEnum;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Pet>
@@ -17,7 +19,11 @@ class PetFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->petname()
-            ];
+            'user_id' => '0',
+            'name' => fake()->petname(),
+            'species' => fake()->randomElement(SpeciesEnum::values()),
+            'sex' => fake()->randomElement(SexEnum::values()),
+            'birth_date' => fake()->dateTimeBetween('-20 years', '-6 weeks'),
+        ];
     }
 }
