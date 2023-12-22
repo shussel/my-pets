@@ -18,6 +18,7 @@ return new class extends Migration {
             $table->string('name');
             $table->enum('species', SpeciesEnum::values());
             $table->enum('sex', SexEnum::values());
+            $table->int('weight');
             $table->dateTime('birth_date');
             $table->string('image');
             $table->timestamps();

@@ -248,4 +248,34 @@ class PetProvider extends Base
     {
         return static::randomElement(static::$names);
     }
+
+    public static function petweight($species): int
+    {
+        switch ($species) {
+
+            case 'dog':
+                $max_weight = 80;
+                break;
+
+            case 'cat':
+                $max_weight = 30;
+                break;
+
+            case 'bird':
+                $max_weight = 9;
+                break;
+
+            case 'fish':
+                $max_weight = 10;
+                break;
+
+            case 'reptile':
+                $max_weight = 30;
+                break;
+
+            default:
+                $max_weight = 5;
+        }
+        return rand(1, $max_weight);
+    }
 }

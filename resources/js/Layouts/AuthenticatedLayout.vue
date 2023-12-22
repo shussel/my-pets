@@ -20,7 +20,7 @@ const showingNavigationDropdown = ref(false);
                         <div class="flex items-center">
                             <!-- Logo -->
                             <div class="shrink-0 flex items-center">
-                                <Link :href="route('pets')">
+                                <Link :href="route('pets.index')">
                                     <ApplicationLogo
                                         class="block h-[55px] w-auto fill-current"
                                     />
@@ -33,7 +33,7 @@ const showingNavigationDropdown = ref(false);
 
                             <!-- Navigation Links -->
                             <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink :href="route('pets')" :active="route().current('pets')">
+                                <NavLink :href="route('pets.index')" :active="route().current('pets.index')">
                                     Pets
                                 </NavLink>
                             </div>
@@ -116,7 +116,7 @@ const showingNavigationDropdown = ref(false);
                     class="sm:hidden"
                 >
                     <div class="pt-2 pb-3 space-y-1">
-                        <ResponsiveNavLink :href="route('pets')" :active="route().current('pets')">
+                        <ResponsiveNavLink :href="route('pets.index')" :active="route().current('pets.index')">
                             Pets
                         </ResponsiveNavLink>
                     </div>
@@ -140,7 +140,7 @@ const showingNavigationDropdown = ref(false);
                 </div>
             </nav>
             <!-- Page Content -->
-            <main>
+            <main class="mx-7 my-6" >
                 <slot />
             </main>
         </div>

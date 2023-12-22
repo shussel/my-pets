@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PetController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -24,9 +25,15 @@ use Inertia\Inertia;
     ]);
 });*/
 
-Route::get('/pets', function () {
-    return Inertia::render('Pets');
-})->middleware(['auth', 'verified'])->name('pets');
+//Route::get('/pets', function () {
+//    return Inertia::render('Pets');
+//})->middleware(['auth', 'verified'])->name('pets');
+//
+//Route::get('/pets/add', function () {
+//    return Inertia::render('Pets');
+//})->middleware(['auth', 'verified'])->name('pets.add');
+
+Route::resource('pets', PetController::class)->middleware(['auth', 'verified']);
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
