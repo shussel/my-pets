@@ -3,10 +3,12 @@
 namespace App\Faker;
 
 use Faker\Provider\Base;
+use App\Enums\SpeciesEnum;
+use App\Enums\SexEnum;
 
 class PetProvider extends Base
 {
-    protected static $names = [
+    protected static array $names = [
         "Abby",
         "Ace",
         "Allie",
@@ -244,38 +246,48 @@ class PetProvider extends Base
         'Sausage',
         'Spot',
     ];
-    public static function petname(): string
+
+    public static function pet($species = ''): array
+    {
+        $species = $species ?: static::petSpecies();
+
+        return [
+            'species' => $species,
+            'name' => static::petName(),
+            'sex' => static::petSex(),
+            'weight' => static::petWeight($species),
+            'birth_date' => static::petBirthdate($species),
+        ];
+    }
+
+    public static function petName(): string
     {
         return static::randomElement(static::$names);
     }
 
-    public static function petweight($species): int
+    public static function petSpecies(): string
     {
-        switch ($species) {
+        return static::randomElement(SpeciesEnum::values());
+    }
 
-            case 'dog':
-                $max_weight = 80;
-                break;
+    public static function petSex(): string
+    {
+        return static::randomElement(SexEnum::values());
+    }
 
-            case 'cat':
-                $max_weight = 30;
-                break;
-
-            case 'bird':
-                $max_weight = 9;
-                break;
-
-            case 'fish':
-                $max_weight = 10;
-                break;
-
-            case 'reptile':
-                $max_weight = 30;
-                break;
-
-            default:
-                $max_weight = 5;
+    public static function petWeight($species = ''): int
+    {
+        if (!$species || !($specie = SpeciesEnum::tryFrom($species)) || !($max_weight = $specie->maxWeight())) {
+            $max_weight = 10;
         }
         return rand(1, $max_weight);
+    }
+
+    public static function petBirthdate($species = ''): string
+    {
+        if (!$species || !($specie = SpeciesEnum::tryFrom($species)) || !($max_age = $specie->maxAge())) {
+            $max_age = 5;
+        }
+        return date('c', mt_rand(strtotime('-' . $max_age . ' years'), time()));
     }
 }

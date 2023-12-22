@@ -18,15 +18,6 @@ class PetFactory extends Factory
      */
     public function definition(): array
     {
-        $species = fake()->randomElement(SpeciesEnum::values());
-
-        return [
-            'user_id' => '0',
-            'name' => fake()->petname(),
-            'species' => $species,
-            'sex' => fake()->randomElement(SexEnum::values()),
-            'weight' => fake()->petweight($species),
-            'birth_date' => fake()->dateTimeBetween('-20 years', '-1 day'),
-        ];
+        return fake()->pet();
     }
 }
