@@ -1,4 +1,5 @@
 <script setup>
+import SecondaryButton from '@/Components/SecondaryButton.vue';
 const props = defineProps({
     data: {
         type: Object,
@@ -7,31 +8,21 @@ const props = defineProps({
 </script>
 
 <template>
-    <div>
-        <table class="table-fixed mx-auto">
-            <thead>
-            <tr class="bg-gray-100">
-                <th class="px-4 py-2 w-20">Image</th>
-                <th class="px-4 py-2 w-20">Name</th>
-                <th class="px-4 py-2">Species</th>
-                <th class="px-4 py-2">Sex</th>
-                <th class="px-4 py-2">Weight</th>
-                <th class="px-4 py-2">Age</th>
-                <th class="px-4 py-2">Birthday</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr v-for="pet in data.pets">
-                <td class="border px-4 py-2"><img class="rounded-full" :src="pet.image + '?t=' + Math.ceil(Math.random()*10000)" :alt="pet.species" /></td>
-                <td class="border px-4 py-2">{{ pet.name }}</td>
-                <td class="border px-4 py-2">{{ pet.species }}</td>
-                <td class="border px-4 py-2">{{ pet.sex }}</td>
-                <td class="border px-4 py-2">{{ pet.weight }} lbs</td>
-                <td class="border px-4 py-2">{{ pet.age }}</td>
-                <td class="border px-4 py-2">{{ new Date(pet.birth_date).toLocaleDateString('en-us', { year:"numeric", month:"short", day:"numeric"}) }}</td>
-            </tr>
-            </tbody>
-        </table>
+    <div class="flex flex-col justify-center items-center sm:flex-row sm:flex-wrap gap-6">
+        <div class="w-[325px] flex p-2 justify-start bg-white shadow-md overflow-hidden gap-2 sm:rounded-lg" v-for="pet in data.pets">
+            <img class="w-[100px] h-[100px] rounded-full" :src="pet.image + '?t=' + Math.ceil(Math.random()*10000)" :alt="pet.name" />
+            <div>
+                <div class="font-bold text-xl">{{ pet.name }}</div>
+                <div> {{ pet.species }}</div>
+                <div class="my-1">
+                    <SecondaryButton><font-awesome-icon icon="bowl-rice" /></SecondaryButton>
+                    <SecondaryButton><font-awesome-icon icon="tree" /></SecondaryButton>
+                    <SecondaryButton><font-awesome-icon icon="baseball" /></SecondaryButton>
+                    <SecondaryButton><font-awesome-icon icon="car-side" /></SecondaryButton>
+                    <SecondaryButton><font-awesome-icon icon="kit-medical" /></SecondaryButton>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 

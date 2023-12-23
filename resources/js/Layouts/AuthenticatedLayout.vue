@@ -15,7 +15,7 @@ const showingNavigationDropdown = ref(false);
         <div class="w-full max-w-7xl mx-auto">
             <nav class="max-w-7xl bg-white shadow-md sm:rounded-full">
                 <!-- Primary Navigation Menu -->
-                <div class="mx-2 sm:pr-4">
+                <div class="mx-2 sm:pr-2">
                     <div class="flex justify-between h-16">
                         <div class="flex items-center">
                             <!-- Logo -->
@@ -47,27 +47,15 @@ const showingNavigationDropdown = ref(false);
                                         <span class="inline-flex rounded-md">
                                             <button
                                                 type="button"
-                                                class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150"
+                                                class="inline-flex items-center py-1 border border-transparent text-xs leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150"
                                             >
-                                                {{ $page.props.auth.user.name }}
-
-                                                <svg
-                                                    class="ms-2 -me-0.5 h-4 w-4"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    viewBox="0 0 20 20"
-                                                    fill="currentColor"
-                                                >
-                                                    <path
-                                                        fill-rule="evenodd"
-                                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                                        clip-rule="evenodd"
-                                                    />
-                                                </svg>
+                                                <font-awesome-icon class="text-4xl" icon="circle-user" />
                                             </button>
                                         </span>
                                     </template>
 
                                     <template #content>
+                                        <div class="text-center text-sm">{{ $page.props.auth.user.name }}</div>
                                         <DropdownLink :href="route('profile.edit')"> Profile </DropdownLink>
                                         <DropdownLink :href="route('logout')" method="post" as="button">
                                             Log Out

@@ -3,6 +3,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import {ref} from "vue";
 import PetsIndex from "@/Pages/Pets/Index.vue";
+import PetsList from "@/Pages/Pets/List.vue";
 import PetsCreate from "@/Pages/Pets/Create.vue";
 
 const props = defineProps({
@@ -16,6 +17,7 @@ const props = defineProps({
 
 const views = {
     'pets.index': PetsIndex,
+    'pets.list': PetsList,
     'pets.create': PetsCreate,
 }
 
