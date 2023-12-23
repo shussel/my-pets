@@ -34,4 +34,15 @@ enum SpeciesEnum: string
             SpeciesEnum::BIRD => 9,
         };
     }
+
+    public function image(): string
+    {
+        return match ($this) {
+            SpeciesEnum::DOG => 'https://wildcard.codestuff.io/dog/100/100',
+            SpeciesEnum::CAT => 'https://wildcard.codestuff.io/cat/100/100',
+            SpeciesEnum::FISH => 'https://wildcard.codestuff.io/fish/100/100',
+            SpeciesEnum::BIRD => 'https://wildcard.codestuff.io/bird/100/100',
+            SpeciesEnum::REPTILE => 'https://wildcard.codestuff.io/bug/100/100',
+        };
+    }
 }

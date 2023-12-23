@@ -38,7 +38,7 @@ class Pet extends Model
     public function getAgeAttribute()
     {
         if ($years = Carbon::parse($this->birth_date)->age) {
-            return $years;
+            return $years . ' year' . ($years > 1 ? 's' : '');
         }
         if ($months = Carbon::now()->diffInMonths(Carbon::parse($this->birth_date))) {
             return $months . ' month' . ($months > 1 ? 's' : '');

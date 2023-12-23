@@ -257,6 +257,7 @@ class PetProvider extends Base
             'sex' => static::petSex(),
             'weight' => static::petWeight($species),
             'birth_date' => static::petBirthdate($species),
+            'image' => static::petImage($species),
         ];
     }
 
@@ -289,5 +290,13 @@ class PetProvider extends Base
             $max_age = 5;
         }
         return date('c', mt_rand(strtotime('-' . $max_age . ' years'), time()));
+    }
+
+    public static function petImage($species = ''): string
+    {
+        if (!$species || !($specie = SpeciesEnum::tryFrom($species)) || !($image = $specie->image())) {
+            $image = '';
+        }
+        return $image;
     }
 }
