@@ -6,10 +6,10 @@ import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 import {library} from '@fortawesome/fontawesome-svg-core';
-import {faBowlRice, faTree, faBaseball, faCarSide, faKitMedical, faCircleUser} from '@fortawesome/free-solid-svg-icons';
+import {faBowlRice, faTree, faBaseball, faCarSide, faKitMedical, faCircleUser, faDog, faCat, faCrow, faFish, faDragon} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 
-library.add(faBowlRice, faTree, faBaseball, faCarSide, faKitMedical, faCircleUser);
+library.add(faBowlRice, faTree, faBaseball, faCarSide, faKitMedical, faCircleUser, faDog, faCat, faCrow, faFish, faDragon);
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 

@@ -1,5 +1,6 @@
 <script setup>
-import SecondaryButton from '@/Components/SecondaryButton.vue';
+import PetHeader from '@/Components/PetHeader.vue';
+
 const props = defineProps({
     pets: {
         type: Object,
@@ -9,24 +10,6 @@ const props = defineProps({
 
 <template>
     <div class="flex flex-col justify-center items-center sm:flex-row sm:flex-wrap gap-6">
-        <div class="w-[325px] p-2 bg-white shadow-md overflow-hidden sm:rounded-lg" v-for="pet in pets">
-            <div class="flex justify-start gap-2" @click="$emit('nav', 'pets.show'); $emit('pet', pet._id)">
-                <img class="w-[100px] h-[100px] rounded-full" :src="pet.image + '?t=' + Math.ceil(Math.random()*10000)" :alt="pet.name" />
-                <div>
-                    <div class="font-bold text-xl">{{ pet.name }}</div>
-                    <div> {{ pet.species }}</div>
-                </div>
-            </div>
-            <div class="mt-4 flex justify-between">
-                <SecondaryButton><font-awesome-icon icon="bowl-rice" /></SecondaryButton>
-                <SecondaryButton><font-awesome-icon icon="tree" /></SecondaryButton>
-                <SecondaryButton><font-awesome-icon icon="baseball" /></SecondaryButton>
-                <SecondaryButton><font-awesome-icon icon="car-side" /></SecondaryButton>
-                <SecondaryButton><font-awesome-icon icon="kit-medical" /></SecondaryButton>
-            </div>
-        </div>
+        <PetHeader v-for="pet in pets" :key="pet._id" :pet="pet" @click="$emit('nav', 'pets.show'); $emit('pet', pet._id)" />
     </div>
 </template>
-
-
-

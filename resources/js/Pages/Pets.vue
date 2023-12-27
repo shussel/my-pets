@@ -1,6 +1,6 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head } from '@inertiajs/vue3';
+import {Head} from '@inertiajs/vue3';
 import {ref} from "vue";
 import PetsIndex from "@/Pages/Pets/Index.vue";
 import PetsList from "@/Pages/Pets/List.vue";
@@ -36,7 +36,7 @@ const petId = ref(route().params.pet)
 </script>
 
 <template>
-    <Head title="Pets" />
+    <Head title="Pets"/>
 
     <AuthenticatedLayout>
 
@@ -44,7 +44,8 @@ const petId = ref(route().params.pet)
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Pets</h2>
         </template>
 
-        <component :is="currentView" :pets="pets" :petId="petId" :message="message" @pet="petId=$event" @nav="page($event)"/>
+        <component :is="currentView" :pets="pets" :petId="petId" :message="message" @pet="petId=$event"
+                   @nav="page($event)"/>
 
     </AuthenticatedLayout>
 
