@@ -1,6 +1,6 @@
 <script setup>
 const props = defineProps({
-    data: {
+    pets: {
         type: Object,
     },
 });
@@ -21,7 +21,7 @@ const props = defineProps({
             </tr>
             </thead>
             <tbody>
-            <tr v-for="pet in data.pets">
+            <tr v-for="pet in pets">
                 <td class="border px-4 py-2"><img class="rounded-full" :src="pet.image + '?t=' + Math.ceil(Math.random()*10000)" :alt="pet.species" /></td>
                 <td class="border px-4 py-2">{{ pet.name }}</td>
                 <td class="border px-4 py-2">{{ pet.species }}</td>

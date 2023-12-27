@@ -5,9 +5,10 @@ import {ref} from "vue";
 import PetsIndex from "@/Pages/Pets/Index.vue";
 import PetsList from "@/Pages/Pets/List.vue";
 import PetsCreate from "@/Pages/Pets/Create.vue";
+import PetsShow from "@/Pages/Pets/Show.vue";
 
 const props = defineProps({
-    data: {
+    pets: {
         type: Object,
     },
     message: {
@@ -19,14 +20,18 @@ const views = {
     'pets.index': PetsIndex,
     'pets.list': PetsList,
     'pets.create': PetsCreate,
+    'pets.show': PetsShow,
 }
 
 const currentRoute = ref(route().current() || 'pets.index')
 const currentView = ref(views[currentRoute.value])
 
-function page(route) {
+function page(route, param) {
+
     currentView.value = views[route]
 }
+
+const petId = ref(route().params.pet)
 
 </script>
 
@@ -39,7 +44,7 @@ function page(route) {
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Pets</h2>
         </template>
 
-        <component :is="currentView" @nav="(i) => page(i)" :data="data" :message="message"/>
+        <component :is="currentView" :pets="pets" :petId="petId" :message="message" @pet="petId=$event" @nav="page($event)"/>
 
     </AuthenticatedLayout>
 

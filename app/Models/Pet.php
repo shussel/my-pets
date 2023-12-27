@@ -18,7 +18,8 @@ class Pet extends Model
         'species',
         'sex',
         'birth_date',
-        'image'
+        'image',
+        '_id',
     ];
 
     protected $casts = [
@@ -35,7 +36,7 @@ class Pet extends Model
         'age',
     ];
 
-    public function getAgeAttribute()
+    public function getAgeAttribute(): string
     {
         if ($years = Carbon::parse($this->birth_date)->age) {
             return $years . ' year' . ($years > 1 ? 's' : '');
@@ -50,10 +51,5 @@ class Pet extends Model
             return $days . ' day' . ($days > 1 ? 's' : '');
         }
         return 0;
-    }
-
-    public function user()
-    {
-        return $this->belongsTo(User::class);
     }
 }

@@ -11,10 +11,11 @@ class PetController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): \Inertia\Response
     {
-        $pets = Pet::all();
-        return Inertia::render('Pets', ['data' => ['pets' => $pets]]);
+        return Inertia::render('Pets', [
+            'pets' => auth()->user()->pets
+        ]);
     }
 
     /**
@@ -36,9 +37,11 @@ class PetController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Pet $pet)
+    public function show($pet): \Inertia\Response
     {
-        //
+        return Inertia::render('Pets', [
+            'pets' => auth()->user()->pets
+        ]);
     }
 
     /**

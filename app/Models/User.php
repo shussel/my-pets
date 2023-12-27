@@ -4,7 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-//use Illuminate\Foundation\Auth\User as Authenticatable;
+use MongoDB\Laravel\Relations\EmbedsMany;
 use MongoDB\Laravel\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -43,4 +43,16 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    /**
+     * The relationships that should always be loaded.
+     *
+     * @var array
+     */
+    //protected $with = ['pets'];
+
+    public function pets(): EmbedsMany
+    {
+        return $this->embedsMany(Pet::class);
+    }
 }
