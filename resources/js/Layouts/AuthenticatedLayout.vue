@@ -5,7 +5,6 @@ import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
-import { Link } from '@inertiajs/vue3';
 
 const showingNavigationDropdown = ref(false);
 </script>
@@ -20,11 +19,11 @@ const showingNavigationDropdown = ref(false);
                         <div class="flex items-center">
                             <!-- Logo -->
                             <div class="shrink-0 flex items-center">
-                                <Link :href="route('pets.index')">
+                                <a @click="$emit('nav','pets.index')">
                                     <ApplicationLogo
                                         class="block h-[55px] w-auto fill-current"
                                     />
-                                </Link>
+                                </a>
                             </div>
 
                             <div v-if="$slots.header" class="ml-2">
@@ -33,9 +32,9 @@ const showingNavigationDropdown = ref(false);
 
                             <!-- Navigation Links -->
                             <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink :href="route('pets.index')" :active="route().current('pets.index')">
-                                    Pets
-                                </NavLink>
+<!--                                <NavLink :href="route('pets.index')" :active="route().current('pets.index')">-->
+<!--                                    Pets-->
+<!--                                </NavLink>-->
                             </div>
                         </div>
 
@@ -128,7 +127,7 @@ const showingNavigationDropdown = ref(false);
                 </div>
             </nav>
             <!-- Page Content -->
-            <main class="mx-7 my-6" >
+            <main class="mx-2 my-6" >
                 <slot />
             </main>
         </div>

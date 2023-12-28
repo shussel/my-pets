@@ -1,5 +1,7 @@
 <script setup>
 import PetHeader from '@/Components/PetHeader.vue';
+import PrimaryButton from "@/Components/PrimaryButton.vue";
+import SpeciesIcon from '@/Components/SpeciesIcon.vue';
 
 const props = defineProps({
     pets: {
@@ -10,6 +12,11 @@ const props = defineProps({
 
 <template>
     <div class="flex flex-col justify-center items-center sm:flex-row sm:flex-wrap gap-6">
-        <PetHeader v-for="pet in pets" :key="pet._id" :pet="pet" @click="$emit('nav', 'pets.show'); $emit('pet', pet._id)" />
+        <PetHeader v-for="pet in pets" :key="pet._id" :pet="pet" @click="$emit('nav', 'pets.show', pet._id);">
+            <div><SpeciesIcon :species="pet.species" /> {{ pet.name }}</div>
+        </PetHeader>
+        <div class="sm:self-stretch sm:w-full text-center">
+            <PrimaryButton class="mb-4" @click="$emit('nav', 'pets.create')">Add a Pet</PrimaryButton>
+        </div>
     </div>
 </template>

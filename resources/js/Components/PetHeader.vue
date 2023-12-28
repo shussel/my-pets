@@ -1,5 +1,4 @@
 <script setup>
-import SpeciesIcon from '@/Components/SpeciesIcon.vue';
 import PetButtons from '@/Components/PetButtons.vue';
 
 const props = defineProps({
@@ -14,7 +13,6 @@ const props = defineProps({
         <div class="flex justify-start gap-2">
             <img class="w-[100px] h-[100px] rounded-full" :src="pet.image + '?t=' + Math.ceil(Math.random()*10000)" :alt="pet.name" />
             <div>
-                <div><SpeciesIcon :species="pet.species" /> {{ pet.name }}</div>
                 <slot/>
             </div>
         </div>
