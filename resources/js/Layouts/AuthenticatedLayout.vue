@@ -1,15 +1,27 @@
 <script setup>
 import { ref } from 'vue';
+import {Head} from '@inertiajs/vue3';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
-import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
+import SpeciesIcon from '@/Components/SpeciesIcon.vue';
 
 const showingNavigationDropdown = ref(false);
+
+const props = defineProps({
+    pageTitle: {
+        type: String,
+    },
+    species: {
+        type: String,
+    }
+});
 </script>
 
 <template>
+    <Head :title="pageTitle"/>
+
     <div class="min-h-screen bg-gray-100 sm:p-4">
         <div class="w-full max-w-7xl mx-auto">
             <nav class="max-w-7xl bg-white shadow-md sm:rounded-full">
@@ -26,9 +38,11 @@ const showingNavigationDropdown = ref(false);
                                 </a>
                             </div>
 
-                            <div v-if="$slots.header" class="ml-2">
-                                <slot name="header" />
+                            <div v-if="pageTitle" class="m-2">
+                                <h2 class="font-semibold text-2xl text-gray-800 leading-tight">{{ pageTitle }}</h2>
                             </div>
+
+                            <SpeciesIcon v-if="species" :species="species" />
 
                             <!-- Navigation Links -->
                             <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">

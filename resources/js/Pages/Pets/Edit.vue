@@ -5,7 +5,7 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import SelectInput from '@/Components/SelectInput.vue';
 import {useForm} from '@inertiajs/vue3';
-import { defineEmits } from 'vue';
+import {defineEmits} from "vue";
 
 const props = defineProps({
     meta: {
@@ -14,21 +14,26 @@ const props = defineProps({
     message: {
         type: String,
     },
+    pet: {
+        type: Object,
+        required: true,
+    }
 });
 
 const form = useForm({
-    name: '',
-    species: '',
-    sex: '',
-    weight: 0,
-    birth_date: '',
-    image: '',
+    _id: props.pet._id,
+    name: props.pet.name,
+    species: props.pet.species,
+    sex: props.pet.sex,
+    weight: props.pet.weight,
+    birth_date: props.pet.birth_date,
+    image: props.pet.image,
 });
 
 const emit = defineEmits(['nav']);
 
-const submit = () => {
-    form.post(route('pets.store'), {
+const submit = (petId) => {
+    form.patch(route('pets.update', petId), {
         onSuccess: () => { emit('nav', 'pets.index')},
     });
 };
@@ -38,7 +43,7 @@ const submit = () => {
     <div
         class="flex flex-col justify-start items-stretch w-full sm:max-w-md p-4 sm:p-8 bg-white shadow-md overflow-hidden sm:rounded-lg mx-auto"
     >
-        <form @submit.prevent="submit" class="border px-4 py-2 rounded-lg">
+        <form @submit.prevent="submit(pet._id)" class="border px-4 py-2 rounded-lg">
 
             <div>
                 <InputLabel for="name" value="Name" />
@@ -174,7 +179,7 @@ const submit = () => {
             <div class="flex items-center justify-end mt-4">
 
                 <PrimaryButton class="ms-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    Add Pet
+                    Update Pet
                 </PrimaryButton>
             </div>
         </form>

@@ -1,11 +1,18 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 
-defineProps({
+const props = defineProps({
     modelValue: {
         type: String,
         required: true,
     },
+    options: {
+        type: Object
+    },
+    placeholder: {
+        type: String,
+        default: 'select',
+    }
 });
 
 defineEmits(['update:modelValue']);
@@ -28,6 +35,7 @@ defineExpose({ focus: () => input.value.focus() });
         @input="$emit('update:modelValue', $event.target.value)"
         ref="input"
     >
-        <option>Select</option>
+        <option value="" selected disabled hidden>{{ placeholder }}</option>
+        <option v-for="option in options" :value="option.value">{{ option.label }}</option>
     </select>
 </template>

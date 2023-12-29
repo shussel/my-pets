@@ -2,11 +2,11 @@
 
 namespace App\Enums;
 
-use App\Enums\Traits\EnumValues;
+use App\Enums\Traits\EnumTraits;
 
 enum SpeciesEnum: string
 {
-    use EnumValues;
+    use EnumTraits;
 
     case DOG = 'dog';
     case CAT = 'cat';

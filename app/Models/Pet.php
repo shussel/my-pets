@@ -13,13 +13,13 @@ class Pet extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
+        '_id',
         'name',
         'species',
         'sex',
+        'weight',
         'birth_date',
         'image',
-        '_id',
     ];
 
     protected $casts = [
