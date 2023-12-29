@@ -25,7 +25,7 @@ class Pet extends Model
     protected $casts = [
         'sex' => SexEnum::class,
         'species' => SpeciesEnum::class,
-        'birth_date' => 'datetime'
+        'birth_date' => 'date:Y-m-d'
     ];
 
     /**
@@ -39,16 +39,16 @@ class Pet extends Model
     public function getAgeAttribute(): string
     {
         if ($years = Carbon::parse($this->birth_date)->age) {
-            return $years . ' year' . ($years > 1 ? 's' : '');
+            return $years.' year'.($years > 1 ? 's' : '');
         }
         if ($months = Carbon::now()->diffInMonths(Carbon::parse($this->birth_date))) {
-            return $months . ' month' . ($months > 1 ? 's' : '');
+            return $months.' month'.($months > 1 ? 's' : '');
         }
         if ($weeks = Carbon::now()->diffInWeeks(Carbon::parse($this->birth_date))) {
-            return $weeks . ' week' . ($weeks > 1 ? 's' : '');
+            return $weeks.' week'.($weeks > 1 ? 's' : '');
         }
         if ($days = Carbon::now()->diffInDays(Carbon::parse($this->birth_date))) {
-            return $days . ' day' . ($days > 1 ? 's' : '');
+            return $days.' day'.($days > 1 ? 's' : '');
         }
         return 0;
     }

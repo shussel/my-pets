@@ -34,7 +34,9 @@ const emit = defineEmits(['nav']);
 
 const submit = (petId) => {
     form.patch(route('pets.update', petId), {
-        onSuccess: () => { emit('nav', 'pets.index')},
+        onSuccess: () => {
+            emit('nav', 'pets.index')
+        },
     });
 };
 </script>
@@ -46,7 +48,7 @@ const submit = (petId) => {
         <form @submit.prevent="submit(pet._id)" class="border px-4 py-2 rounded-lg">
 
             <div>
-                <InputLabel for="name" value="Name" />
+                <InputLabel for="name" value="Name"/>
 
                 <TextInput
                     id="name"
@@ -58,20 +60,20 @@ const submit = (petId) => {
                     autocomplete="name"
                 />
 
-                <InputError class="mt-2" :message="form.errors.name" />
+                <InputError class="mt-2" :message="form.errors.name"/>
             </div>
 
-<!--            <div class="flex gap-2 justify-center items-center flex-wrap py-4">-->
-<!--                <SecondaryButton v-for="specie in meta.species" class="w-auto text-xl"><SpeciesIcon class="mx-1" :species="specie.value" />{{ specie.label }}</SecondaryButton>-->
-<!--            </div>-->
+            <!--            <div class="flex gap-2 justify-center items-center flex-wrap py-4">-->
+            <!--                <SecondaryButton v-for="specie in meta.species" class="w-auto text-xl"><SpeciesIcon class="mx-1" :species="specie.value" />{{ specie.label }}</SecondaryButton>-->
+            <!--            </div>-->
 
-<!--            <div class="flex gap-2 justify-center items-center flex-wrap pb-4">-->
-<!--                <SecondaryButton v-for="sex in meta.sexes" class="w-auto text-xl">{{ sex.label }}</SecondaryButton>-->
-<!--            </div>-->
+            <!--            <div class="flex gap-2 justify-center items-center flex-wrap pb-4">-->
+            <!--                <SecondaryButton v-for="sex in meta.sexes" class="w-auto text-xl">{{ sex.label }}</SecondaryButton>-->
+            <!--            </div>-->
 
             <div class="flex gap-4">
                 <div class="w-1/2 mt-4">
-                    <InputLabel for="species" value="Species" />
+                    <InputLabel for="species" value="Species"/>
 
                     <SelectInput
                         :options="meta.species"
@@ -82,11 +84,11 @@ const submit = (petId) => {
                         autocomplete=""
                     />
 
-                    <InputError class="mt-2" :message="form.errors.species" />
+                    <InputError class="mt-2" :message="form.errors.species"/>
                 </div>
 
                 <div class="w-1/2 mt-4">
-                    <InputLabel for="sex" value="Sex" />
+                    <InputLabel for="sex" value="Sex"/>
 
                     <SelectInput
                         :options="meta.sexes"
@@ -97,43 +99,43 @@ const submit = (petId) => {
                         autocomplete=""
                     />
 
-                    <InputError class="mt-2" :message="form.errors.sex" />
+                    <InputError class="mt-2" :message="form.errors.sex"/>
                 </div>
             </div>
 
             <div class="flex gap-4">
-<!--                <div class="w-1/4 mt-4">-->
-<!--                    <InputLabel for="age" value="Age" />-->
+                <!--                <div class="w-1/4 mt-4">-->
+                <!--                    <InputLabel for="age" value="Age" />-->
 
-<!--                    <TextInput-->
-<!--                        id="age"-->
-<!--                        type="text"-->
-<!--                        class="mt-1 block w-full"-->
-<!--                        v-model="form.age"-->
-<!--                        required-->
-<!--                        autocomplete=""-->
-<!--                    />-->
+                <!--                    <TextInput-->
+                <!--                        id="age"-->
+                <!--                        type="text"-->
+                <!--                        class="mt-1 block w-full"-->
+                <!--                        v-model="form.age"-->
+                <!--                        required-->
+                <!--                        autocomplete=""-->
+                <!--                    />-->
 
-<!--                    <InputError class="mt-2" :message="form.errors.age" />-->
-<!--                </div>-->
+                <!--                    <InputError class="mt-2" :message="form.errors.age" />-->
+                <!--                </div>-->
 
-<!--                <div class="w-1/4 mt-4">-->
-<!--                    <InputLabel for="sex" value="Units" />-->
+                <!--                <div class="w-1/4 mt-4">-->
+                <!--                    <InputLabel for="sex" value="Units" />-->
 
-<!--                    <SelectInput-->
-<!--                        :options="meta.units"-->
-<!--                        id="sex"-->
-<!--                        class="mt-1 block w-full"-->
-<!--                        v-model="form.unit"-->
-<!--                        required-->
-<!--                        autocomplete=""-->
-<!--                    />-->
+                <!--                    <SelectInput-->
+                <!--                        :options="meta.units"-->
+                <!--                        id="sex"-->
+                <!--                        class="mt-1 block w-full"-->
+                <!--                        v-model="form.unit"-->
+                <!--                        required-->
+                <!--                        autocomplete=""-->
+                <!--                    />-->
 
-<!--                    <InputError class="mt-2" :message="form.errors.unit" />-->
-<!--                </div>-->
+                <!--                    <InputError class="mt-2" :message="form.errors.unit" />-->
+                <!--                </div>-->
 
                 <div class="w-1/2 mt-4">
-                    <InputLabel for="weight" value="Weight" />
+                    <InputLabel for="weight" value="Weight"/>
 
                     <TextInput
                         id="weight"
@@ -143,11 +145,11 @@ const submit = (petId) => {
                         autocomplete=""
                     />
 
-                    <InputError class="mt-2" :message="form.errors.weight" />
+                    <InputError class="mt-2" :message="form.errors.weight"/>
                 </div>
 
                 <div class="w-1/2 mt-4">
-                    <InputLabel for="birth_date" value="Birth Date" />
+                    <InputLabel for="birth_date" value="Birth Date"/>
 
                     <TextInput
                         id="birth_date"
@@ -158,12 +160,12 @@ const submit = (petId) => {
                         autocomplete=""
                     />
 
-                    <InputError class="mt-2" :message="form.errors.birth_date" />
+                    <InputError class="mt-2" :message="form.errors.birth_date"/>
                 </div>
             </div>
 
             <div class="mt-4">
-                <InputLabel for="image" value="Image" />
+                <InputLabel for="image" value="Image"/>
 
                 <TextInput
                     id="image"
@@ -173,7 +175,7 @@ const submit = (petId) => {
                     autocomplete=""
                 />
 
-                <InputError class="mt-2" :message="form.errors.image" />
+                <InputError class="mt-2" :message="form.errors.image"/>
             </div>
 
             <div class="flex items-center justify-end mt-4">

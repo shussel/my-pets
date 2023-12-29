@@ -10,10 +10,7 @@ use App\Enums\SexEnum;
 
 class PetController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(): \Inertia\Response
+    protected function petsResponse(): \Inertia\Response
     {
         return Inertia::render('Pets', [
             'pets' => auth()->user()->pets,
@@ -22,6 +19,14 @@ class PetController extends Controller
                 'sexes' => SexEnum::options(),
             ]
         ]);
+    }
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function index(): \Inertia\Response
+    {
+        return $this->petsResponse();
     }
 
     /**
@@ -29,28 +34,15 @@ class PetController extends Controller
      */
     public function create(): \Inertia\Response
     {
-        return Inertia::render('Pets', [
-            'pets' => auth()->user()->pets,
-            'meta' => [
-                'species' => SpeciesEnum::options(),
-                'sexes' => SexEnum::options(),
-            ]
-        ]);
+        return $this->petsResponse();
     }
-
 
     /**
      * Display the specified resource.
      */
     public function show($pet): \Inertia\Response
     {
-        return Inertia::render('Pets', [
-            'pets' => auth()->user()->pets,
-            'meta' => [
-                'species' => SpeciesEnum::options(),
-                'sexes' => SexEnum::options(),
-            ]
-        ]);
+        return $this->petsResponse();
     }
 
     /**
@@ -58,19 +50,13 @@ class PetController extends Controller
      */
     public function edit($pet_id): \Inertia\Response
     {
-        return Inertia::render('Pets', [
-            'pets' => auth()->user()->pets,
-            'meta' => [
-                'species' => SpeciesEnum::options(),
-                'sexes' => SexEnum::options(),
-            ]
-        ]);
+        return $this->petsResponse();
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request): \Illuminate\Http\RedirectResponse
     {
         $request->validate([
             'name' => 'required|string|max:255',
@@ -96,7 +82,7 @@ class PetController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $pet_id)
+    public function update(Request $request, $pet_id): \Illuminate\Http\RedirectResponse
     {
         $request->validate([
             'name' => 'required|string|max:255',
@@ -122,7 +108,7 @@ class PetController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($pet_id)
+    public function destroy($pet_id): \Illuminate\Http\RedirectResponse
     {
         auth()->user()->pets()->find($pet_id)->delete();
 

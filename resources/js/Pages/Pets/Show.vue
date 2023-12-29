@@ -18,8 +18,10 @@ const deleteForm = useForm({
 const emit = defineEmits(['nav']);
 
 function deletePet(petId) {
-    deleteForm.delete(route('pets.destroy',petId), {
-        onSuccess: () => { emit('nav', 'pets.index')},
+    deleteForm.delete(route('pets.destroy', petId), {
+        onSuccess: () => {
+            emit('nav', 'pets.index')
+        },
     });
 }
 </script>
@@ -30,7 +32,14 @@ function deletePet(petId) {
             <div>{{ pet.sex }}</div>
             <div>Weight {{ pet.weight }} lbs</div>
             <div>Age {{ pet.age }}</div>
-            <div>Born {{ new Date(pet.birth_date).toLocaleDateString('en-us', { year:"numeric", month:"short", day:"numeric"}) }}</div>
+            <div>Born {{
+                    new Date(pet.birth_date).toLocaleDateString('en-us', {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric"
+                    })
+                }}
+            </div>
         </PetHeader>
         <div class="sm:self-stretch sm:w-full text-center">
             <PrimaryButton class="mb-4" @click="$emit('nav', 'pets.edit', pet._id)">Edit Pet</PrimaryButton>

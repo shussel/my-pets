@@ -33,13 +33,15 @@ function findPet(petId) {
         return pet._id === petId;
     })[0];
 }
+
 const pet = toRef(findPet(route().params.pet));
 const species = toRef(toRaw(pet.value) ? toRaw(pet.value).species : '');
 
 function getTitle(route, pet) {
     return pet ? pet.name : (route === 'pets.create' ? 'Add a Pet' : 'Pets');
 }
-const pageTitle = ref( getTitle(currentRoute.value, toRaw(pet.value)));
+
+const pageTitle = ref(getTitle(currentRoute.value, toRaw(pet.value)));
 
 function toPage(route_name, petId) {
     currentView.value = views[route_name];
