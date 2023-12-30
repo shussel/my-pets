@@ -1,5 +1,6 @@
 <script setup>
 import PetButtons from '@/Components/PetButtons.vue';
+import PetImage from '@/Components/PetImage.vue';
 
 const props = defineProps({
     pet: {
@@ -11,11 +12,11 @@ const props = defineProps({
 <template>
     <div class="w-[325px] p-2 bg-white shadow-md overflow-hidden sm:rounded-lg">
         <div class="flex justify-start gap-2">
-            <img class="w-[100px] h-[100px] rounded-full" :src="pet.image + '?p=' + pet._id" :alt="pet.name" />
+            <PetImage :pet="pet"/>
             <div>
                 <slot/>
             </div>
         </div>
-        <PetButtons :pet="pet" />
+        <PetButtons :pet="pet"/>
     </div>
 </template>

@@ -4,6 +4,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import SelectInput from '@/Components/SelectInput.vue';
+import SpeciesIcon from '@/Components/SpeciesIcon.vue';
 import {useForm} from '@inertiajs/vue3';
 import {defineEmits} from 'vue';
 
@@ -41,6 +42,10 @@ const submit = () => {
         class="flex flex-col justify-start items-stretch w-full sm:max-w-md p-4 sm:p-8 bg-white shadow-md overflow-hidden sm:rounded-lg mx-auto"
     >
         <form @submit.prevent="submit" class="border px-4 py-2 rounded-lg">
+
+            <div class="text-center">
+                <SpeciesIcon v-if="form.species" :species="form.species" class="bg-blue-100 text-white w-[152px] h-[152px] rounded-full p-6"/>
+            </div>
 
             <div>
                 <InputLabel for="name" value="Name"/>
