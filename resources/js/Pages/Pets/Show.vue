@@ -1,8 +1,11 @@
 <script setup>
 import PetHeader from '@/Components/PetHeader.vue';
 import PrimaryButton from "@/Components/PrimaryButton.vue";
+import SecondaryButton from "@/Components/SecondaryButton.vue";
+import Modal from '@/Components/Modal.vue';
+import DangerButton from '@/Components/DangerButton.vue';
 import {useForm} from "@inertiajs/vue3";
-import {defineEmits} from "vue";
+import {defineEmits, nextTick, ref} from "vue";
 
 const props = defineProps({
     pet: {
@@ -17,13 +20,26 @@ const deleteForm = useForm({
 
 const emit = defineEmits(['nav']);
 
+const confirmPetDeletion = () => {
+    confirmingPetDeletion.value = true;
+    // nextTick(() => passwordInput.value.focus());
+};
+const confirmingPetDeletion = ref(false);
+
 function deletePet(petId) {
+    closeModal();
     deleteForm.delete(route('pets.destroy', petId), {
         onSuccess: () => {
             emit('nav', 'pets.index')
         },
     });
 }
+
+const closeModal = () => {
+    confirmingPetDeletion.value = false;
+
+    deleteForm.reset();
+};
 </script>
 
 <template>
@@ -42,8 +58,29 @@ function deletePet(petId) {
             </div>
         </PetHeader>
         <div class="sm:self-stretch sm:w-full text-center">
-            <PrimaryButton class="mb-4" @click="$emit('nav', 'pets.edit', pet._id)">Edit Pet</PrimaryButton>
-            <PrimaryButton class="mb-4" @click="deletePet(pet._id)">Delete Pet</PrimaryButton>
+            <PrimaryButton class="m-2" @click="$emit('nav', 'pets.edit', pet._id)">Edit Pet</PrimaryButton>
+            <PrimaryButton class="m-2" @click="confirmPetDeletion">Delete Pet</PrimaryButton>
         </div>
     </div>
+
+    <Modal :show="confirmingPetDeletion" @close="closeModal">
+        <div class="p-6">
+            <h2 class="text-lg font-medium text-gray-900">
+                Are you sure you want to delete this pet?
+            </h2>
+
+            <div class="mt-6 flex justify-end">
+                <SecondaryButton @click="closeModal"> Cancel</SecondaryButton>
+
+                <DangerButton
+                    class="ms-3"
+                    :class="{ 'opacity-25': deleteForm.processing }"
+                    :disabled="deleteForm.processing"
+                    @click="deletePet(pet._id)"
+                >
+                    Delete Pet
+                </DangerButton>
+            </div>
+        </div>
+    </Modal>
 </template>

@@ -4,7 +4,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import SelectInput from '@/Components/SelectInput.vue';
-import SpeciesIcon from '@/Components/SpeciesIcon.vue';
+import FAIcon from '@/Components/FAIcon.vue';
 import {useForm} from '@inertiajs/vue3';
 import {defineEmits} from "vue";
 
@@ -40,6 +40,7 @@ const submit = (petId) => {
         },
     });
 };
+
 </script>
 
 <template>
@@ -49,7 +50,10 @@ const submit = (petId) => {
         <form @submit.prevent="submit(pet._id)" class="border px-4 py-2 rounded-lg">
 
             <div class="text-center">
-                <SpeciesIcon v-if="form.species" :species="form.species" class="bg-blue-100 text-white w-[152px] h-[152px] rounded-full p-6"/>
+                <img v-if="form.image" class="w-[200px] h-[200px] rounded-full mx-auto"
+                     :src="form.image + '?p=' + form._id" :alt="form.name"/>
+                <FAIcon v-else-if="form.species" :name="form.species"
+                        class="bg-blue-100 text-white w-[152px] h-[152px] rounded-full p-6"/>
             </div>
 
             <div>
@@ -169,22 +173,21 @@ const submit = (petId) => {
                 </div>
             </div>
 
-            <div class="mt-4">
-                <InputLabel for="image" value="Image"/>
+            <!--            <div class="mt-4">-->
+            <!--                <InputLabel for="image" value="Image"/>-->
 
-                <TextInput
-                    id="image"
-                    type="text"
-                    class="mt-1 block w-full"
-                    v-model="form.image"
-                    autocomplete=""
-                />
+            <!--                <TextInput-->
+            <!--                    id="image"-->
+            <!--                    type="text"-->
+            <!--                    class="mt-1 block w-full"-->
+            <!--                    v-model="form.image"-->
+            <!--                    autocomplete=""-->
+            <!--                />-->
 
-                <InputError class="mt-2" :message="form.errors.image"/>
-            </div>
+            <!--                <InputError class="mt-2" :message="form.errors.image"/>-->
+            <!--            </div>-->
 
             <div class="flex items-center justify-end mt-4">
-
                 <PrimaryButton class="ms-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                     Update Pet
                 </PrimaryButton>

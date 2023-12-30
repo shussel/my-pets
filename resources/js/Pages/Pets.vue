@@ -54,7 +54,7 @@ function toPage(route_name, petId) {
 
 <template>
 
-    <AuthenticatedLayout :pageTitle="pageTitle" :species="species" @nav="toPage">
+    <AuthenticatedLayout :pageTitle="pageTitle" :icon="species" @nav="toPage">
 
         <div v-if="message">{{ message }}</div>
 

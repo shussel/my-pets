@@ -5,7 +5,7 @@ import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
-import SpeciesIcon from '@/Components/SpeciesIcon.vue';
+import FAIcon from '@/Components/FAIcon.vue';
 
 const showingNavigationDropdown = ref(false);
 
@@ -13,7 +13,7 @@ const props = defineProps({
     pageTitle: {
         type: String,
     },
-    species: {
+    icon: {
         type: String,
     }
 });
@@ -42,7 +42,7 @@ const props = defineProps({
                                 <h2 class="font-semibold text-2xl text-gray-800 leading-tight">{{ pageTitle }}</h2>
                             </div>
 
-                            <SpeciesIcon v-if="species" :species="species" />
+                            <FAIcon v-if="icon" :name="icon"/>
 
                             <!-- Navigation Links -->
                             <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
@@ -62,7 +62,7 @@ const props = defineProps({
                                                 type="button"
                                                 class="inline-flex items-center py-1 border border-transparent text-xs leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150"
                                             >
-                                                <font-awesome-icon class="text-4xl" icon="circle-user" />
+                                                <FAIcon class="text-4xl" name="user"/>
                                             </button>
                                         </span>
                                     </template>

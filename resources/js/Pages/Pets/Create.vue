@@ -4,7 +4,8 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import SelectInput from '@/Components/SelectInput.vue';
-import SpeciesIcon from '@/Components/SpeciesIcon.vue';
+import FAIcon from '@/Components/FAIcon.vue';
+import SelectButtons from "@/Components/SelectButtons.vue";
 import {useForm} from '@inertiajs/vue3';
 import {defineEmits} from 'vue';
 
@@ -44,7 +45,8 @@ const submit = () => {
         <form @submit.prevent="submit" class="border px-4 py-2 rounded-lg">
 
             <div class="text-center">
-                <SpeciesIcon v-if="form.species" :species="form.species" class="bg-blue-100 text-white w-[152px] h-[152px] rounded-full p-6"/>
+                <FAIcon v-if="form.species" :name="form.species"
+                        class="bg-blue-100 text-white w-[152px] h-[152px] rounded-full p-6"/>
             </div>
 
             <div>
@@ -63,13 +65,13 @@ const submit = () => {
                 <InputError class="mt-2" :message="form.errors.name"/>
             </div>
 
-            <!--            <div class="flex gap-2 justify-center items-center flex-wrap py-4">-->
-            <!--                <SecondaryButton v-for="specie in meta.species" class="w-auto text-xl"><SpeciesIcon class="mx-1" :species="specie.value" />{{ specie.label }}</SecondaryButton>-->
-            <!--            </div>-->
+            <div>
+                <InputLabel for="species" value="Species"/>
 
-            <!--            <div class="flex gap-2 justify-center items-center flex-wrap pb-4">-->
-            <!--                <SecondaryButton v-for="sex in meta.sexes" class="w-auto text-xl">{{ sex.label }}</SecondaryButton>-->
-            <!--            </div>-->
+                <SelectButtons :options="meta.species"/>
+
+                <InputError class="mt-2" :message="form.errors.species"/>
+            </div>
 
             <div class="flex gap-4">
                 <div class="w-1/2 mt-4">
@@ -164,22 +166,21 @@ const submit = () => {
                 </div>
             </div>
 
-            <div class="mt-4">
-                <InputLabel for="image" value="Image"/>
+            <!--            <div class="mt-4">-->
+            <!--                <InputLabel for="image" value="Image"/>-->
 
-                <TextInput
-                    id="image"
-                    type="text"
-                    class="mt-1 block w-full"
-                    v-model="form.image"
-                    autocomplete=""
-                />
+            <!--                <TextInput-->
+            <!--                    id="image"-->
+            <!--                    type="text"-->
+            <!--                    class="mt-1 block w-full"-->
+            <!--                    v-model="form.image"-->
+            <!--                    autocomplete=""-->
+            <!--                />-->
 
-                <InputError class="mt-2" :message="form.errors.image"/>
-            </div>
+            <!--                <InputError class="mt-2" :message="form.errors.image"/>-->
+            <!--            </div>-->
 
             <div class="flex items-center justify-end mt-4">
-
                 <PrimaryButton class="ms-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                     Add Pet
                 </PrimaryButton>

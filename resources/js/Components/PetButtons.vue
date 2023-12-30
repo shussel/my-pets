@@ -1,5 +1,6 @@
 <script setup>
 import SecondaryButton from '@/Components/SecondaryButton.vue';
+import FAIcon from '@/Components/FAIcon.vue';
 
 const props = defineProps({
     pet: {
@@ -10,10 +11,20 @@ const props = defineProps({
 
 <template>
     <div class="mt-4 flex justify-between">
-        <SecondaryButton><font-awesome-icon icon="bowl-rice" /></SecondaryButton>
-        <SecondaryButton><font-awesome-icon icon="tree" /></SecondaryButton>
-        <SecondaryButton><font-awesome-icon icon="baseball" /></SecondaryButton>
-        <SecondaryButton><font-awesome-icon icon="car-side" /></SecondaryButton>
-        <SecondaryButton><font-awesome-icon icon="kit-medical" /></SecondaryButton>
+        <SecondaryButton class="w-[50px] h-[50px]">
+            <FAIcon class="text-2xl" name="food"/>
+        </SecondaryButton>
+        <SecondaryButton class="w-[50px] h-[50px]">
+            <FAIcon class="text-2xl" name="poop"/>
+        </SecondaryButton>
+        <SecondaryButton class="w-[50px] h-[50px]">
+            <FAIcon class="text-2xl" name="play"/>
+        </SecondaryButton>
+        <SecondaryButton class="w-[50px] h-[50px]">
+            <FAIcon class="text-2xl" name="car"/>
+        </SecondaryButton>
+        <SecondaryButton class="w-[50px] h-[50px]">
+            <FAIcon class="text-2xl" name="help"/>
+        </SecondaryButton>
     </div>
 </template>
