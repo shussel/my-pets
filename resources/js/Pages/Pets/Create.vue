@@ -98,7 +98,7 @@ const submit = () => {
 
                 <div v-if="form.birth_date" class="w-1/2">
 
-                    <InputLabel for="birth_date" value="Est. Birth Date"/>
+                    <InputLabel for="birth_date" value="Birth Date"/>
 
                     <TextInput
                         id="birth_date"
@@ -111,29 +111,38 @@ const submit = () => {
 
                     <InputError class="mt-2" :message="form.errors.birth_date"/>
                 </div>
+            </div>
 
-                <!--                <div v-if="form.species && form.sex && form.birth_date" class="w-1/2">-->
+            <div v-if="form.species && form.sex && form.birth_date" class="">
 
-                <!--                    <InputLabel class="w-full" for="weight" value="Weight"/>-->
+                <InputLabel class="w-full" for="weight" value="Weight"/>
 
-                <!--                    <div class="flex items-center gap-2 mt-1">-->
-                <!--                        <div class="w-[75px]">-->
+                <div class="flex items-center gap-3 mt-1">
+                    <div class="w-[70px]">
+                        <TextInput
+                            id="weight"
+                            type="number"
+                            class="block w-full"
+                            v-model="form.weight"
+                            autocomplete=""
+                            autofocus
+                        />
+                    </div>
+                    <div class="">lbs.</div>
+                    <div class="grow">
+                        <TextInput
+                            id="weight"
+                            type="range"
+                            min="0"
+                            max="100"
+                            class="block w-full"
+                            v-model="form.weight"
+                            autocomplete=""
+                        />
+                    </div>
+                </div>
 
-                <!--                            <TextInput-->
-                <!--                                id="weight"-->
-                <!--                                type="number"-->
-                <!--                                class="block w-full"-->
-                <!--                                v-model="form.weight"-->
-                <!--                                autocomplete=""-->
-                <!--                                autofocus-->
-                <!--                            />-->
-                <!--                        </div>-->
-
-                <!--                        <div class="">lbs.</div>-->
-                <!--                    </div>-->
-
-                <!--                    <InputError class="w-full" :message="form.errors.weight"/>-->
-                <!--                </div>-->
+                <InputError class="w-full" :message="form.errors.weight"/>
             </div>
 
             <div class="flex items-center justify-center mt-8 gap-4">
@@ -141,7 +150,8 @@ const submit = () => {
                                  :disabled="form.processing">
                     Cancel
                 </SecondaryButton>
-                <PrimaryButton v-if="form.name && form.species && form.sex" :class="{ 'opacity-25': form.processing }"
+                <PrimaryButton v-if="form.name && form.species && form.sex && form.birth_date"
+                               :class="{ 'opacity-25': form.processing }"
                                :disabled="form.processing">
                     Add Pet
                 </PrimaryButton>

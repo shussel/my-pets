@@ -1,5 +1,5 @@
 <script setup>
-import {ref, reactive, watch} from 'vue';
+import {reactive, watch, onMounted} from 'vue';
 import TextInput from "@/Components/TextInput.vue";
 import SelectButtons from "@/Components/SelectButtons.vue";
 import moment from "moment";
@@ -44,7 +44,7 @@ function ageFromBirthday(birthday) {
     return birthdayAge;
 }
 
-const age = reactive(ageFromBirthday(props.modelValue.value || null));
+const age = reactive(ageFromBirthday(props.modelValue || null));
 
 function birthdayFromAge(newAge) {
     if (!newAge.count || !newAge.units) {
@@ -92,7 +92,7 @@ watch(() => props.modelValue, (newBirthday) => {
             autocomplete=""
             autofocus
         />
-        <SelectButtons class="grow" v-model="age.units" :key="age.units"
+        <SelectButtons class="grow gap-1" v-model="age.units" :key="age.units"
                        :options="age.count > 1 ? ageOptions[1] : ageOptions[0]"/>
     </div>
 </template>

@@ -2,8 +2,10 @@
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
+import SelectButtons from "@/Components/SelectButtons.vue";
+import BirthdayCalc from "@/Components/BirthdayCalc.vue";
 import TextInput from '@/Components/TextInput.vue';
-import SelectInput from '@/Components/SelectInput.vue';
 import FAIcon from '@/Components/FAIcon.vue';
 import {useForm} from '@inertiajs/vue3';
 import {defineEmits} from "vue";
@@ -50,14 +52,12 @@ const submit = (petId) => {
         <form @submit.prevent="submit(pet._id)" class="border px-4 py-2 rounded-lg">
 
             <div class="text-center">
-                <img v-if="form.image" class="w-[200px] h-[200px] rounded-full mx-auto"
-                     :src="form.image + '?p=' + form._id" :alt="form.name"/>
-                <FAIcon v-else-if="form.species" :name="form.species"
+                <FAIcon :name="form.species"
                         class="bg-blue-100 text-white w-[152px] h-[152px] rounded-full p-6"/>
             </div>
 
-            <div>
-                <InputLabel for="name" value="Name"/>
+            <div v-if="form.name || form.species" class="mb-3">
+                <InputLabel for="name" value="Pet Name"/>
 
                 <TextInput
                     id="name"
@@ -66,98 +66,42 @@ const submit = (petId) => {
                     v-model="form.name"
                     required
                     autofocus
-                    autocomplete="name"
+                    autocomplete=""
                 />
 
                 <InputError class="mt-2" :message="form.errors.name"/>
             </div>
 
-            <!--            <div class="flex gap-2 justify-center items-center flex-wrap py-4">-->
-            <!--                <SecondaryButton v-for="specie in meta.species" class="w-auto text-xl"><SpeciesIcon class="mx-1" :species="specie.value" />{{ specie.label }}</SecondaryButton>-->
-            <!--            </div>-->
-
-            <!--            <div class="flex gap-2 justify-center items-center flex-wrap pb-4">-->
-            <!--                <SecondaryButton v-for="sex in meta.sexes" class="w-auto text-xl">{{ sex.label }}</SecondaryButton>-->
-            <!--            </div>-->
-
-            <div class="flex gap-4">
-                <div class="w-1/2 mt-4">
+            <div class="flex flex-wrap gap-2 mb-3">
+                <div class="grow min-w-1/2">
                     <InputLabel for="species" value="Species"/>
 
-                    <SelectInput
-                        :options="meta.species"
-                        id="species"
-                        class="mt-1 block w-full"
-                        v-model="form.species"
-                        required
-                        autocomplete=""
-                    />
+                    <SelectButtons v-model="form.species" :options="meta.species"/>
 
                     <InputError class="mt-2" :message="form.errors.species"/>
                 </div>
 
-                <div class="w-1/2 mt-4">
+                <div v-if="form.species || form.sex" class="w-1/2">
                     <InputLabel for="sex" value="Sex"/>
 
-                    <SelectInput
-                        :options="meta.sexes"
-                        id="sex"
-                        class="mt-1 block w-full"
-                        v-model="form.sex"
-                        required
-                        autocomplete=""
-                    />
+                    <SelectButtons v-model="form.sex" :options="meta.sexes"/>
 
                     <InputError class="mt-2" :message="form.errors.sex"/>
                 </div>
             </div>
 
-            <div class="flex gap-4">
-                <!--                <div class="w-1/4 mt-4">-->
-                <!--                    <InputLabel for="age" value="Age" />-->
+            <div v-if="form.birth_date || (form.species && form.sex)" class="flex justify-between gap-2 mb-3">
 
-                <!--                    <TextInput-->
-                <!--                        id="age"-->
-                <!--                        type="text"-->
-                <!--                        class="mt-1 block w-full"-->
-                <!--                        v-model="form.age"-->
-                <!--                        required-->
-                <!--                        autocomplete=""-->
-                <!--                    />-->
+                <div class="grow min-w-1/2">
 
-                <!--                    <InputError class="mt-2" :message="form.errors.age" />-->
-                <!--                </div>-->
+                    <InputLabel for="age" value="Age"/>
 
-                <!--                <div class="w-1/4 mt-4">-->
-                <!--                    <InputLabel for="sex" value="Units" />-->
+                    <BirthdayCalc v-model="form.birth_date"/>
 
-                <!--                    <SelectInput-->
-                <!--                        :options="meta.units"-->
-                <!--                        id="sex"-->
-                <!--                        class="mt-1 block w-full"-->
-                <!--                        v-model="form.unit"-->
-                <!--                        required-->
-                <!--                        autocomplete=""-->
-                <!--                    />-->
-
-                <!--                    <InputError class="mt-2" :message="form.errors.unit" />-->
-                <!--                </div>-->
-
-                <div class="w-1/2 mt-4">
-                    <InputLabel for="weight" value="Weight"/>
-
-                    <TextInput
-                        id="weight"
-                        type="number"
-                        class="mt-1 block w-full"
-                        v-model="form.weight"
-                        autocomplete=""
-                    />
-
-                    <InputError class="mt-2" :message="form.errors.weight"/>
                 </div>
 
-                <div class="w-1/2 mt-4">
+                <div v-if="form.birth_date" class="w-1/2">
+
                     <InputLabel for="birth_date" value="Birth Date"/>
 
                     <TextInput
@@ -173,22 +117,46 @@ const submit = (petId) => {
                 </div>
             </div>
 
-            <!--            <div class="mt-4">-->
-            <!--                <InputLabel for="image" value="Image"/>-->
+            <div v-if="form.species && form.sex && form.birth_date" class="">
 
-            <!--                <TextInput-->
-            <!--                    id="image"-->
-            <!--                    type="text"-->
-            <!--                    class="mt-1 block w-full"-->
-            <!--                    v-model="form.image"-->
-            <!--                    autocomplete=""-->
-            <!--                />-->
+                <InputLabel class="w-full" for="weight" value="Weight"/>
 
-            <!--                <InputError class="mt-2" :message="form.errors.image"/>-->
-            <!--            </div>-->
+                <div class="flex items-center gap-3 mt-1">
+                    <div class="w-[70px]">
+                        <TextInput
+                            id="weight"
+                            type="number"
+                            class="block w-full"
+                            v-model="form.weight"
+                            autocomplete=""
+                            autofocus
+                        />
+                    </div>
+                    <div class="">lbs.</div>
+                    <div class="grow">
+                        <TextInput
+                            id="weight"
+                            type="range"
+                            min="0"
+                            max="100"
+                            class="block w-full color-white"
+                            v-model="form.weight"
+                            autocomplete=""
+                        />
+                    </div>
+                </div>
 
-            <div class="flex items-center justify-end mt-4">
-                <PrimaryButton class="ms-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                <InputError class="w-full" :message="form.errors.weight"/>
+            </div>
+
+            <div class="flex items-center justify-center mt-8 gap-4">
+                <SecondaryButton @click.prevent="emit('nav', 'pets.index')" :class="{ 'opacity-25': form.processing }"
+                                 :disabled="form.processing"
+                >
+                    Cancel
+                </SecondaryButton>
+                <PrimaryButton v-if="form.isDirty && form.name && form.species && form.sex && form.birth_date"
+                               :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                     Update Pet
                 </PrimaryButton>
             </div>
