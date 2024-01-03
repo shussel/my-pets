@@ -1,6 +1,6 @@
 <script setup>
-import { ref } from 'vue';
-import {Head} from '@inertiajs/vue3';
+import {ref} from 'vue';
+import {Head, usePage} from '@inertiajs/vue3';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
@@ -17,6 +17,8 @@ const props = defineProps({
         type: String,
     }
 });
+
+console.log(usePage().props.auth.user);
 </script>
 
 <template>
@@ -141,8 +143,8 @@ const props = defineProps({
                 </div>
             </nav>
             <!-- Page Content -->
-            <main class="mx-2 my-6" >
-                <slot />
+            <main class="mx-2 my-3 sm:my-6">
+                <slot/>
             </main>
         </div>
     </div>

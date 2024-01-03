@@ -10,7 +10,7 @@ import {
     faDog,
     faCat,
     faCrow,
-    faFish,
+    faFishFins,
     faDragon,
     faPoop
 } from '@fortawesome/free-solid-svg-icons';
@@ -27,7 +27,7 @@ library.add(
     faDog,
     faCat,
     faCrow,
-    faFish,
+    faFishFins,
     faDragon,
     faPoop
 );
@@ -42,7 +42,7 @@ const namedIcons = {
     dog: 'fa-dog',
     cat: 'fa-cat',
     bird: 'fa-crow',
-    fish: 'fa-fish',
+    fish: 'fa-fish-fins',
     reptile: 'fa-dragon',
     food: 'fa-bowl-rice',
     poop: 'fa-poop',
