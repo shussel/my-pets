@@ -1,6 +1,7 @@
 <script setup>
 import PetHeader from '@/Components/PetHeader.vue';
 import PrimaryButton from "@/Components/PrimaryButton.vue";
+import SpeechBubble from "@/Components/SpeechBubble.vue";
 import FAIcon from '@/Components/FAIcon.vue';
 
 const props = defineProps({
@@ -16,6 +17,7 @@ const props = defineProps({
             <div>
                 <FAIcon :name="pet.species"/>
                 {{ pet.name }}
+                <SpeechBubble/>
             </div>
         </PetHeader>
         <div class="sm:self-stretch sm:w-full text-center">
