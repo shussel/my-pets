@@ -10,7 +10,6 @@ const props = defineProps({
         required: true,
     },
 });
-
 const emit = defineEmits(['update:modelValue']);
 
 const ageOptions = [
@@ -29,70 +28,58 @@ const ageOptions = [
 ]
 
 function ageFromBirthday(birthday) {
-    let newAge = {count: null, units: null}
+    let birthdayAge = {count: null, units: null}
     if (birthday) {
-        if (newAge.count = moment().diff(birthday, 'years')) {
-            newAge.units = 'years'
-        } else if (newAge.count = moment().diff(birthday, 'months')) {
-            newAge.units = 'months'
-        } else if (newAge.count = moment().diff(birthday, 'weeks')) {
-            newAge.units = 'weeks'
-        } else if (newAge.count = moment().diff(birthday, 'days')) {
-            newAge.units = 'days'
+        if (birthdayAge.count = moment().diff(birthday, 'years')) {
+            birthdayAge.units = 'years'
+        } else if (birthdayAge.count = moment().diff(birthday, 'months')) {
+            birthdayAge.units = 'months'
+        } else if (birthdayAge.count = moment().diff(birthday, 'weeks')) {
+            birthdayAge.units = 'weeks'
+        } else if (birthdayAge.count = moment().diff(birthday, 'days')) {
+            birthdayAge.units = 'days'
         }
-        newAge.count = String(newAge.count);
+        birthdayAge.count = String(birthdayAge.count);
     }
-    console.log('from bd', birthday, newAge)
-    return newAge;
+    return birthdayAge;
 }
 
 const age = reactive(ageFromBirthday(props.modelValue.value || null));
-console.log('initial', age)
 
 function birthdayFromAge(newAge) {
-    let birthday
     if (!newAge.count || !newAge.units) {
-        birthday = null;
+        return null;
     } else {
-        birthday = moment().subtract(newAge.count, newAge.units).format('YYYY-MM-DD')
+        return moment().subtract(newAge.count, newAge.units).format('YYYY-MM-DD')
     }
-    console.log('birthday set', birthday);
-    return birthday
 }
 
-let watching = false;
+let ageChanged = false;
 
 watch(age, (newAge) => {
-    if (!watching) {
-        console.log('age changed', newAge)
-        watching = true;
+    if (!birthdayChanged) {
+        ageChanged = true;
         emit('update:modelValue', birthdayFromAge(newAge))
-        watching = false;
     }
+    birthdayChanged = false;
 })
 
-watch(() => props.modelValue, (newBirthday, oldBirthday) => {
-    if (!watching) {
-        console.log('bd changed', oldBirthday, newBirthday)
-        if (newBirthday !== oldBirthday) {
-            if (newBirthday || (age.count && age.units)) {
-                const newAge = ageFromBirthday(newBirthday)
-                if (age.count !== newAge.count) {
-                    watching = true;
-                    age.count = newAge.count
-                    console.log('age count changed', newAge.count)
-                }
-                if (age.units !== newAge.units) {
-                    watching = true;
-                    age.units = newAge.units
-                    console.log('age units changed', newAge.units)
-                }
-            }
+let birthdayChanged = false;
+
+watch(() => props.modelValue, (newBirthday) => {
+    if (!ageChanged) {
+        const newAge = ageFromBirthday(newBirthday)
+        if (age.count !== newAge.count) {
+            birthdayChanged = true
+            age.count = newAge.count
         }
-        watching = false;
+        if (age.units !== newAge.units) {
+            birthdayChanged = true
+            age.units = newAge.units
+        }
     }
+    ageChanged = false;
 })
-
 </script>
 
 <template>
@@ -105,6 +92,7 @@ watch(() => props.modelValue, (newBirthday, oldBirthday) => {
             autocomplete=""
             autofocus
         />
-        <SelectButtons class="grow" v-model="age.units" :options="age.count > 1 ? ageOptions[1] : ageOptions[0]"/>
+        <SelectButtons class="grow" v-model="age.units" :key="age.units"
+                       :options="age.count > 1 ? ageOptions[1] : ageOptions[0]"/>
     </div>
 </template>
