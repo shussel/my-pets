@@ -19,7 +19,6 @@ class PetFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => null,
             ...fake()->pet(),
         ];
     }
