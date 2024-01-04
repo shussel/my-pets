@@ -5,10 +5,14 @@ import SelectButtons from "@/Components/SelectButtons.vue";
 import moment from "moment";
 
 const props = defineProps({
-    modelValue: {
-        type: String,
-        required: true,
-    },
+  modelValue: {
+    type: String,
+    required: true,
+  },
+  maxAge: {
+    type: Number,
+    default: 100,
+  },
 });
 const emit = defineEmits(['update:modelValue']);
 
@@ -84,14 +88,15 @@ watch(() => props.modelValue, (newBirthday) => {
 
 <template>
     <div class="flex justify-start">
-        <TextInput
-            id="age"
-            type="number"
-            class="mt-1 w-[53px] px-2"
-            v-model="age.count"
-            autocomplete=""
-            autofocus
-        />
+      <TextInput
+          id="age"
+          type="number"
+          :max="maxAge"
+          min="0"
+          class="mt-1 w-[53px] px-2"
+          v-model="age.count"
+          autocomplete=""
+      />
         <SelectButtons class="grow gap-1" v-model="age.units" :key="age.units"
                        :options="age.count > 1 ? ageOptions[1] : ageOptions[0]"/>
     </div>

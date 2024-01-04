@@ -76,6 +76,8 @@ class PetController extends Controller
             'image' => $request->image,
         ]);
 
+        $request->session()->flash('message', "$request->name added");
+
         return to_route('pets.index');
     }
 
@@ -111,6 +113,8 @@ class PetController extends Controller
     public function destroy($pet_id): \Illuminate\Http\RedirectResponse
     {
         auth()->user()->pets()->find($pet_id)->delete();
+
+        session()->flash('message', "Pet deleted");
 
         return redirect()->route('pets.index');
     }

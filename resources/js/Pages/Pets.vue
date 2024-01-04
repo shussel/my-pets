@@ -1,6 +1,6 @@
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import {ref, toRaw, toRef} from "vue";
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PetsIndex from "@/Pages/Pets/Index.vue";
 import PetsCreate from "@/Pages/Pets/Create.vue";
 import PetsShow from "@/Pages/Pets/Show.vue";

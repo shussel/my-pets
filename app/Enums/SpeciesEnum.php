@@ -3,6 +3,7 @@
 namespace App\Enums;
 
 use App\Enums\Traits\EnumTraits;
+use Illuminate\Support\Str;
 
 enum SpeciesEnum: string
 {
@@ -44,5 +45,24 @@ enum SpeciesEnum: string
             SpeciesEnum::BIRD => 'https://wildcard.codestuff.io/bird/100/100',
             SpeciesEnum::REPTILE => 'https://wildcard.codestuff.io/bug/100/100',
         };
+    }
+
+    public static function options(): array
+    {
+        $cases = static::cases();
+        $options = [];
+        foreach ($cases as $case) {
+            $label = $case->name;
+            if (Str::contains($label, '_')) {
+                $label = Str::replace('_', ' ', $label);
+            }
+            $options[] = [
+                'value' => $case->value,
+                'label' => Str::title($label),
+                'maxAge' => $case->maxAge(),
+                'maxWeight' => $case->maxWeight(),
+            ];
+        }
+        return $options;
     }
 }
