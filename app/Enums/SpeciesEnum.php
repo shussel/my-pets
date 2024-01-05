@@ -11,8 +11,9 @@ enum SpeciesEnum: string
 
     case DOG = 'dog';
     case CAT = 'cat';
-    case FISH = 'fish';
     case BIRD = 'bird';
+    case FISH = 'fish';
+    case HORSE = 'horse';
     case REPTILE = 'reptile';
 
     public function maxAge(): int
@@ -23,6 +24,7 @@ enum SpeciesEnum: string
             SpeciesEnum::FISH => 10,
             SpeciesEnum::BIRD => 60,
             SpeciesEnum::REPTILE => 30,
+            SpeciesEnum::HORSE => 30,
         };
     }
 
@@ -33,6 +35,7 @@ enum SpeciesEnum: string
             SpeciesEnum::CAT, SpeciesEnum::REPTILE => 30,
             SpeciesEnum::FISH => 5,
             SpeciesEnum::BIRD => 9,
+            SpeciesEnum::HORSE => 2200,
         };
     }
 
@@ -41,8 +44,9 @@ enum SpeciesEnum: string
         return match ($this) {
             SpeciesEnum::DOG => 'https://wildcard.codestuff.io/dog/100/100',
             SpeciesEnum::CAT => 'https://wildcard.codestuff.io/cat/100/100',
-            SpeciesEnum::FISH => 'https://wildcard.codestuff.io/fish/100/100',
             SpeciesEnum::BIRD => 'https://wildcard.codestuff.io/bird/100/100',
+            SpeciesEnum::FISH => 'https://wildcard.codestuff.io/fish/100/100',
+            SpeciesEnum::HORSE => 'https://wildcard.codestuff.io/horse/100/100',
             SpeciesEnum::REPTILE => 'https://wildcard.codestuff.io/bug/100/100',
         };
     }

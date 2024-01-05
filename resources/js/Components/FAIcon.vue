@@ -1,56 +1,72 @@
 <script setup>
 import {library} from '@fortawesome/fontawesome-svg-core';
 import {
-    faBowlRice,
-    faTree,
-    faBaseball,
-    faCarSide,
-    faKitMedical,
-    faCircleUser,
-    faDog,
-    faCat,
-    faCrow,
-    faFishFins,
-    faDragon,
-    faPoop
+  faBaseball,
+  faBone,
+  faBowlRice,
+  faCarSide,
+  faCat,
+  faCircleUser,
+  faCrow,
+  faDog,
+  faDragon,
+  faFileLines,
+  faFishFins,
+  faGear,
+  faHorse,
+  faKitMedical,
+  faPaw,
+  faPoop,
+  faTree,
 } from '@fortawesome/free-solid-svg-icons';
 
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 
 library.add(
-    faBowlRice,
-    faTree,
     faBaseball,
+    faBone,
+    faBowlRice,
     faCarSide,
-    faKitMedical,
-    faCircleUser,
-    faDog,
     faCat,
+    faCircleUser,
     faCrow,
-    faFishFins,
+    faDog,
     faDragon,
-    faPoop
+    faFileLines,
+    faFishFins,
+    faGear,
+    faHorse,
+    faKitMedical,
+    faPaw,
+    faPoop,
+    faTree,
 );
 
 const props = defineProps({
     name: {
         type: String,
+      required: true
     },
 });
 
 const namedIcons = {
-    dog: 'fa-dog',
-    cat: 'fa-cat',
-    bird: 'fa-crow',
-    fish: 'fa-fish-fins',
-    reptile: 'fa-dragon',
-    food: 'fa-bowl-rice',
-    poop: 'fa-poop',
-    play: 'fa-baseball',
-    car: 'fa-car-side',
-    help: 'fa-kit-medical',
-    tree: 'fa-tree',
-    user: 'fa-circle-user',
+  bird: 'fa-crow',
+  bone: 'fa-bone',
+  car: 'fa-car-side',
+  cat: 'fa-cat',
+  document: 'fa-file-lines',
+  dog: 'fa-dog',
+  fish: 'fa-fish-fins',
+  food: 'fa-bowl-rice',
+  gear: 'fa-gear',
+  help: 'fa-kit-medical',
+  horse: 'fa-horse',
+  paw: 'fa-paw',
+  play: 'fa-baseball',
+  poop: 'fa-poop',
+  reptile: 'fa-dragon',
+  tree: 'fa-tree',
+  user: 'fa-circle-user',
 }
 </script>
 
