@@ -1,5 +1,6 @@
 <script setup>
-import {ref, toRaw, toRef} from "vue";
+import {ref, toRaw, toRef, onMounted} from "vue";
+import {router} from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PetsIndex from "@/Pages/Pets/Index.vue";
 import PetsCreate from "@/Pages/Pets/Create.vue";
@@ -7,9 +8,9 @@ import PetsShow from "@/Pages/Pets/Show.vue";
 import PetsEdit from "@/Pages/Pets/Edit.vue";
 
 const props = defineProps({
-    pets: {
-        type: Object,
-    },
+  pets: {
+    type: Object,
+  },
     meta: {
         type: Object,
     },
@@ -44,19 +45,29 @@ function getTitle(route, pet) {
 const pageTitle = ref(getTitle(currentRoute.value, toRaw(pet.value)));
 
 function toPage(route_name, petId) {
-    currentView.value = views[route_name];
-    history.pushState(null, null, route(route_name, petId));
-    pet.value = findPet(petId);
-    pageTitle.value = getTitle(route_name, pet.value)
-    species.value = pet.value ? pet.value.species : ''
+  currentView.value = views[route_name];
+  history.pushState(null, null, route(route_name, petId));
+  pet.value = findPet(petId);
+  pageTitle.value = getTitle(route_name, pet.value)
+  species.value = pet.value ? pet.value.species : ''
+  setTimeout(() => {
+    showMessage.value = false
+  }, 5000)
 }
+
+const showMessage = ref(true);
+
+router.on('finish', (event) => {
+  showMessage.value = true;
+})
+
 </script>
 
 <template>
 
     <AuthenticatedLayout :pageTitle="pageTitle" :icon="species" @nav="toPage">
 
-        <div v-if="message">{{ message }}</div>
+      <div class="text-center m-3 font-bold" v-show="showMessage">{{ $page.props.flash.message }}</div>
 
         <component :is="currentView" :pets="pets" :pet="pet" :meta="meta" :message="message" @nav="toPage"/>
 

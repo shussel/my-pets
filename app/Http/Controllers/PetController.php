@@ -76,9 +76,7 @@ class PetController extends Controller
             'image' => $request->image,
         ]);
 
-        $request->session()->flash('message', "$request->name added");
-
-        return to_route('pets.index');
+        return redirect()->route('pets.index')->with('message', "$request->name added");
     }
 
     /**
@@ -104,7 +102,7 @@ class PetController extends Controller
             'image' => $request->image,
         ]);
 
-        return redirect()->route('pets.index');
+        return redirect()->route('pets.index')->with('message', "$request->name updated");
     }
 
     /**
@@ -112,10 +110,9 @@ class PetController extends Controller
      */
     public function destroy($pet_id): \Illuminate\Http\RedirectResponse
     {
-        auth()->user()->pets()->find($pet_id)->delete();
+        $pet = auth()->user()->pets()->find($pet_id);
+        $pet->delete();
 
-        session()->flash('message', "Pet deleted");
-
-        return redirect()->route('pets.index');
+        return redirect()->route('pets.index')->with('message', "$pet->name deleted");
     }
 }
