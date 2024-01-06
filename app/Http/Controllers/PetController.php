@@ -64,8 +64,11 @@ class PetController extends Controller
             'sex' => 'required|string',
             'weight' => 'integer|nullable',
             'birth_date' => 'required|date',
-            'image' => 'string|nullable',
         ]);
+
+        if ($request->file('avatar')) {
+            $path = $request->file('avatar')->store("users/".Auth::user()->_id."/", 'public');
+        }
 
         Auth::user()->pets()->create([
             'name' => $request->name,
@@ -73,7 +76,7 @@ class PetController extends Controller
             'sex' => $request->sex,
             'weight' => $request->weight,
             'birth_date' => $request->birth_date,
-            'image' => $request->image,
+            'avatar' => $path,
         ]);
 
         return redirect()->route('pets.index')->with('message', "$request->name added");

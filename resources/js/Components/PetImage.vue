@@ -9,6 +9,6 @@ const props = defineProps({
 </script>
 
 <template>
-    <img v-if="pet.image" class="w-[100px] h-[100px] rounded-full" :src="pet.image + '?p=' + pet._id" :alt="pet.name"/>
+    <img v-if="pet.avatar" class="w-[100px] h-[100px] rounded-full" :src="'/storage/' + pet.avatar" :alt="pet.name"/>
     <FAIcon v-else :name="pet.species" class="bg-blue-100 text-white w-[76px] h-[76px] rounded-full p-3"/>
 </template>

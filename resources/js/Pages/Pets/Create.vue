@@ -1,14 +1,14 @@
 <script setup>
-import {defineEmits, toRaw, computed} from 'vue';
+import {defineEmits, toRaw, computed, ref} from 'vue';
 import {useForm} from '@inertiajs/vue3';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
-import FAIcon from '@/Components/FAIcon.vue';
 import SelectButtons from "@/Components/SelectButtons.vue";
 import BirthdayCalc from "@/Components/BirthdayCalc.vue";
+import InputImage from "@/Components/InputImage.vue";
 
 const props = defineProps({
     meta: {
@@ -25,7 +25,7 @@ const form = useForm({
   sex: '',
   weight: null,
   birth_date: '',
-  image: '',
+  avatar: null,
 });
 
 const maxAge = computed(() => {
@@ -56,12 +56,20 @@ const maxWeight = computed(() => {
 
 const emit = defineEmits(['nav']);
 
-const submit = () => {
+const inputImage = ref(null)
+
+const saveWithCrop = (cropped) => {
+  console.log(cropped);
+  form.avatar = cropped
   form.post(route('pets.store'), {
     onSuccess: () => {
       emit('nav', 'pets.index')
     },
   });
+};
+
+const submit = () => {
+  inputImage.value.crop()
 };
 </script>
 
@@ -69,22 +77,23 @@ const submit = () => {
     <div
         class="flex flex-col justify-start items-stretch w-full sm:max-w-md p-4 sm:p-8 bg-white shadow-md overflow-hidden sm:rounded-lg mx-auto"
     >
-        <form @submit.prevent="submit" class="border px-4 py-2 rounded-lg">
+      <form @submit.prevent="submit" class="border px-4 py-2 rounded-lg">
 
-            <div class="text-center">
-                <FAIcon :name="form.species"
-                        class="bg-blue-100 text-white w-[152px] h-[152px] rounded-full p-6"/>
-            </div>
+        <InputImage v-show="form.species" v-model:imageData="form.avatar" :species="form.species"
+                    @update="(image) => { form.avatar = image }"
+                    @save="(cropped) => saveWithCrop(cropped)"
+                    ref="inputImage"
+        />
 
-            <div v-if="form.name || form.species" class="mb-3">
-                <InputLabel for="name" value="Pet Name"/>
+        <div v-if="form.name || form.species" class="mb-3">
+          <InputLabel for="name" value="Pet Name"/>
 
-                <TextInput
-                    id="name"
-                    type="text"
-                    class="mt-1 block w-full"
-                    v-model="form.name"
-                    required
+          <TextInput
+              id="name"
+              type="text"
+              class="mt-1 block w-full"
+              v-model="form.name"
+              required
                     autofocus
                     autocomplete="off"
                 />
