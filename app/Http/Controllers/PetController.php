@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Inertia\Inertia;
+use Illuminate\Support\Facades\Storage;
 use App\Enums\SpeciesEnum;
 use App\Enums\SexEnum;
+use Inertia\Inertia;
 
 class PetController extends Controller
 {
@@ -67,7 +68,9 @@ class PetController extends Controller
         ]);
 
         if ($request->file('avatar')) {
-            $path = $request->file('avatar')->store("users/".Auth::user()->_id."/", 'public');
+            $path = $request->file('avatar')->store("users/".Auth::user()->_id, 'public');
+        } else {
+            $path = $request->avatar;
         }
 
         Auth::user()->pets()->create([
@@ -93,16 +96,26 @@ class PetController extends Controller
             'sex' => 'required|string',
             'weight' => 'integer|nullable',
             'birth_date' => 'required|date',
-            'image' => 'string|nullable',
         ]);
 
+        // add new avatar
+        if ($request->file('newAvatar')) {
+            $path = $request->file('newAvatar')->store("users/".Auth::user()->_id, 'public');
+            if ($request->avatar) {
+                // delete current avatar
+                Storage::disk('public')->delete($request->avatar);
+            }
+        } elseif (!($path = $request->avatar) && ($previous_avatar = Auth::user()->pets()->find($pet_id)->avatar)) {
+            // delete previous avatar
+            Storage::disk('public')->delete($previous_avatar);
+        }
         auth()->user()->pets()->find($pet_id)->update([
             'name' => $request->name,
             'species' => $request->species,
             'sex' => $request->sex,
             'weight' => $request->weight,
             'birth_date' => $request->birth_date,
-            'image' => $request->image,
+            'avatar' => $path,
         ]);
 
         return redirect()->route('pets.index')->with('message', "$request->name updated");
@@ -113,9 +126,14 @@ class PetController extends Controller
      */
     public function destroy($pet_id): \Illuminate\Http\RedirectResponse
     {
-        $pet = auth()->user()->pets()->find($pet_id);
-        $pet->delete();
-
-        return redirect()->route('pets.index')->with('message', "$pet->name deleted");
+        if ($pet = auth()->user()->pets()->find($pet_id)) {
+            if ($pet->avatar) {
+                Storage::disk('public')->delete($pet->avatar);
+            }
+            $pet->delete();
+            return redirect()->route('pets.index')->with('message', "$pet->name deleted");
+        } else {
+            return redirect()->route('pets.index')->with('error', "Pet not found");
+        }
     }
 }

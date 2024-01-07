@@ -1,5 +1,5 @@
 <script setup>
-import {defineEmits, toRaw, computed, ref} from 'vue';
+import {toRaw, computed, ref} from 'vue';
 import {useForm} from '@inertiajs/vue3';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
@@ -8,16 +8,18 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import SelectButtons from "@/Components/SelectButtons.vue";
 import BirthdayCalc from "@/Components/BirthdayCalc.vue";
-import InputImage from "@/Components/InputImage.vue";
+import InputAvatar from "@/Components/InputAvatar.vue";
 
 const props = defineProps({
-    meta: {
-        type: Object,
-    },
-    message: {
-        type: String,
-    },
+  meta: {
+    type: Object,
+  },
+  message: {
+    type: String,
+  },
 });
+
+const emit = defineEmits(['nav']);
 
 const form = useForm({
   name: '',
@@ -54,22 +56,20 @@ const maxWeight = computed(() => {
   })[0]['maxWeight'];
 })
 
-const emit = defineEmits(['nav']);
+const inputAvatar = ref(null)
 
-const inputImage = ref(null)
-
+const submit = () => {
+  inputAvatar.value.crop()
+};
 const saveWithCrop = (cropped) => {
-  console.log(cropped);
-  form.avatar = cropped
+  if (cropped) {
+    form.avatar = cropped
+  }
   form.post(route('pets.store'), {
     onSuccess: () => {
       emit('nav', 'pets.index')
     },
   });
-};
-
-const submit = () => {
-  inputImage.value.crop()
 };
 </script>
 
@@ -79,10 +79,9 @@ const submit = () => {
     >
       <form @submit.prevent="submit" class="border px-4 py-2 rounded-lg">
 
-        <InputImage v-show="form.species" v-model:imageData="form.avatar" :species="form.species"
-                    @update="(image) => { form.avatar = image }"
-                    @save="(cropped) => saveWithCrop(cropped)"
-                    ref="inputImage"
+        <InputAvatar v-if="form.species" :pet="form"
+                     @cropped="(cropped) => saveWithCrop(cropped)"
+                     ref="inputAvatar"
         />
 
         <div v-if="form.name || form.species" class="mb-3">

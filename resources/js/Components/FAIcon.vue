@@ -17,6 +17,7 @@ import {
   faKitMedical,
   faPaw,
   faPoop,
+  faRectangleXmark,
   faTree,
 } from '@fortawesome/free-solid-svg-icons';
 
@@ -39,6 +40,7 @@ library.add(
     faKitMedical,
     faPaw,
     faPoop,
+    faRectangleXmark,
     faTree,
 );
 
@@ -54,6 +56,7 @@ const namedIcons = {
   bone: 'fa-bone',
   car: 'fa-car-side',
   cat: 'fa-cat',
+  delete: 'fa-rectangle-xmark',
   document: 'fa-file-lines',
   dog: 'fa-dog',
   fish: 'fa-fish-fins',

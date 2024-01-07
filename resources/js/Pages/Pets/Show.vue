@@ -1,5 +1,5 @@
 <script setup>
-import {defineEmits, ref} from "vue";
+import {ref} from "vue";
 import {useForm} from "@inertiajs/vue3";
 import PetHeader from '@/Components/PetHeader.vue';
 import PrimaryButton from "@/Components/PrimaryButton.vue";
@@ -24,7 +24,6 @@ const confirmPetDeletion = () => {
 };
 const confirmingPetDeletion = ref(false);
 const disableButtons = ref(false);
-
 function deletePet(petId) {
     closeModal();
     deleteForm.delete(route('pets.destroy', petId), {
@@ -33,7 +32,6 @@ function deletePet(petId) {
         },
     });
 }
-
 const closeModal = () => {
     confirmingPetDeletion.value = false;
     deleteForm.reset();
