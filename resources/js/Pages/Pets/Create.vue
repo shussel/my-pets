@@ -71,6 +71,9 @@ const saveWithCrop = (cropped) => {
     },
   });
 };
+
+const keepCropper = ref(false)
+
 </script>
 
 <template>
@@ -79,7 +82,8 @@ const saveWithCrop = (cropped) => {
     >
       <form @submit.prevent="submit" class="border px-4 py-2 rounded-lg">
 
-        <InputAvatar v-if="form.species" :pet="form"
+        <InputAvatar v-if="form.species || keepCropper" :pet="form"
+                     @dirty="keepCropper = true"
                      @cropped="(cropped) => saveWithCrop(cropped)"
                      ref="inputAvatar"
         />

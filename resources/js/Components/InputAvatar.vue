@@ -19,7 +19,9 @@ const fileInput = ref(null)
 
 // open file input dialog
 function chooseImage() {
-  fileInput.value.click()
+  if (!props.pet || !props.pet.avatar) {
+    fileInput.value.click()
+  }
 }
 
 // blobUrl of image to be cropped
@@ -68,10 +70,10 @@ function crop() {
 const message = computed(() => {
   if (cropImageUrl.value) {
     return 'drag and pinch to adjust image'
-  } else if (props.pet && props.pet.avatar) {
-    return 'click to replace image'
-  } else {
+  } else if (!props.pet || !props.pet.avatar) {
     return 'click to add image'
+  } else {
+    return null
   }
 })
 
@@ -128,9 +130,9 @@ const closeModal = () => {
     />
 
     <div
-        class="text-center placeholder w-[220px] h-[220px] relative flex justify-center items-center hover:bg-blue-100 mx-auto"
+        class="text-center placeholder w-[220px] h-[220px] relative flex justify-center items-center mx-auto"
         v-show="!cropImageUrl">
-      <PetImage @click="chooseImage" :pet="pet" class="w-[200px] h-[200px]"/>
+      <PetImage @click="chooseImage" :pet="pet" class="w-[200px] h-[200px] hover:bg-blue-300"/>
     </div>
 
     <input
@@ -141,7 +143,8 @@ const closeModal = () => {
         accept="image/jpeg"
     />
 
-    <ButtonDelete v-show="showDelete" @click="confirmAvatarDeletion" class="absolute top-2 right-1 z-50"/>
+    <ButtonDelete v-show="showDelete" @click="confirmAvatarDeletion" class="absolute top-2 right-1 z-50"
+                  title="Delete Image"/>
 
   </div>
 

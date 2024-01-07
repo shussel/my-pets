@@ -9,6 +9,7 @@ import SelectButtons from "@/Components/SelectButtons.vue";
 import BirthdayCalc from "@/Components/BirthdayCalc.vue";
 import TextInput from '@/Components/TextInput.vue';
 import InputAvatar from "@/Components/InputAvatar.vue";
+import ModalConfirm from '@/Components/ModalConfirm.vue';
 
 const props = defineProps({
   meta: {
@@ -69,12 +70,14 @@ const submit = () => {
   inputAvatar.value.crop()
 };
 const saveWithCrop = (cropped) => {
+  disableButtons.value = true;
   if (cropped) {
     form.newAvatar = cropped;
   }
   form.post(route('pets.update', form._id), {
     onSuccess: () => {
       emit('nav', 'pets.index')
+      disableButtons.value = false;
     },
   });
 };
@@ -82,6 +85,32 @@ const saveWithCrop = (cropped) => {
 function deleteAvatar() {
   form.avatar = null;
 }
+
+const deleteForm = useForm({
+  _id: props.pet._id,
+});
+
+const confirmingPetDeletion = ref(false);
+const disableButtons = ref(false);
+
+const confirmPetDeletion = () => {
+  confirmingPetDeletion.value = true;
+  disableButtons.value = true;
+};
+
+function deletePet() {
+  closeModal();
+  deleteForm.delete(route('pets.destroy', props.pet._id), {
+    onSuccess: () => {
+      emit('nav', 'pets.index')
+    },
+  });
+}
+
+const closeModal = () => {
+  confirmingPetDeletion.value = false;
+  disableButtons.value = false;
+};
 </script>
 
 <template>
@@ -90,7 +119,7 @@ function deleteAvatar() {
   >
     <form @submit.prevent="submit" class="border px-4 py-2 rounded-lg">
 
-      <InputAvatar v-show="form.species" :pet="form"
+      <InputAvatar v-show="form.species || newAvatar" :pet="form"
                    @cropped="(cropped) => saveWithCrop(cropped)"
                    @dirty="newAvatar = true"
                    @delete="deleteAvatar()"
@@ -159,7 +188,7 @@ function deleteAvatar() {
         </div>
       </div>
 
-      <div v-if="form.species && form.sex && form.birth_date" class="">
+      <div v-if="form.weight || (form.species && form.sex && form.birth_date)" class="">
 
         <InputLabel class="w-full" for="weight" value="Weight"/>
 
@@ -195,17 +224,24 @@ function deleteAvatar() {
       <div class="flex items-center justify-center mt-8 gap-4">
         <SecondaryButton @click.prevent="emit('nav', 'pets.index')"
                          :class="{ 'opacity-25': form.processing }"
-                         :disabled="form.processing"
+                         :disabled="disableButtons"
         >
           Cancel
         </SecondaryButton>
+        <SecondaryButton class="m-2" @click="confirmPetDeletion" :class="{ 'opacity-25': disableButtons }"
+                         :disabled="disableButtons">Delete
+        </SecondaryButton>
         <PrimaryButton v-if="(form.isDirty || newAvatar) && form.name && form.species && form.sex && form.birth_date"
-                       :class="{ 'opacity-25': form.processing }"
-                       :disabled="form.processing"
+                       :class="{ 'opacity-25': disableButtons }"
+                       :disabled="disableButtons"
         >
-          Save Changes
+          Save
         </PrimaryButton>
       </div>
     </form>
   </div>
+
+  <ModalConfirm :show="confirmingPetDeletion" @confirm="deletePet()" @closeModal="closeModal">Are you sure you
+    want to delete this pet? All pet data will be lost permanently.
+  </ModalConfirm>
 </template>

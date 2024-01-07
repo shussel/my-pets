@@ -24,8 +24,8 @@ const verificationLinkSent = computed(() => props.status === 'verification-link-
         <Head title="Email Verification" />
 
         <div class="mb-4 text-sm text-gray-600">
-            Thanks for signing up! Before getting started, could you verify your email address by clicking on the link
-            we just emailed to you? If you didn't receive the email, we will gladly send you another.
+          Thanks for signing up! Before getting started, please check your email and click on the verification button we
+          just sent. If you didn't receive the email, you can resend it below.
         </div>
 
         <div class="mb-4 font-medium text-sm text-green-600" v-if="verificationLinkSent">

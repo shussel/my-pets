@@ -9,10 +9,11 @@ import Layout from '@/Layouts/GuestLayout.vue';
 defineOptions({layout: Layout})
 
 const form = useForm({
-    name: '',
-    email: '',
-    password: '',
-    password_confirmation: '',
+  name: '',
+  email: '',
+  zip_code: '',
+  password: '',
+  password_confirmation: '',
 });
 
 const submit = () => {
@@ -55,18 +56,32 @@ const submit = () => {
                 autocomplete="username"
             />
 
-            <InputError class="mt-2" :message="form.errors.email" />
+          <InputError class="mt-2" :message="form.errors.email"/>
         </div>
 
-        <div class="mt-4">
-            <InputLabel for="password" value="Password" />
+      <div class="mt-4">
+        <InputLabel for="zip_code" value="Zip Code"/>
 
-            <TextInput
-                id="password"
-                type="password"
-                class="mt-1 block w-full"
-                v-model="form.password"
-                required
+        <TextInput
+            id="zip_code"
+            type="text"
+            class="mt-1 block w-full"
+            v-model="form.zip_code"
+            autocomplete="yes"
+        />
+
+        <InputError class="mt-2" :message="form.errors.zip_code"/>
+      </div>
+
+      <div class="mt-4">
+        <InputLabel for="password" value="Password"/>
+
+        <TextInput
+            id="password"
+            type="password"
+            class="mt-1 block w-full"
+            v-model="form.password"
+            required
                 autocomplete="new-password"
             />
 

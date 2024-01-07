@@ -1,9 +1,6 @@
 <script setup>
-import {ref} from "vue";
-import {useForm} from "@inertiajs/vue3";
 import PetHeader from '@/Components/PetHeader.vue';
 import PrimaryButton from "@/Components/PrimaryButton.vue";
-import ModalConfirm from '@/Components/ModalConfirm.vue';
 
 const props = defineProps({
   pet: {
@@ -12,30 +9,8 @@ const props = defineProps({
   }
 });
 
-const deleteForm = useForm({
-    _id: '',
-});
-
 const emit = defineEmits(['nav']);
 
-const confirmPetDeletion = () => {
-  confirmingPetDeletion.value = true;
-  disableButtons.value = true;
-};
-const confirmingPetDeletion = ref(false);
-const disableButtons = ref(false);
-function deletePet(petId) {
-    closeModal();
-    deleteForm.delete(route('pets.destroy', petId), {
-        onSuccess: () => {
-            emit('nav', 'pets.index')
-        },
-    });
-}
-const closeModal = () => {
-    confirmingPetDeletion.value = false;
-    deleteForm.reset();
-};
 </script>
 
 <template>
@@ -57,13 +32,6 @@ const closeModal = () => {
         <PrimaryButton class="m-2" @click="$emit('nav', 'pets.edit', pet._id)" :class="{ 'opacity-25': disableButtons }"
                        :disabled="disableButtons">Edit Pet
         </PrimaryButton>
-        <PrimaryButton class="m-2" @click="confirmPetDeletion" :class="{ 'opacity-25': disableButtons }"
-                       :disabled="disableButtons">Delete Pet
-        </PrimaryButton>
       </div>
     </div>
-
-  <ModalConfirm :show="confirmingPetDeletion" @confirm="deletePet(pet._id)" @closeModal="closeModal">Are you sure you
-    want to delete this pet?
-  </ModalConfirm>
 </template>

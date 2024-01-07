@@ -101,14 +101,15 @@ class PetController extends Controller
         // add new avatar
         if ($request->file('newAvatar')) {
             $path = $request->file('newAvatar')->store("users/".Auth::user()->_id, 'public');
-            if ($request->avatar) {
-                // delete current avatar
-                Storage::disk('public')->delete($request->avatar);
-            }
-        } elseif (!($path = $request->avatar) && ($previous_avatar = Auth::user()->pets()->find($pet_id)->avatar)) {
-            // delete previous avatar
+        } else {
+            $path = $request->avatar;
+        }
+
+        // delete previous avatar
+        if (!$request->avatar && ($previous_avatar = Auth::user()->pets()->find($pet_id)->avatar)) {
             Storage::disk('public')->delete($previous_avatar);
         }
+
         auth()->user()->pets()->find($pet_id)->update([
             'name' => $request->name,
             'species' => $request->species,
