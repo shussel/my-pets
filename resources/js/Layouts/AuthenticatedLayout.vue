@@ -141,8 +141,9 @@ const props = defineProps({
                 </div>
             </nav>
             <!-- Page Content -->
-            <main class="mx-2 my-3 sm:my-6">
-                <slot/>
+            <main
+                class="m-3 flex flex-col justify-start items-center gap-4 sm:m-6 sm:flex-row sm:justify-center sm:items-stretch sm:flex-wrap sm:gap-6">
+              <slot/>
             </main>
         </div>
     </div>

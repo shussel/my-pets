@@ -1,5 +1,5 @@
 <script setup>
-import DangerButton from '@/Components/DangerButton.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import Modal from '@/Components/Modal.vue';
@@ -38,17 +38,18 @@ const closeModal = () => {
 </script>
 
 <template>
-  <section class="flex flex-col justify-center wrap space-y-3">
+  <section class="flex flex-col justify-end wrap space-y-3">
     <header class="w-full">
       <h2 class="text-lg font-medium text-gray-900">Delete Account</h2>
 
-      <p class="mt-1 text-sm text-gray-600">
-        Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting
-        your account, please download any data or information that you wish to retain.
-      </p>
+      <div class="flex flex-col items-center gap-4 justify-end sm:flex-row sm:justify-between">
+        <p class="mt-1 text-sm text-gray-600">
+          Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting
+          your account, please download any data or information that you wish to retain.
+        </p>
+        <SecondaryButton class="shrink-0" @click="confirmUserDeletion">Delete Account</SecondaryButton>
+      </div>
     </header>
-
-    <DangerButton class="mx-auto mt-2" @click="confirmUserDeletion">Delete Account</DangerButton>
 
     <Modal :show="confirmingUserDeletion" @close="closeModal">
             <div class="p-6">
@@ -80,14 +81,14 @@ const closeModal = () => {
                 <div class="mt-6 flex justify-end">
                     <SecondaryButton @click="closeModal"> Cancel </SecondaryButton>
 
-                    <DangerButton
-                        class="ms-3"
-                        :class="{ 'opacity-25': form.processing }"
-                        :disabled="form.processing"
-                        @click="deleteUser"
-                    >
-                        Delete Account
-                    </DangerButton>
+                  <PrimaryButton
+                      class="ms-3"
+                      :class="{ 'opacity-25': form.processing }"
+                      :disabled="form.processing"
+                      @click="deleteUser"
+                  >
+                    Delete Account
+                  </PrimaryButton>
                 </div>
             </div>
         </Modal>

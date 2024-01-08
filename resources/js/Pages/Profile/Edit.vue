@@ -23,24 +23,21 @@ function toHome() {
 
   <AuthenticatedLayout pageTitle="Profile" @nav="toHome">
 
-    <div
-        class="flex flex-col justify-start items-stretch w-full sm:max-w-md px-4 sm:px-8 overflow-hidden mx-auto gap-4"
-    >
-      <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-        <UpdateProfileInformationForm
-            :must-verify-email="mustVerifyEmail"
-            :status="status"
-            class="max-w-xl"
-        />
-      </div>
-
-      <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-        <UpdatePasswordForm class="max-w-xl"/>
-      </div>
-
-      <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-        <DeleteUserForm class="max-w-xl"/>
-      </div>
+    <div class="p-4 sm:p-8 bg-white shadow w-full max-w-md rounded-lg sm:basis-[calc(50%-.75em)]">
+      <UpdateProfileInformationForm
+          :must-verify-email="mustVerifyEmail"
+          :status="status"
+      />
     </div>
+
+    <div class="p-4 sm:p-8 bg-white shadow w-full max-w-md rounded-lg sm:basis-[calc(50%-.75em)]">
+      <UpdatePasswordForm/>
+    </div>
+
+    <div class="p-4 sm:p-8 bg-white shadow w-full max-w-md rounded-lg sm:max-w-[920px]">
+      <DeleteUserForm/>
+    </div>
+
   </AuthenticatedLayout>
+
 </template>
