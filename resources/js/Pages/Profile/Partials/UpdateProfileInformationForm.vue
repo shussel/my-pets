@@ -82,31 +82,34 @@ const form = useForm({
               </div>
             </div>
 
-        <div>
-          <InputLabel for="zip_code" value="Zip Code"/>
+        <div class="flex gap-3 items-end">
+          <div class="w-1/2">
+            <InputLabel for="zip_code" value="Zip Code"/>
 
-          <TextInput
-              id="zip_code"
-              type="text"
-              class="mt-1 block w-full"
-              v-model="form.zip_code"
-              autocomplete="yes"
-          />
+            <TextInput
+                id="zip_code"
+                type="text"
+                class="mt-1 block w-full"
+                v-model="form.zip_code"
+                autocomplete="yes"
+            />
 
-          <InputError class="mt-2" :message="form.errors.zip_code"/>
-        </div>
+            <InputError class="mt-2" :message="form.errors.zip_code"/>
+          </div>
+          <div class="w-1/2 text-right">
+            <PrimaryButton v-if="!form.recentlySuccessful" :disabled="form.processing || !form.isDirty"
+                           :class="{ 'opacity-25': (form.processing || !form.isDirty) }">Save
+            </PrimaryButton>
 
-        <div class="flex justify-center items-center gap-4 mt-4">
-          <PrimaryButton v-show="form.isDirty" :disabled="form.processing">Save</PrimaryButton>
-
-          <Transition
-              enter-active-class="transition ease-in-out"
-              enter-from-class="opacity-0"
-              leave-active-class="transition ease-in-out"
-              leave-to-class="opacity-0"
-          >
-            <p v-if="form.recentlySuccessful" class="text-sm text-gray-600">Saved.</p>
-          </Transition>
+            <Transition
+                enter-active-class="transition ease-in-out"
+                enter-from-class="opacity-0"
+                leave-active-class="transition ease-in-out"
+                leave-to-class="opacity-0"
+            >
+              <p v-if="form.recentlySuccessful" class="text-sm text-gray-600">Saved.</p>
+            </Transition>
+          </div>
         </div>
         </form>
     </section>

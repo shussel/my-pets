@@ -21,6 +21,7 @@ class ProfileUpdateRequest extends FormRequest
                 'required', 'string', 'lowercase', 'email', 'max:255',
                 Rule::unique(User::class, '_id')->ignore($this->user()->_id)
             ],
+            'zip_code' => ['nullable', 'string', 'regex:/^\d{5}(?:-\d{4})?$/'],
         ];
     }
 }

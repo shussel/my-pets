@@ -19,6 +19,7 @@ import {
   faPoop,
   faRectangleXmark,
   faTree,
+  faXmark,
 } from '@fortawesome/free-solid-svg-icons';
 
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
@@ -42,6 +43,7 @@ library.add(
     faPoop,
     faRectangleXmark,
     faTree,
+    faXmark,
 );
 
 const props = defineProps({
@@ -56,7 +58,7 @@ const namedIcons = {
   bone: 'fa-bone',
   car: 'fa-car-side',
   cat: 'fa-cat',
-  delete: 'fa-rectangle-xmark',
+  delete: 'fa-xmark',
   document: 'fa-file-lines',
   dog: 'fa-dog',
   fish: 'fa-fish-fins',

@@ -59,18 +59,21 @@ const submit = () => {
           <InputError class="mt-2" :message="form.errors.email"/>
         </div>
 
-      <div class="mt-4">
-        <InputLabel for="zip_code" value="Zip Code"/>
+      <div class="mt-4 flex gap-3 items-end">
+        <div class="w-1/2">
+          <InputLabel for="zip_code" value="Zip Code"/>
 
-        <TextInput
-            id="zip_code"
-            type="text"
-            class="mt-1 block w-full"
-            v-model="form.zip_code"
-            autocomplete="yes"
-        />
+          <TextInput
+              id="zip_code"
+              type="text"
+              class="mt-1 block w-full"
+              v-model="form.zip_code"
+              autocomplete="postal-code"
+          />
 
-        <InputError class="mt-2" :message="form.errors.zip_code"/>
+          <InputError class="mt-2" :message="form.errors.zip_code"/>
+        </div>
+        <div class="w-1/2 text-sm text-gray-500 italic">to help connect with local pet resources</div>
       </div>
 
       <div class="mt-4">

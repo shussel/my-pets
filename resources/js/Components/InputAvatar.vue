@@ -103,9 +103,10 @@ const closeModal = () => {
 </script>
 
 <template>
-  <div class="h-[220px] w-full overflow-hidden relative">
+  <div class="h-[200px] w-full overflow-hidden relative">
 
-    <Cropper v-show="cropImageUrl" class="cropper block cursor-pointer base-image-input w-full h-auto"
+    <Cropper v-show="cropImageUrl"
+             class="border-2 border-dashed border-indigo-100 cropper block cursor-pointer base-image-input w-full h-auto"
              :src="cropImageUrl" alt="Profile Image" ref="cropper"
              :stencil-component="CircleStencil"
              :stencil-props="{
@@ -130,9 +131,11 @@ const closeModal = () => {
     />
 
     <div
-        class="text-center placeholder w-[220px] h-[220px] relative flex justify-center items-center mx-auto"
+        class="text-center placeholder w-[200px] h-[200px] relative flex justify-center items-center mx-auto"
         v-show="!cropImageUrl">
-      <PetImage @click="chooseImage" :pet="pet" class="w-[200px] h-[200px] hover:bg-blue-300"/>
+      <PetImage @click="chooseImage" :pet="pet" class="w-[200px] h-[200px] hover:bg-blue-200"/>
+      <ButtonDelete v-show="pet.avatar" @click="confirmAvatarDeletion" class="absolute bottom-0 right-1 z-50"
+                    title="Delete Image"/>
     </div>
 
     <input
@@ -143,7 +146,7 @@ const closeModal = () => {
         accept="image/jpeg"
     />
 
-    <ButtonDelete v-show="showDelete" @click="confirmAvatarDeletion" class="absolute top-2 right-1 z-50"
+    <ButtonDelete v-show="cropImageUrl" @click="confirmAvatarDeletion" class="absolute bottom-2 right-2 z-50"
                   title="Delete Image"/>
 
   </div>
