@@ -1,0 +1,44 @@
+<script setup>
+import {ref} from "vue";
+import ButtonSelect from "@/Components/ButtonSelect.vue";
+import FAIcon from "@/Components/FAIcon.vue";
+
+const props = defineProps({
+    options: {
+        type: Object,
+    },
+    modelValue: {
+        type: String,
+        required: true,
+    },
+});
+
+const selected = ref(props.modelValue);
+
+const emit = defineEmits(["update:modelValue"]);
+
+function clickItem(item) {
+    if (item === selected.value) {
+        selected.value = null;
+    } else {
+        selected.value = item;
+    }
+    emit("update:modelValue", selected.value);
+}
+
+</script>
+
+<template>
+    <div
+            class="mt-1 flex flex-wrap gap-2 justify-center items-center focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+        <ButtonSelect v-for="item in options"
+                      :selected="item.value === selected"
+                      :selection="selected"
+                      class="w-auto"
+                      @click.prevent="clickItem(item.value)"
+        >
+            <FAIcon :name="item.value" class="mr-1"/>
+            {{ item.label }}
+        </ButtonSelect>
+    </div>
+</template>

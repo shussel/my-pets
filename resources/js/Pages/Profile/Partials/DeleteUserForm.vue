@@ -1,19 +1,21 @@
 <script setup>
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import Modal from '@/Components/Modal.vue';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
-import { useForm } from '@inertiajs/vue3';
-import { nextTick, ref } from 'vue';
+import {nextTick, ref} from "vue";
+import {useForm} from "@inertiajs/vue3";
+import ButtonDefault from "@/Components/ButtonDefault.vue";
+import ButtonPrimary from "@/Components/ButtonPrimary.vue";
+import InputText from "@/Components/InputText.vue";
+import InputLabel from "@/Components/InputLabel.vue";
+import InputError from "@/Components/InputError.vue";
+import Modal from "@/Components/Modal.vue";
 
 const confirmingUserDeletion = ref(false);
 const passwordInput = ref(null);
 
 const form = useForm({
-    password: '',
+    password: "",
 });
+
+const enableDelete = ref(false);
 
 const confirmUserDeletion = () => {
     confirmingUserDeletion.value = true;
@@ -22,7 +24,7 @@ const confirmUserDeletion = () => {
 };
 
 const deleteUser = () => {
-    form.delete(route('profile.destroy'), {
+    form.delete(route("profile.destroy"), {
         preserveScroll: true,
         onSuccess: () => closeModal(),
         onError: () => passwordInput.value.focus(),
@@ -32,63 +34,69 @@ const deleteUser = () => {
 
 const closeModal = () => {
     confirmingUserDeletion.value = false;
-
     form.reset();
 };
 </script>
 
 <template>
-  <section class="flex flex-col justify-end wrap space-y-3">
-    <header class="w-full">
-      <h2 class="text-lg font-medium text-gray-900">Delete Account</h2>
+    <section>
+        <h2 class="ml-2 bg-white">Delete Account</h2>
 
-      <div class="flex flex-col items-center gap-4 justify-end sm:flex-row sm:justify-between">
-        <p class="mt-1 text-sm text-gray-600">
-          Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting
-          your account, please download any data or information that you wish to retain.
-        </p>
-        <SecondaryButton class="shrink-0" @click="confirmUserDeletion">Delete Account</SecondaryButton>
-      </div>
-    </header>
+        <div
+                class="flex flex-col items-center gap-2 justify-center md:flex-row md:justify-between border p-4 pt-5 -mt-3 lg:p-6">
+            <p class="mt-1 text-sm text-gray-600 md:w-1/2 md:gap-4">
+                Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting
+                your account, please download any data or information that you wish to retain.
+            </p>
+            <div class="mt-2 flex flex-col gap-4 md:w-1/2">
+                <div class="text-center text-sm"><input v-model="enableDelete" type=checkbox> Yes, I want to delete my
+                    account.
+                </div>
+                <div class="text-center">
+                    <ButtonPrimary :class="{ 'opacity-25': !enableDelete }" :disabled="!enableDelete"
+                                   @click="confirmUserDeletion">Delete Account
+                    </ButtonPrimary>
+                </div>
+            </div>
+        </div>
 
-    <Modal :show="confirmingUserDeletion" @close="closeModal">
+        <Modal :show="confirmingUserDeletion" maxWidth="sq" @close="closeModal">
             <div class="p-6">
-                <h2 class="text-lg font-medium text-gray-900">
-                    Are you sure you want to delete your account?
+                <h2 class="text-center">
+                    Confirm Account Deletion
                 </h2>
 
                 <p class="mt-1 text-sm text-gray-600">
-                    Once your account is deleted, all of its resources and data will be permanently deleted. Please
-                    enter your password to confirm you would like to permanently delete your account.
+                    Please enter your password to confirm you would like to permanently delete your account.
                 </p>
 
-                <div class="mt-6">
-                    <InputLabel for="password" value="Password" class="sr-only" />
+                <div class="mt-8">
+                    <InputLabel class="sr-only" for="password" value="Password"/>
 
-                    <TextInput
-                        id="password"
-                        ref="passwordInput"
-                        v-model="form.password"
-                        type="password"
-                        class="mt-1 block w-3/4"
-                        placeholder="Password"
-                        @keyup.enter="deleteUser"
+                    <InputText
+                            id="password"
+                            ref="passwordInput"
+                            v-model="form.password"
+                            autocomplete="no"
+                            class="mt-1 block w-3/4 mx-auto"
+                            placeholder="Password"
+                            type="password"
+                            @keyup.enter="deleteUser"
                     />
 
-                    <InputError :message="form.errors.password" class="mt-2" />
+                    <InputError :message="form.errors.password" class="mt-2"/>
                 </div>
 
-                <div class="mt-6 flex justify-end">
-                    <SecondaryButton @click="closeModal"> Cancel </SecondaryButton>
+                <div class="mt-6 flex justify-center gap-4">
+                    <ButtonDefault @click="closeModal">Cancel</ButtonDefault>
 
-                  <PrimaryButton
-                      class="ms-3"
-                      :class="{ 'opacity-25': form.processing }"
-                      :disabled="form.processing"
-                      @click="deleteUser"
-                  >
-                    Delete Account
-                  </PrimaryButton>
+                    <ButtonPrimary
+                            :class="{ 'opacity-25': form.processing }"
+                            :disabled="form.processing"
+                            class=""
+                            @click="deleteUser"
+                    >Delete
+                    </ButtonPrimary>
                 </div>
             </div>
         </Modal>

@@ -1,12 +1,12 @@
 <script setup>
-import { ref } from 'vue';
-import Home from './Auth/Home.vue';
-import Login from './Auth/Login.vue';
-import Register from './Auth/Register.vue';
-import ForgotPassword from './Auth/ForgotPassword.vue';
-import Layout from '@/Layouts/GuestLayout.vue';
+import {ref} from "vue";
+import Home from "./Auth/Home.vue";
+import Login from "./Auth/Login.vue";
+import Register from "./Auth/Register.vue";
+import ForgotPassword from "./Auth/ForgotPassword.vue";
+import Layout from "@/Layouts/GuestLayout.vue";
 
-defineOptions({ layout: Layout })
+defineOptions({layout: Layout});
 
 const props = defineProps({
     canLogin: {
@@ -23,25 +23,26 @@ const props = defineProps({
     }
 });
 
-const currentRoute = ref(route().current() || 'home')
+const currentRoute = ref(route().current() || "home");
 
 const views = {
-    'home': Home,
-    'login': Login,
-    'register': Register,
-    'password.request': ForgotPassword,
-}
+    "home": Home,
+    "login": Login,
+    "register": Register,
+    "password.request": ForgotPassword,
+};
 
-const currentView = ref(views[currentRoute.value])
+const currentView = ref(views[currentRoute.value]);
 
-function page(route) {
-    currentView.value = views[route]
+function toPage(route_name) {
+    currentView.value = views[route_name];
+    history.pushState(null, null, route(route_name));
 }
 
 </script>
 
 <template>
-    <component :is="currentView" @nav="(i) => page(i)" :canLogin="canLogin" :canRegister="canRegister"
-               :canResetPassword="canResetPassword" :status="status"/>
+    <component :is="currentView" :canLogin="canLogin" :canRegister="canRegister" :canResetPassword="canResetPassword"
+               :status="status" @nav="(i) => toPage(i)"/>
 </template>
 

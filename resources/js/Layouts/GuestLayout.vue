@@ -1,12 +1,12 @@
 <script setup xmlns="http://www.w3.org/1999/html">
-import ApplicationLogo from '@/Components/ApplicationLogo.vue';
-import {Link} from '@inertiajs/vue3';
+import {Link} from "@inertiajs/vue3";
+import ApplicationLogo from "@/Components/ApplicationLogo.vue";
 </script>
 
 <template>
     <div class="min-h-screen flex flex-col justify-start items-center bg-white sm:bg-gray-100">
         <div
-            class="sm:mt-8 flex flex-col justify-start items-stretch w-full sm:max-w-md px-8 py-8 bg-white sm:shadow-md overflow-hidden sm:rounded-lg"
+                class="sm:mt-8 flex flex-col justify-start items-stretch w-full sm:max-w-md px-8 py-8 bg-white sm:shadow-md overflow-hidden sm:rounded-lg"
         >
             <div class="mt-3 self-center">
                 <Link href="/">
@@ -18,7 +18,7 @@ import {Link} from '@inertiajs/vue3';
             <div class="self-center sm:text-lg mx-auto p-2">
                 The app to help take care of your pets
             </div>
-            <slot />
+            <slot/>
         </div>
     </div>
 </template>

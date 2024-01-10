@@ -1,124 +1,123 @@
 <script setup>
-import {toRaw, computed, ref} from 'vue';
-import {useForm} from '@inertiajs/vue3';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
-import SelectButtons from "@/Components/SelectButtons.vue";
-import BirthdayCalc from "@/Components/BirthdayCalc.vue";
+import {toRaw, computed, ref} from "vue";
+import {useForm} from "@inertiajs/vue3";
+import InputText from "@/Components/InputText.vue";
+import InputError from "@/Components/InputError.vue";
+import InputLabel from "@/Components/InputLabel.vue";
+import InputButtons from "@/Components/InputButtons.vue";
 import InputAvatar from "@/Components/InputAvatar.vue";
+import BirthdayCalc from "@/Components/BirthdayCalc.vue";
+import ButtonDefault from "@/Components/ButtonDefault.vue";
+import ButtonPrimary from "@/Components/ButtonPrimary.vue";
+import Card from "@/Components/Card.vue";
 
 const props = defineProps({
-  meta: {
-    type: Object,
-  },
-  message: {
-    type: String,
-  },
+    meta: {
+        type: Object,
+    },
+    message: {
+        type: String,
+    },
 });
 
-const emit = defineEmits(['nav']);
+const emit = defineEmits(["nav"]);
 
 const form = useForm({
-  name: '',
-  species: '',
-  sex: '',
-  weight: null,
-  birth_date: '',
-  avatar: null,
+    name: "",
+    species: "",
+    sex: "",
+    weight: null,
+    birth_date: "",
+    avatar: null,
 });
 
 const maxAge = computed(() => {
-  if (!form.species) {
-    return 20;
-  }
-  return toRaw(props.meta.species).filter(function (specie) {
-    return specie.value === form.species;
-  })[0]['maxAge'];
-})
+    if (!form.species) {
+        return 20;
+    }
+    return toRaw(props.meta.species).filter(function(specie) {
+        return specie.value === form.species;
+    })[0]["maxAge"];
+});
 
 const maxBirthday = computed(() => {
-  return new Date().toISOString().substr(0, 10);
-})
+    return new Date().toISOString().substr(0, 10);
+});
 
 const minBirthday = computed(() => {
-  return new Date(new Date().setFullYear(new Date().getFullYear() - maxAge.value)).toISOString().substr(0, 10)
-})
+    return new Date(new Date().setFullYear(new Date().getFullYear() - maxAge.value)).toISOString().substr(0, 10);
+});
 
 const maxWeight = computed(() => {
-  if (!form.species) {
-    return 100;
-  }
-  return toRaw(props.meta.species).filter(function (specie) {
-    return specie.value === form.species;
-  })[0]['maxWeight'];
-})
+    if (!form.species) {
+        return 100;
+    }
+    return toRaw(props.meta.species).filter(function(specie) {
+        return specie.value === form.species;
+    })[0]["maxWeight"];
+});
 
-const inputAvatar = ref(null)
+const inputAvatar = ref(null);
 
 const submit = () => {
-  inputAvatar.value.crop()
+    inputAvatar.value.crop();
 };
 const saveWithCrop = (cropped) => {
-  if (cropped) {
-    form.avatar = cropped
-  }
-  form.post(route('pets.store'), {
-    onSuccess: () => {
-      emit('nav', 'pets.index')
-    },
-  });
+    if (cropped) {
+        form.avatar = cropped;
+    }
+    form.post(route("pets.store"), {
+        onSuccess: () => {
+            emit("nav", "pets.index");
+        },
+    });
 };
 
-const keepCropper = ref(false)
+const keepCropper = ref(false);
 
 </script>
 
 <template>
-    <div
-        class="flex flex-col justify-start items-stretch w-full sm:max-w-md p-4 sm:p-8 bg-white shadow-md overflow-hidden sm:rounded-lg mx-auto"
-    >
-      <form @submit.prevent="submit" class="border px-4 py-2 rounded-lg">
+    <Card>
+        <form class="border px-4 py-2 rounded-lg" @submit.prevent="submit">
 
-        <InputAvatar v-if="form.species || keepCropper" :pet="form"
-                     @dirty="keepCropper = true"
-                     @cropped="(cropped) => saveWithCrop(cropped)"
-                     ref="inputAvatar"
-        />
+            <InputAvatar v-if="form.species || keepCropper" ref="inputAvatar"
+                         :pet="form"
+                         @cropped="(cropped) => saveWithCrop(cropped)"
+                         @dirty="keepCropper = true"
+            />
 
-        <div v-if="form.name || form.species" class="mb-3">
-          <InputLabel for="name" value="Pet Name"/>
+            <div v-if="form.name || form.species" class="mb-3">
+                <InputLabel for="name" value="Pet Name"/>
 
-          <TextInput
-              id="name"
-              type="text"
-              class="mt-1 block w-full"
-              v-model="form.name"
-              required
-                    autofocus
-                    autocomplete="off"
+                <InputText
+                        id="name"
+                        v-model="form.name"
+                        autocomplete="off"
+                        autofocus
+                        class="mt-1 block w-full"
+                        required
+                        type="text"
                 />
 
-                <InputError class="mt-2" :message="form.errors.name"/>
+                <InputError :message="form.errors.name" class="mt-2"/>
             </div>
 
             <div class="flex flex-wrap gap-2 mb-3">
                 <div class="grow min-w-1/2">
                     <InputLabel for="species" value="Species"/>
 
-                    <SelectButtons v-model="form.species" :options="meta.species"/>
+                    <InputButtons v-model="form.species" :options="meta.species"/>
 
-                    <InputError class="mt-2" :message="form.errors.species"/>
+                    <InputError :message="form.errors.species" class="mt-2"/>
                 </div>
 
                 <div v-if="form.species || form.sex" class="w-1/2">
                     <InputLabel for="sex" value="Sex"/>
 
-                    <SelectButtons v-model="form.sex" :options="meta.sexes"/>
+                    <InputButtons v-model="form.sex" :options="meta.sexes"/>
 
-                    <InputError class="mt-2" :message="form.errors.sex"/>
+                    <InputError :message="form.errors.sex" class="mt-2"/>
                 </div>
             </div>
 
@@ -128,25 +127,25 @@ const keepCropper = ref(false)
 
                     <InputLabel for="age" value="Age"/>
 
-                  <BirthdayCalc v-model="form.birth_date" :maxAge="maxAge"/>
+                    <BirthdayCalc v-model="form.birth_date" :maxAge="maxAge"/>
 
                 </div>
 
                 <div v-if="form.birth_date" class="w-1/2">
 
                     <InputLabel for="birth_date" value="Birth Date"/>
-                  <TextInput
-                      id="birth_date"
-                      type="date"
-                      class="mt-1 block w-full"
-                      v-model="form.birth_date"
-                      :max="maxBirthday"
-                      :min="minBirthday"
-                      required
-                      autocomplete=""
-                  />
+                    <InputText
+                            id="birth_date"
+                            v-model="form.birth_date"
+                            :max="maxBirthday"
+                            :min="minBirthday"
+                            autocomplete=""
+                            class="mt-1 block w-full"
+                            required
+                            type="date"
+                    />
 
-                    <InputError class="mt-2" :message="form.errors.birth_date"/>
+                    <InputError :message="form.errors.birth_date" class="mt-2"/>
                 </div>
             </div>
 
@@ -156,48 +155,48 @@ const keepCropper = ref(false)
 
                 <div class="flex items-center gap-3 mt-1">
                     <div class="w-[70px]">
-                      <TextInput
-                          id="weight"
-                          type="number"
-                          min="1"
-                          :max="maxWeight"
-                          class="block w-full"
-                          v-model="form.weight"
-                          autocomplete=""
-                          autofocus
-                      />
+                        <InputText
+                                id="weight"
+                                v-model="form.weight"
+                                :max="maxWeight"
+                                autocomplete=""
+                                autofocus
+                                class="block w-full"
+                                min="1"
+                                type="number"
+                        />
                     </div>
                     <div class="">lbs.</div>
                     <div class="grow">
-                      <TextInput
-                          id="weight"
-                          type="range"
-                          min="1"
-                          :max="maxWeight"
-                          class="block w-full"
-                          v-model="form.weight"
-                          autocomplete=""
-                      />
+                        <InputText
+                                id="weight"
+                                v-model="form.weight"
+                                :max="maxWeight"
+                                autocomplete=""
+                                class="block w-full"
+                                min="1"
+                                type="range"
+                        />
                     </div>
                 </div>
 
-                <InputError class="w-full" :message="form.errors.weight"/>
+                <InputError :message="form.errors.weight" class="w-full"/>
             </div>
 
-          <div class="flex items-center justify-center mt-8 gap-4">
-            <SecondaryButton @click.prevent="emit('nav', 'pets.index')"
-                             :class="{ 'opacity-25': form.processing }"
-                             :disabled="form.processing"
-            >
-              Cancel
-            </SecondaryButton>
-            <PrimaryButton v-if="form.name && form.species && form.sex && form.birth_date"
-                           :class="{ 'opacity-25': form.processing }"
-                           :disabled="form.processing"
-            >
-              Add Pet
-            </PrimaryButton>
-          </div>
+            <div class="flex items-center justify-center mt-8 gap-4">
+                <ButtonDefault :class="{ 'opacity-25': form.processing }"
+                               :disabled="form.processing"
+                               @click.prevent="emit('nav', 'pets.index')"
+                >
+                    Cancel
+                </ButtonDefault>
+                <ButtonPrimary v-if="form.name && form.species && form.sex && form.birth_date"
+                               :class="{ 'opacity-25': form.processing }"
+                               :disabled="form.processing"
+                >
+                    Add Pet
+                </ButtonPrimary>
+            </div>
         </form>
-    </div>
+    </Card>
 </template>

@@ -1,7 +1,7 @@
 <script setup>
-import FAIcon from '@/Components/FAIcon.vue';
+import FAIcon from "@/Components/FAIcon.vue";
 </script>
 
 <template>
-  <FAIcon name="delete" class="text-2xl text-gray-700"/>
+    <FAIcon class="text-2xl text-gray-700" name="delete"/>
 </template>

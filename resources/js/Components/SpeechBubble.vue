@@ -1,12 +1,10 @@
+<script setup>
+
+</script>
+
 <template>
     <div class="bubble">CSS Speech Bubble</div>
 </template>
-
-<script>
-export default {
-    name: "SpeechBubble"
-}
-</script>
 
 <style scoped>
 .bubble {

@@ -1,43 +1,44 @@
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import DeleteUserForm from './Partials/DeleteUserForm.vue';
-import UpdatePasswordForm from './Partials/UpdatePasswordForm.vue';
-import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm.vue';
-import {router} from '@inertiajs/vue3';
+import {router} from "@inertiajs/vue3";
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
+import Card from "@/Components/Card.vue";
+import DeleteUserForm from "./Partials/DeleteUserForm.vue";
+import UpdatePasswordForm from "./Partials/UpdatePasswordForm.vue";
+import UpdateProfileInformationForm from "./Partials/UpdateProfileInformationForm.vue";
 
 const props = defineProps({
-  mustVerifyEmail: {
-    type: Boolean,
-  },
-  status: {
-    type: String,
-  },
+    mustVerifyEmail: {
+        type: Boolean,
+    },
+    status: {
+        type: String,
+    },
 });
 
 function toHome() {
-  router.get(route("pets.index"));
+    router.get(route("pets.index"));
 }
 </script>
 
 <template>
 
-  <AuthenticatedLayout pageTitle="Profile" @nav="toHome">
+    <AuthenticatedLayout pageTitle="Profile" @nav="toHome">
 
-    <div class="p-4 sm:p-8 bg-white shadow w-full max-w-md rounded-lg sm:basis-[calc(50%-.75em)]">
-      <UpdateProfileInformationForm
-          :must-verify-email="mustVerifyEmail"
-          :status="status"
-      />
-    </div>
+        <card class="sm:max-w-md md:basis-[calc(50%-1em)]">
+            <UpdateProfileInformationForm
+                    :must-verify-email="mustVerifyEmail"
+                    :status="status"
+            />
+        </card>
 
-    <div class="p-4 sm:p-8 bg-white shadow w-full max-w-md rounded-lg sm:basis-[calc(50%-.75em)]">
-      <UpdatePasswordForm/>
-    </div>
+        <card class="sm:max-w-md md:basis-[calc(50%-1em)]">
+            <UpdatePasswordForm/>
+        </card>
 
-    <div class="p-4 sm:p-8 bg-white shadow w-full max-w-md rounded-lg sm:max-w-[920px]">
-      <DeleteUserForm/>
-    </div>
+        <card class="sm:max-w-md md:w-full md:max-w-[920px]">
+            <DeleteUserForm/>
+        </card>
 
-  </AuthenticatedLayout>
+    </AuthenticatedLayout>
 
 </template>

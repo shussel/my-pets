@@ -1,13 +1,17 @@
 <template>
-    <button @click="$emit('click')" class="bone inline-flex text-center justify-center leading-none w-full text-xl font-bold text-white p-3 rounded-md">
-        <span><slot /></span>
+    <button class="bone inline-flex text-center justify-center leading-none w-full text-xl font-bold text-white p-3 rounded-md"
+            @click="$emit('click')">
+        <span><slot/></span>
     </button>
 
     <!-- Filter: https://css-tricks.com/gooey-effect/ -->
-    <svg style="visibility: hidden; position: absolute;" width="0" height="0" xmlns="http://www.w3.org/2000/svg" version="1.1">
+    <svg height="0" style="visibility: hidden; position: absolute;" version="1.1" width="0"
+         xmlns="http://www.w3.org/2000/svg">
         <defs>
-            <filter id="goo"><feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
-                <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" result="goo" />
+            <filter id="goo">
+                <feGaussianBlur in="SourceGraphic" result="blur" stdDeviation="10"/>
+                <feColorMatrix in="blur" mode="matrix" result="goo"
+                               values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9"/>
                 <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
             </filter>
         </defs>
@@ -16,10 +20,9 @@
 </template>
 
 <style>
-
 .bone {
     filter: url('#goo');
-    background: #888;
+    background: #999;
     position: relative;
 }
 
@@ -40,7 +43,7 @@
     height: 1.7em;
     position: absolute;
     display: inline-block;
-    background: #888;
+    background: #999;
     border-radius: 50%;
     z-index: -1;
 }

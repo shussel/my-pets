@@ -1,13 +1,11 @@
 <script setup>
-import {ref} from 'vue';
-import {Head} from '@inertiajs/vue3';
-import ApplicationLogo from '@/Components/ApplicationLogo.vue';
+import {ref} from "vue";
+import {Head, router} from "@inertiajs/vue3";
+import ApplicationLogo from "@/Components/ApplicationLogo.vue";
 import Dropdown from '@/Components/Dropdown.vue';
-import DropdownLink from '@/Components/DropdownLink.vue';
-import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
-import FAIcon from '@/Components/FAIcon.vue';
-
-const showingNavigationDropdown = ref(false);
+import DropdownLink from "@/Components/DropdownLink.vue";
+import NavLinkResponsive from "@/Components/NavLinkResponsive.vue";
+import FAIcon from "@/Components/FAIcon.vue";
 
 const props = defineProps({
     pageTitle: {
@@ -17,6 +15,19 @@ const props = defineProps({
         type: String,
     }
 });
+
+const emit = defineEmits(["nav"]);
+
+const showingNavigationDropdown = ref(false);
+
+function toDashboard() {
+    if (route().current().slice(0, 4) === "pets") {
+        emit("nav", "pets.index");
+        showingNavigationDropdown.value = false;
+    } else {
+        router.visit(route("pets.index"));
+    }
+}
 </script>
 
 <template>
@@ -33,34 +44,34 @@ const props = defineProps({
                             <div class="shrink-0 flex items-center">
                                 <a @click="$emit('nav','pets.index')">
                                     <ApplicationLogo
-                                        class="block h-[55px] w-auto fill-current"
+                                            class="block h-[55px] w-auto fill-current"
                                     />
                                 </a>
                             </div>
 
-                            <div v-if="pageTitle" class="m-2">
-                                <h2 class="font-semibold text-2xl text-gray-800 leading-tight">{{ pageTitle }}</h2>
+                            <div v-if="pageTitle" class="m-2 mr-1">
+                                <h1 class="font-semibold text-2xl text-gray-800 leading-tight">{{ pageTitle }}</h1>
                             </div>
 
                             <FAIcon v-if="icon" :name="icon"/>
-
-                            <!-- Navigation Links -->
-                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-<!--                                <NavLink :href="route('pets.index')" :active="route().current('pets.index')">-->
-<!--                                    Pets-->
-<!--                                </NavLink>-->
-                            </div>
                         </div>
 
                         <div class="hidden sm:flex sm:items-center sm:ms-6">
+                            <!-- Navigation Links -->
+                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex cursor-pointer">
+                                <a v-if="!route().current('pets.index')" :active="route().current('pets.index')"
+                                   class="font-medium text-lg" @click="toDashboard">
+                                    All Pets
+                                </a>
+                            </div>
                             <!-- Settings Dropdown -->
                             <div class="ms-3 relative">
                                 <Dropdown align="right" width="48">
                                     <template #trigger>
                                         <span class="inline-flex rounded-md">
                                             <button
-                                                type="button"
-                                                class="inline-flex items-center py-1 border border-transparent text-xs leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150"
+                                                    type="button"
+                                                    class="inline-flex items-center py-1 border border-transparent text-xs leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150"
                                             >
                                                 <FAIcon class="text-4xl" name="user"/>
                                             </button>
@@ -68,7 +79,9 @@ const props = defineProps({
                                     </template>
 
                                     <template #content>
-                                        <div class="text-center text-sm">{{ $page.props.auth.user.name }}</div>
+                                        <div class="p-2 border-b-2 font-bold text-center">{{ $page.props.auth.user.name
+                                            }}
+                                        </div>
                                         <DropdownLink :href="route('profile.edit')"> Profile </DropdownLink>
                                         <DropdownLink :href="route('logout')" method="post" as="button">
                                             Log Out
@@ -113,29 +126,31 @@ const props = defineProps({
 
                 <!-- Responsive Navigation Menu -->
                 <div
-                    :class="{ block: showingNavigationDropdown, hidden: !showingNavigationDropdown }"
-                    class="sm:hidden"
+                        :class="{ block: showingNavigationDropdown, hidden: !showingNavigationDropdown }"
+                        class="sm:hidden"
                 >
-                    <div class="pt-2 pb-3 space-y-1">
-                        <ResponsiveNavLink :href="route('pets.index')" :active="route().current('pets.index')">
-                            Pets
-                        </ResponsiveNavLink>
+                    <div class="">
+                        <a v-if="!route().current('pets.index')" :active="route().current('pets.index')"
+                           class="block w-full ps-4 pe-4 py-3 border-t-2 text-start text-xl font-bold text-gray-600 hover:text-gray-800 hover:bg-blue-100 hover:border-blue-100 focus:outline-none focus:text-gray-800 focus:bg-blue-200 focus:border-blue-200 transition duration-150 ease-in-out cursor-pointer"
+                           @click="toDashboard">
+                            All Pets
+                        </a>
                     </div>
 
                     <!-- Responsive Settings Options -->
-                    <div class="pt-4 pb-1 border-t border-gray-200">
-                        <div class="px-4">
+                    <div class="border-t border-gray-200">
+                        <div class="px-4 py-1 bg-gray-50">
                             <div class="font-medium text-base text-gray-800">
                                 {{ $page.props.auth.user.name }}
                             </div>
                             <div class="font-medium text-sm text-gray-500">{{ $page.props.auth.user.email }}</div>
                         </div>
 
-                        <div class="mt-3 space-y-1">
-                            <ResponsiveNavLink :href="route('profile.edit')"> Profile </ResponsiveNavLink>
-                            <ResponsiveNavLink :href="route('logout')" method="post" as="button">
+                        <div class="">
+                            <NavLinkResponsive :href="route('profile.edit')"> Profile</NavLinkResponsive>
+                            <NavLinkResponsive :href="route('logout')" as="button" method="post">
                                 Log Out
-                            </ResponsiveNavLink>
+                            </NavLinkResponsive>
                         </div>
                     </div>
                 </div>

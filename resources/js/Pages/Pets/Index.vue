@@ -1,8 +1,8 @@
 <script setup>
-import PetHeader from '@/Components/PetHeader.vue';
-import PrimaryButton from "@/Components/PrimaryButton.vue";
+import PetHeader from "@/Components/PetHeader.vue";
+import ButtonPrimary from "@/Components/ButtonPrimary.vue";
 import SpeechBubble from "@/Components/SpeechBubble.vue";
-import FAIcon from '@/Components/FAIcon.vue';
+import FAIcon from "@/Components/FAIcon.vue";
 
 const props = defineProps({
     pets: {
@@ -12,16 +12,16 @@ const props = defineProps({
 </script>
 
 <template>
-    <div class="flex flex-col justify-center items-center sm:flex-row sm:flex-wrap gap-6">
-        <PetHeader v-for="pet in pets" :key="pet._id" :pet="pet" @click="$emit('nav', 'pets.show', pet._id);">
-            <div>
+    <PetHeader v-for="pet in pets" :key="pet._id" :pet="pet" @click="$emit('nav', 'pets.show', pet._id);">
+        <div>
+            <h2>
                 <FAIcon :name="pet.species"/>
                 {{ pet.name }}
-                <SpeechBubble/>
-            </div>
-        </PetHeader>
-        <div class="sm:self-stretch sm:w-full text-center">
-            <PrimaryButton class="mb-4" @click="$emit('nav', 'pets.create')">Add a Pet</PrimaryButton>
+            </h2>
+            <SpeechBubble/>
         </div>
+    </PetHeader>
+    <div class="sm:self-stretch sm:w-full text-center">
+        <ButtonPrimary class="mb-4" @click="$emit('nav', 'pets.create')">Add a Pet</ButtonPrimary>
     </div>
 </template>

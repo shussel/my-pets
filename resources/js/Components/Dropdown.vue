@@ -62,11 +62,11 @@ const open = ref(false);
             leave-to-class="opacity-0 scale-95"
         >
             <div
-                v-show="open"
-                class="absolute z-50 mt-2 rounded-md shadow-lg"
-                :class="[widthClass, alignmentClasses]"
-                style="display: none"
-                @click="open = false"
+                    v-show="open"
+                    class="absolute z-50 rounded-md shadow-lg"
+                    :class="[widthClass, alignmentClasses]"
+                    style="display: none"
+                    @click="open = false"
             >
                 <div class="rounded-md ring-1 ring-black ring-opacity-5" :class="contentClasses">
                     <slot name="content" />

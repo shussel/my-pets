@@ -1,6 +1,7 @@
 <script setup>
-import PetButtons from '@/Components/PetButtons.vue';
-import PetImage from '@/Components/PetImage.vue';
+import PetButtons from "@/Components/PetButtons.vue";
+import PetImage from "@/Components/PetImage.vue";
+import Card from "@/Components/Card.vue";
 
 const props = defineProps({
     pet: {
@@ -10,7 +11,7 @@ const props = defineProps({
 </script>
 
 <template>
-    <div class="w-[325px] p-2 bg-white shadow-md overflow-hidden sm:rounded-lg">
+    <Card>
         <div class="flex justify-start gap-2">
             <PetImage :pet="pet"/>
             <div>
@@ -18,5 +19,5 @@ const props = defineProps({
             </div>
         </div>
         <PetButtons :pet="pet"/>
-    </div>
+    </Card>
 </template>
