@@ -65,6 +65,7 @@ class PetController extends Controller
             'sex' => 'required|string',
             'weight' => 'integer|nullable',
             'birth_date' => 'required|date',
+            'message' => 'nullable|string',
         ]);
 
         if ($request->file('avatar')) {
@@ -80,6 +81,7 @@ class PetController extends Controller
             'weight' => $request->weight,
             'birth_date' => $request->birth_date,
             'avatar' => $path,
+            'message' => $request->message,
         ]);
 
         return redirect()->route('pets.index')->with('message', "$request->name added");
@@ -96,6 +98,7 @@ class PetController extends Controller
             'sex' => 'required|string',
             'weight' => 'integer|nullable',
             'birth_date' => 'required|date',
+            'message' => 'nullable|string',
         ]);
 
         // add new avatar
@@ -107,6 +110,9 @@ class PetController extends Controller
 
         // delete previous avatar
         if (!$request->avatar && ($previous_avatar = Auth::user()->pets()->find($pet_id)->avatar)) {
+            Storage::disk('local')->put(
+                'deleted/'.$previous_avatar,
+                Storage::disk('public')->get($previous_avatar));
             Storage::disk('public')->delete($previous_avatar);
         }
 
@@ -117,6 +123,7 @@ class PetController extends Controller
             'weight' => $request->weight,
             'birth_date' => $request->birth_date,
             'avatar' => $path,
+            'message' => $request->message,
         ]);
 
         return redirect()->route('pets.index')->with('message', "$request->name updated");
@@ -128,7 +135,11 @@ class PetController extends Controller
     public function destroy($pet_id): \Illuminate\Http\RedirectResponse
     {
         if ($pet = auth()->user()->pets()->find($pet_id)) {
+            // move avatar to deleted folder
             if ($pet->avatar) {
+                Storage::disk('local')->put(
+                    'deleted/'.$pet->avatar,
+                    Storage::disk('public')->get($pet->avatar));
                 Storage::disk('public')->delete($pet->avatar);
             }
             $pet->delete();

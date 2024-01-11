@@ -29,6 +29,7 @@ const form = useForm({
     weight: null,
     birth_date: "",
     avatar: null,
+    message: "hello",
 });
 
 const maxAge = computed(() => {

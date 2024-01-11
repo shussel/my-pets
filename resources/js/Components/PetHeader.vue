@@ -14,7 +14,7 @@ const props = defineProps({
     <Card>
         <div class="flex justify-start gap-2">
             <PetImage :pet="pet"/>
-            <div>
+            <div class="grow">
                 <slot/>
             </div>
         </div>

@@ -26,7 +26,7 @@ const verificationLinkSent = computed(() => props.status === "verification-link-
         <div class="p-2 w-full max-w-sm mx-auto">
 
             <div class="mb-4 text-sm text-gray-600">
-                Thanks for signing up! Before getting started, please check your email and click on the verification
+                Thanks for signing up! Before getting started, please check your email and click the verification
                 button
                 we
                 just sent. If you didn't receive the email, you can resend it below.

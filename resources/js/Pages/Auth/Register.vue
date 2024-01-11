@@ -1,4 +1,5 @@
 <script setup>
+import {computed} from "vue";
 import {Head, useForm} from "@inertiajs/vue3";
 import Layout from "@/Layouts/GuestLayout.vue";
 import InputText from "@/Components/InputText.vue";
@@ -14,6 +15,10 @@ const form = useForm({
     zip_code: "",
     password: "",
     password_confirmation: "",
+});
+
+const disableButton = computed(() => {
+    return form.processing || !form.name || !form.email || !form.password || !form.password_confirmation;
 });
 
 const submit = () => {
@@ -113,6 +118,7 @@ const submit = () => {
         </div>
 
         <div class="flex items-center justify-end mt-4">
+            {{ disableButton }}
             <a
                     class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 cursor-pointer"
                     @click="$emit('nav','login')"
@@ -120,7 +126,7 @@ const submit = () => {
                 Already registered?
             </a>
 
-            <ButtonPrimary :class="{ 'opacity-25': form.processing }" :disabled="form.processing" class="ms-4">
+            <ButtonPrimary :class="{ 'opacity-25': disableButton }" :disabled="disableButton" class="ms-4">
                 Register
             </ButtonPrimary>
         </div>

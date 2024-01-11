@@ -18,7 +18,7 @@ const props = defineProps({
                 <FAIcon :name="pet.species"/>
                 {{ pet.name }}
             </h2>
-            <SpeechBubble/>
+            <SpeechBubble :message="pet.message"/>
         </div>
     </PetHeader>
     <div class="sm:self-stretch sm:w-full text-center">

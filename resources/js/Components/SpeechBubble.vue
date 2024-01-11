@@ -1,26 +1,20 @@
 <script setup>
+const props = defineProps({
+    message: {
+        type: Object,
+        required: true,
+    }
+});
 
 </script>
 
 <template>
-    <div class="bubble">CSS Speech Bubble</div>
+    <div v-if="message" class="bubble p-3 ml-5 mt-2 text-gray-800 bg-blue-100 relative text-lg text-center rounded-lg">
+        {{ message }}
+    </div>
 </template>
 
 <style scoped>
-.bubble {
-    position: relative;
-    background: #dbe9fe;
-    color: #111111;
-    font-family: Arial, sans-serif;
-    font-size: 13px;
-    line-height: 20px;
-    text-align: center;
-    width: 180px;
-    padding: 10px;
-    /*height: 75px;*/
-    border-radius: 10px;
-    margin: 4px 0 0 15px;
-}
 
 .bubble:after {
     content: '';

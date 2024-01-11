@@ -36,6 +36,7 @@ const form = useForm({
     birth_date: props.pet.birth_date,
     avatar: props.pet.avatar,
     newAvatar: null,
+    message: "edited",
     _method: "put"
 });
 

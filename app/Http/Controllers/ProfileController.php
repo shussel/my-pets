@@ -54,6 +54,15 @@ class ProfileController extends Controller
 
         Auth::logout();
 
+        // move files to deleted
+        if ($files = Storage::disk('public')->files('users/'.$user->_id)) {
+            foreach ($files as $file) {
+                Storage::disk('local')->put(
+                    'deleted/'.$file,
+                    Storage::disk('public')->get($file));
+                Storage::disk('public')->delete($file);
+            }
+        }
         Storage::disk('public')->deleteDirectory('users/'.$user->_id);
 
         $user->delete();
