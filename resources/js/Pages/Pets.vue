@@ -1,55 +1,48 @@
 <script setup>
-import {ref, toRaw, toRef} from "vue";
+import {ref, toRaw, computed} from "vue";
 import {router} from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import PetsIndex from "@/Pages/Pets/Index.vue";
-import PetsCreate from "@/Pages/Pets/Create.vue";
-import PetsShow from "@/Pages/Pets/Show.vue";
-import PetsEdit from "@/Pages/Pets/Edit.vue";
+import Index from "@/Pages/Pets/Index.vue";
+import Create from "@/Pages/Pets/Create.vue";
+import Show from "@/Pages/Pets/Show.vue";
+import Edit from "@/Pages/Pets/Edit.vue";
 
 const props = defineProps({
-    pets: {
+    data: {
         type: Object,
     },
     meta: {
         type: Object,
-    },
-    message: {
-        type: String,
     },
 });
 
 const currentRoute = ref(route().current() || "pets.index");
 
 const views = {
-    "pets.index": PetsIndex,
-    "pets.create": PetsCreate,
-    "pets.show": PetsShow,
-    "pets.edit": PetsEdit,
+    "pets.index": Index,
+    "pets.create": Create,
+    "pets.show": Show,
+    "pets.edit": Edit,
 };
-const currentView = ref(views[currentRoute.value] || PetsIndex);
+const currentView = computed(() => {
+    return views[currentRoute.value] || Index;
+});
 
-function findPet(petId) {
-    return toRaw(props.pets).filter(function(pet) {
-        return pet._id === petId;
+const currentId = ref(route().params.pet);
+const currentData = computed(() => {
+    return toRaw(props.data).filter(function(item) {
+        return item._id === currentId.value;
     })[0];
-}
+});
 
-const pet = toRef(findPet(route().params.pet));
-const species = toRef(toRaw(pet.value) ? toRaw(pet.value).species : "");
+const pageTitle = computed(() => {
+    return currentData.value ? currentData.value.name : (currentRoute.value === "pets.create" ? "Add a Pet" : "Pets");
+});
 
-function getTitle(route, pet) {
-    return pet ? pet.name : (route === "pets.create" ? "Add a Pet" : "Pets");
-}
-
-const pageTitle = ref(getTitle(currentRoute.value, toRaw(pet.value)));
-
-function toPage(route_name, petId) {
-    currentView.value = views[route_name];
-    history.pushState(null, null, route(route_name, petId));
-    pet.value = findPet(petId);
-    pageTitle.value = getTitle(route_name, pet.value);
-    species.value = pet.value ? pet.value.species : "";
+function toPage(route_name, id) {
+    currentRoute.value = route_name;
+    currentId.value = id;
+    history.pushState(null, null, route(route_name, id));
     setTimeout(() => {
         showMessage.value = false;
     }, 5000);
@@ -65,13 +58,13 @@ router.on("finish", (event) => {
 
 <template>
 
-    <AuthenticatedLayout :icon="species" :pageTitle="pageTitle" @nav="toPage">
+    <AuthenticatedLayout :icon="currentData ? currentData.species : null" :pageTitle="pageTitle" @nav="toPage">
 
         <div v-if="showMessage && $page.props.flash.message" class="text-center font-bold w-full">
             {{ $page.props.flash.message }}
         </div>
 
-        <component :is="currentView" :message="message" :meta="meta" :pet="pet" :pets="pets" @nav="toPage"/>
+        <component :is="currentView" :meta="meta" :pet="currentData" :pets="data" @nav="toPage"/>
 
     </AuthenticatedLayout>
 
