@@ -72,14 +72,15 @@ const submit = () => {
     inputAvatar.value.crop();
 };
 const saveWithCrop = (cropped) => {
-    disableButtons.value = true;
     if (cropped) {
         form.newAvatar = cropped;
     }
     form.post(route("pets.update", form._id), {
         onSuccess: () => {
             emit("nav", "pets.index");
-            disableButtons.value = false;
+        },
+        onError: () => {
+            emit("nav", "pets.edit", form._id);
         },
     });
 };
@@ -93,11 +94,9 @@ const deleteForm = useForm({
 });
 
 const confirmingPetDeletion = ref(false);
-const disableButtons = ref(false);
 
 const confirmPetDeletion = () => {
     confirmingPetDeletion.value = true;
-    disableButtons.value = true;
 };
 
 function deletePet() {
@@ -111,7 +110,6 @@ function deletePet() {
 
 const closeModal = () => {
     confirmingPetDeletion.value = false;
-    disableButtons.value = false;
 };
 </script>
 
@@ -125,6 +123,7 @@ const closeModal = () => {
                          @delete="deleteAvatar()"
                          @dirty="newAvatar = true"
             />
+            <InputError :message="form.errors.newAvatar" class="mb-2 text-center"/>
 
             <div v-if="form.name || form.species" class="mb-3">
                 <InputLabel for="name" value="Pet Name"/>
@@ -165,7 +164,7 @@ const closeModal = () => {
 
                     <InputLabel for="age" value="Age"/>
 
-                    <BirthdayCalc v-model="form.birth_date" :maxAge="maxAge"/>
+                    <BirthdayCalc v-model="form.birth_date" :autofocus="false" :maxAge="maxAge"/>
 
                 </div>
 
@@ -223,18 +222,18 @@ const closeModal = () => {
 
             <div class="flex items-center justify-center mt-8 gap-4">
                 <ButtonDefault :class="{ 'opacity-25': form.processing }"
-                               :disabled="disableButtons"
+                               :disabled="form.processing"
                                @click.prevent="emit('nav', 'pets.index')"
                 >
                     Cancel
                 </ButtonDefault>
-                <ButtonDefault :class="{ 'opacity-25': disableButtons }" :disabled="disableButtons" class="m-2"
-                               @click="confirmPetDeletion">Delete
+                <ButtonDefault :class="{ 'opacity-25': form.processing }" :disabled="form.processing" class="m-2"
+                               @click.prevent="confirmPetDeletion">Delete
                 </ButtonDefault>
                 <ButtonPrimary
                         v-if="(form.isDirty || newAvatar) && form.name && form.species && form.sex && form.birth_date"
-                        :class="{ 'opacity-25': disableButtons }"
-                        :disabled="disableButtons"
+                        :class="{ 'opacity-25': form.processing }"
+                        :disabled="form.processing"
                 >
                     Save
                 </ButtonPrimary>

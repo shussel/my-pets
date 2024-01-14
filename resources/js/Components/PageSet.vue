@@ -61,9 +61,9 @@ const pageTitle = computed(() => {
         case "create":
             return "Add";
         case "show":
-            return (currentId.value ? " " + currentData.value.name : "");
+            return (currentId.value && currentData.value ? " " + currentData.value.name : "");
         case "edit":
-            return "Edit" + (currentId.value ? " " + currentData.value.name : "");
+            return "Edit" + (currentId.value && currentData.value ? " " + currentData.value.name : "");
         case "index":
         default:
             return "Dashboard";

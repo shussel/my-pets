@@ -29,6 +29,7 @@ const form = useForm({
     weight: null,
     birth_date: "",
     avatar: null,
+    newAvatar: null,
     message: "hello",
 });
 
@@ -65,11 +66,14 @@ const submit = () => {
 };
 const saveWithCrop = (cropped) => {
     if (cropped) {
-        form.avatar = cropped;
+        form.newAvatar = cropped;
     }
     form.post(route("pets.store"), {
         onSuccess: () => {
             emit("nav", "pets.index");
+        },
+        onError: () => {
+            emit("nav", "pets.create");
         },
     });
 };
@@ -87,6 +91,7 @@ const keepCropper = ref(false);
                          @cropped="(cropped) => saveWithCrop(cropped)"
                          @dirty="keepCropper = true"
             />
+            <InputError :message="form.errors.newAvatar" class="mb-2 text-center"/>
 
             <div v-if="form.name || form.species" class="mb-3">
                 <InputLabel for="name" value="Pet Name"/>

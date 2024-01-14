@@ -13,6 +13,10 @@ const props = defineProps({
         type: Number,
         default: 100,
     },
+    autofocus: {
+        type: Boolean,
+        default: true
+    },
 });
 const emit = defineEmits(["update:modelValue"]);
 
@@ -96,6 +100,7 @@ watch(() => props.modelValue, (newBirthday) => {
                 class="mt-1 w-[53px] px-2"
                 min="0"
                 type="number"
+                :autofocus="autofocus"
         />
         <InputButtons :key="age.units" v-model="age.units" :options="age.count > 1 ? ageOptions[1] : ageOptions[0]"
                       class="grow gap-1"/>

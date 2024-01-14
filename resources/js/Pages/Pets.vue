@@ -19,11 +19,6 @@ const props = defineProps({
     },
 });
 
-const pageSet = ref(null);
-watchEffect(() => {
-    updateTitle();
-});
-
 const pageTitle = ref("Pets");
 const updateTitle = () => {
     if (pageSet.value) {
@@ -39,6 +34,11 @@ const updateTitle = () => {
         }
     }
 };
+
+const pageSet = ref(null);
+watchEffect(() => {
+    updateTitle();
+});
 </script>
 
 <template>

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\PetRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Enums\SpeciesEnum;
@@ -15,7 +15,7 @@ class PetController extends Controller
     {
         return Inertia::render('Pets', [
             'data' => auth()->user()->pets,
-            'meta' => [
+            'meta' => fn() => [
                 'species' => SpeciesEnum::options(),
                 'sexes' => SexEnum::options(),
             ]
@@ -57,32 +57,15 @@ class PetController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): \Illuminate\Http\RedirectResponse
+    public function store(PetRequest $request): \Illuminate\Http\RedirectResponse
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'species' => 'required|string',
-            'sex' => 'required|string',
-            'weight' => 'integer|nullable',
-            'birth_date' => 'required|date',
-            'message' => 'nullable|string',
-        ]);
+        $validated = $request->validated();
 
-        if ($request->file('avatar')) {
-            $path = $request->file('avatar')->store("users/".Auth::user()->_id, 'public');
-        } else {
-            $path = $request->avatar;
+        if ($request->file('newAvatar')) {
+            $validated['avatar'] = $request->file('newAvatar')->store("users/".Auth::user()->_id, 'public');
         }
 
-        Auth::user()->pets()->create([
-            'name' => $request->name,
-            'species' => $request->species,
-            'sex' => $request->sex,
-            'weight' => $request->weight,
-            'birth_date' => $request->birth_date,
-            'avatar' => $path,
-            'message' => $request->message,
-        ]);
+        Auth::user()->pets()->create($validated);
 
         return redirect()->route('pets.index')->with('message', "$request->name added");
     }
@@ -90,41 +73,24 @@ class PetController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $pet_id): \Illuminate\Http\RedirectResponse
+    public function update(PetRequest $request, $pet_id): \Illuminate\Http\RedirectResponse
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'species' => 'required|string',
-            'sex' => 'required|string',
-            'weight' => 'integer|nullable',
-            'birth_date' => 'required|date',
-            'message' => 'nullable|string',
-        ]);
+        $validated = $request->validated();
 
         // add new avatar
         if ($request->file('newAvatar')) {
-            $path = $request->file('newAvatar')->store("users/".Auth::user()->_id, 'public');
-        } else {
-            $path = $request->avatar;
+            $validated['avatar'] = $request->file('newAvatar')->store("users/".Auth::user()->_id, 'public');
         }
 
         // delete previous avatar
-        if (!$request->avatar && ($previous_avatar = Auth::user()->pets()->find($pet_id)->avatar)) {
+        if (!$validated['avatar'] && ($previous_avatar = Auth::user()->pets()->find($pet_id)->avatar)) {
             Storage::disk('local')->put(
                 'deleted/'.$previous_avatar,
                 Storage::disk('public')->get($previous_avatar));
             Storage::disk('public')->delete($previous_avatar);
         }
 
-        auth()->user()->pets()->find($pet_id)->update([
-            'name' => $request->name,
-            'species' => $request->species,
-            'sex' => $request->sex,
-            'weight' => $request->weight,
-            'birth_date' => $request->birth_date,
-            'avatar' => $path,
-            'message' => $request->message,
-        ]);
+        auth()->user()->pets()->find($pet_id)->update($validated);
 
         return redirect()->route('pets.index')->with('message', "$request->name updated");
     }

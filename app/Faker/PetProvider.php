@@ -257,7 +257,7 @@ class PetProvider extends Base
             'sex' => static::petSex(),
             'weight' => static::petWeight($species),
             'birth_date' => static::petBirthdate($species),
-            'image' => static::petImage($species),
+            'avatar' => null,
         ];
     }
 
