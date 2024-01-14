@@ -9,10 +9,11 @@ use MongoDB\Laravel\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use MongoDB\Laravel\Eloquent\SoftDeletes;
+use App\Traits\AvoidDuplicateConstraintSoftDelete;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes, AvoidDuplicateConstraintSoftDelete;
 
     /**
      * The attributes that are mass assignable.
@@ -49,5 +50,12 @@ class User extends Authenticatable implements MustVerifyEmail
     public function pets(): EmbedsMany
     {
         return $this->embedsMany(Pet::class);
+    }
+
+    public function getDuplicateAvoidColumns(): array
+    {
+        return [
+            'email'
+        ];
     }
 }

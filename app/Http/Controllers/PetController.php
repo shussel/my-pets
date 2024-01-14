@@ -84,9 +84,9 @@ class PetController extends Controller
 
         // delete previous avatar
         if (!$validated['avatar'] && ($previous_avatar = Auth::user()->pets()->find($pet_id)->avatar)) {
-            Storage::disk('local')->put(
-                'deleted/'.$previous_avatar,
-                Storage::disk('public')->get($previous_avatar));
+             Storage::disk('local')->put(
+                 'deleted/'.$previous_avatar,
+                 Storage::disk('public')->get($previous_avatar));
             Storage::disk('public')->delete($previous_avatar);
         }
 
