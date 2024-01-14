@@ -1,20 +1,11 @@
 <script setup>
 import {ref} from "vue";
-import {Head, router} from "@inertiajs/vue3";
+import {router} from "@inertiajs/vue3";
 import ApplicationLogo from "@/Components/ApplicationLogo.vue";
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from "@/Components/DropdownLink.vue";
 import NavLinkResponsive from "@/Components/NavLinkResponsive.vue";
 import FAIcon from "@/Components/FAIcon.vue";
-
-const props = defineProps({
-    pageTitle: {
-        type: String,
-    },
-    icon: {
-        type: String,
-    }
-});
 
 const emit = defineEmits(["nav"]);
 
@@ -31,7 +22,6 @@ function toDashboard() {
 </script>
 
 <template>
-    <Head :title="pageTitle"/>
 
     <div class="min-h-screen bg-gray-100 sm:p-4">
         <div class="w-full max-w-7xl mx-auto">
@@ -49,11 +39,11 @@ function toDashboard() {
                                 </a>
                             </div>
 
-                            <div v-if="pageTitle" class="m-2 mr-1">
-                                <h1 class="font-semibold text-2xl text-gray-800 leading-tight">{{ pageTitle }}</h1>
+                            <div class="m-2 mr-1">
+                                <h1 class="font-semibold text-2xl text-gray-800 leading-tight">
+                                    <slot name="pageTitle"/>
+                                </h1>
                             </div>
-
-                            <FAIcon v-if="icon" :name="icon"/>
                         </div>
 
                         <div class="hidden sm:flex sm:items-center sm:ms-6">

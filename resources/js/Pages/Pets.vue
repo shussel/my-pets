@@ -1,58 +1,58 @@
 <script setup>
-import {ref, computed} from "vue";
-import {router} from "@inertiajs/vue3";
-import {useRouteView} from "@/Components/RouteView";
-import {useCurrentData} from "@/Components/CurrentData";
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
+import {ref, watchEffect} from "vue";
+import {Head} from "@inertiajs/vue3";
+import PageSet from "@/Components/PageSet.vue";
 import index from "@/Pages/Pets/Index.vue";
 import create from "@/Pages/Pets/Create.vue";
 import show from "@/Pages/Pets/Show.vue";
 import edit from "@/Pages/Pets/Edit.vue";
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 
 const props = defineProps({
     data: {
         type: Object,
+        required: true
     },
     meta: {
         type: Object,
+        default: {}
     },
 });
 
-const currentRoute = ref(route().current());
-const currentId = ref(route().params.pet);
-
-const {view} = useRouteView(currentRoute, currentId, {index, create, show, edit});
-const {currentData} = useCurrentData(currentId, props.data);
-
-const pageTitle = computed(() => {
-    return currentData.value ? currentData.value.name : (currentRoute.value === "pets.create" ? "Add a Pet" : "Pets");
+const pageSet = ref(null);
+watchEffect(() => {
+    updateTitle();
 });
 
-function toPage(route_name, id) {
-    currentRoute.value = route_name;
-    currentId.value = id;
-    setTimeout(() => {
-        showMessage.value = false;
-    }, 5000);
-}
-
-const showMessage = ref(true);
-router.on("finish", (event) => {
-    showMessage.value = true;
-});
-
+const pageTitle = ref("Pets");
+const updateTitle = () => {
+    if (pageSet.value) {
+        pageTitle.value = pageSet.value.pageTitle;
+        switch (pageTitle.value) {
+            case "Add":
+                pageTitle.value += " Pet";
+                break;
+            case "Dashboard":
+                pageTitle.value = "Pets";
+                break;
+            default:
+        }
+    }
+};
 </script>
 
 <template>
+    <Head :title="pageTitle"/>
 
-    <AuthenticatedLayout :icon="currentData ? currentData.species : null" :pageTitle="pageTitle" @nav="toPage">
-
-        <div v-if="showMessage && $page.props.flash.message" class="text-center font-bold w-full">
-            {{ $page.props.flash.message }}
-        </div>
-
-        <component :is="view" :meta="meta" :pet="currentData" :pets="data" @nav="toPage"/>
-
+    <AuthenticatedLayout @nav="(x) => pageSet.toRoute(x)">
+        <template #pageTitle>{{ pageTitle }}</template>
+        <PageSet
+                ref="pageSet"
+                :data="data"
+                :initialId="route().params.pet"
+                :initialRoute="route().current()"
+                :meta="meta"
+                :views="{index, create, show, edit}"
+        />
     </AuthenticatedLayout>
-
 </template>

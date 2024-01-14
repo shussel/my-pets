@@ -1,5 +1,5 @@
 <script setup>
-import {router} from "@inertiajs/vue3";
+import {Head, router} from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import Card from "@/Components/Card.vue";
 import DeleteUserForm from "./Partials/DeleteUserForm.vue";
@@ -21,8 +21,11 @@ function toHome() {
 </script>
 
 <template>
+    <Head title="Profile"/>
 
     <AuthenticatedLayout pageTitle="Profile" @nav="toHome">
+
+        <template #pageTitle>Profile</template>
 
         <card class="sm:max-w-md md:basis-[calc(50%-1em)]">
             <UpdateProfileInformationForm
