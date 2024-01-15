@@ -71,6 +71,9 @@ const pageTitle = computed(() => {
 });
 
 defineExpose({
+    currentRoute,
+    currentId,
+    currentData,
     pageTitle,
     toRoute
 });
@@ -82,6 +85,6 @@ defineExpose({
         {{ $page.props.flash.message }}
     </div>
 
-    <component :is="currentView" :meta="meta" :pet="currentData" :pets="data" @nav="toRoute"/>
+    <component :is="currentView" :currentData="currentData" :data="data" :meta="meta" @nav="toRoute"/>
 
 </template>

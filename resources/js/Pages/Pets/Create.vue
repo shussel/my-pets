@@ -1,6 +1,7 @@
 <script setup>
 import {toRaw, computed, ref} from "vue";
 import {useForm} from "@inertiajs/vue3";
+import Card from "@/Components/Card.vue";
 import InputText from "@/Components/InputText.vue";
 import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
@@ -9,14 +10,10 @@ import InputAvatar from "@/Components/InputAvatar.vue";
 import BirthdayCalc from "@/Components/BirthdayCalc.vue";
 import ButtonDefault from "@/Components/ButtonDefault.vue";
 import ButtonPrimary from "@/Components/ButtonPrimary.vue";
-import Card from "@/Components/Card.vue";
 
 const props = defineProps({
     meta: {
         type: Object,
-    },
-    message: {
-        type: String,
     },
 });
 

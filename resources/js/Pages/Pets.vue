@@ -1,12 +1,11 @@
 <script setup>
 import {ref, watchEffect} from "vue";
-import {Head} from "@inertiajs/vue3";
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import PageSet from "@/Components/PageSet.vue";
 import index from "@/Pages/Pets/Index.vue";
 import create from "@/Pages/Pets/Create.vue";
 import show from "@/Pages/Pets/Show.vue";
 import edit from "@/Pages/Pets/Edit.vue";
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 
 const props = defineProps({
     data: {
@@ -42,10 +41,7 @@ watchEffect(() => {
 </script>
 
 <template>
-    <Head :title="pageTitle"/>
-
-    <AuthenticatedLayout @nav="(x) => pageSet.toRoute(x)">
-        <template #pageTitle>{{ pageTitle }}</template>
+    <AuthenticatedLayout :pageTitle="pageTitle" @nav="(x) => pageSet.toRoute(x)">
         <PageSet
                 ref="pageSet"
                 :data="data"

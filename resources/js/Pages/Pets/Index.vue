@@ -5,14 +5,14 @@ import SpeechBubble from "@/Components/SpeechBubble.vue";
 import FAIcon from "@/Components/FAIcon.vue";
 
 const props = defineProps({
-    pets: {
+    data: {
         type: Object,
     },
 });
 </script>
 
 <template>
-    <PetHeader v-for="pet in pets" :key="pet._id" :pet="pet" @click="$emit('nav', 'pets.show', pet._id);">
+    <PetHeader v-for="pet in data" :key="pet._id" :pet="pet" @click="$emit('nav', 'pets.show', pet._id);">
         <div>
             <h2>
                 <FAIcon :name="pet.species"/>

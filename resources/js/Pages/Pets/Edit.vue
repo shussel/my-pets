@@ -19,7 +19,7 @@ const props = defineProps({
     message: {
         type: String,
     },
-    pet: {
+    currentData: {
         type: Object,
         required: true,
     }
@@ -28,13 +28,13 @@ const props = defineProps({
 const emit = defineEmits(["nav"]);
 
 const form = useForm({
-    _id: props.pet._id,
-    name: props.pet.name,
-    species: props.pet.species,
-    sex: props.pet.sex,
-    weight: props.pet.weight,
-    birth_date: props.pet.birth_date,
-    avatar: props.pet.avatar,
+    _id: props.currentData._id,
+    name: props.currentData.name,
+    species: props.currentData.species,
+    sex: props.currentData.sex,
+    weight: props.currentData.weight,
+    birth_date: props.currentData.birth_date,
+    avatar: props.currentData.avatar,
     newAvatar: null,
     message: "edited",
     _method: "put"
@@ -90,7 +90,7 @@ function deleteAvatar() {
 }
 
 const deleteForm = useForm({
-    _id: props.pet._id,
+    _id: props.currentData._id,
 });
 
 const confirmingPetDeletion = ref(false);
@@ -101,7 +101,7 @@ const confirmPetDeletion = () => {
 
 function deletePet() {
     closeModal();
-    deleteForm.delete(route("pets.destroy", props.pet._id), {
+    deleteForm.delete(route("pets.destroy", props.currentData._id), {
         onSuccess: () => {
             emit("nav", "pets.index");
         },
