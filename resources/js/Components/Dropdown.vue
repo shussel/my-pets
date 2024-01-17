@@ -68,8 +68,8 @@ const open = ref(false);
                     style="display: none"
                     @click="open = false"
             >
-                <div class="rounded-md ring-1 ring-black ring-opacity-5" :class="contentClasses">
-                    <slot name="content" />
+                <div :class="contentClasses" class="rounded-md ring-1 ring-black ring-opacity-5 dark:bg-slate-800">
+                    <slot name="content"/>
                 </div>
             </div>
         </Transition>

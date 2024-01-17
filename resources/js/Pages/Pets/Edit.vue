@@ -115,7 +115,7 @@ const closeModal = () => {
 
 <template>
     <Card>
-        <form class="border px-4 py-2 rounded-lg" @submit.prevent="submit">
+        <form @submit.prevent="submit">
 
             <InputAvatar v-show="form.species || newAvatar" ref="inputAvatar"
                          :pet="form"
@@ -144,7 +144,7 @@ const closeModal = () => {
                 <div class="grow min-w-1/2">
                     <InputLabel for="species" value="Species"/>
 
-                    <InputButtons v-model="form.species" :options="meta.species"/>
+                    <InputButtons v-model="form.species" :options="meta.species" class="gap-2"/>
 
                     <InputError :message="form.errors.species" class="mt-2"/>
                 </div>
@@ -152,7 +152,7 @@ const closeModal = () => {
                 <div v-if="form.species || form.sex" class="w-1/2">
                     <InputLabel for="sex" value="Sex"/>
 
-                    <InputButtons v-model="form.sex" :options="meta.sexes"/>
+                    <InputButtons v-model="form.sex" :options="meta.sexes" class="gap-2"/>
 
                     <InputError :message="form.errors.sex" class="mt-2"/>
                 </div>
@@ -210,7 +210,7 @@ const closeModal = () => {
                                 v-model="form.weight"
                                 :max="maxWeight"
                                 autocomplete=""
-                                class="block w-full color-white"
+                                class="block w-full accent-lt"
                                 min="1"
                                 type="range"
                         />
@@ -220,14 +220,14 @@ const closeModal = () => {
                 <InputError :message="form.errors.weight" class="w-full"/>
             </div>
 
-            <div class="flex items-center justify-center mt-8 gap-4">
+            <div class="flex items-stretch justify-center mt-8 gap-4">
                 <ButtonDefault :class="{ 'opacity-25': form.processing }"
                                :disabled="form.processing"
                                @click.prevent="emit('nav', 'pets.index')"
                 >
                     Cancel
                 </ButtonDefault>
-                <ButtonDefault :class="{ 'opacity-25': form.processing }" :disabled="form.processing" class="m-2"
+                <ButtonDefault :class="{ 'opacity-25': form.processing }" :disabled="form.processing"
                                @click.prevent="confirmPetDeletion">Delete
                 </ButtonDefault>
                 <ButtonPrimary

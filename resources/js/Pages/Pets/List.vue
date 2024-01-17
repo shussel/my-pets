@@ -10,7 +10,7 @@ const props = defineProps({
     <div>
         <table class="table-fixed mx-auto">
             <thead>
-            <tr class="bg-gray-100">
+            <tr class="bg-slate-100">
                 <th class="px-4 py-2 w-20">Image</th>
                 <th class="px-4 py-2 w-20">Name</th>
                 <th class="px-4 py-2">Species</th>

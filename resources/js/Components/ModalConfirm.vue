@@ -21,7 +21,7 @@ const emit = defineEmits(["confirm", "closeModal"]);
 <template>
     <Modal :show="show" maxWidth="sq" @close="emit('closeModal')">
         <div class="p-6 grow h-[300px] flex flex-col justify-between gap-4">
-            <p class="mt-6 grow flex items-center text-center text-lg font-medium text-gray-900">
+            <p class="mt-6 grow flex items-center text-center text-lg font-medium text-slate-900 dark:text-slate-100">
                 <slot/>
             </p>
 

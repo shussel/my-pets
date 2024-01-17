@@ -2,16 +2,93 @@
 @tailwind components;
 @tailwind utilities;
 
-h2 {
-    color: rgb(17, 24, 3);
-    font-weight: 500;
-    font-size: 1.25rem;
-    line-height: 1.75rem;
+@layer base {
+    html[data-theme='default'] {
+        --color-lt: 203 213 225;
+    }
+
+    html[data-theme='blue'] {
+        --color-lt: 147 197 253; /*#DBEAFE*/
+    }
+
+    html[data-theme='green'] {
+        --color-lt: 134 239 172;
+    }
+
+    html[data-theme='red'] {
+        --color-lt: 254 202 202;
+    }
 }
 
-/* large breakpoint */
-@media (min-width: 1024px) {
-    h2 {
-        font-size: 1.35rem;
-    }
+h2 {
+    background-color: white;
+    display: inline-block;
+    font-weight: 500;
+    font-size: 1.4rem;
+    line-height: 1.8rem;
+    padding: 0 12px;
+}
+
+.dark h2 {
+    color: white;
+    background-color: #334155;
+}
+
+form {
+    border: 1px solid #cbd5e1;
+    border-radius: 0.5em;
+    padding: 1em;
+}
+
+.dark form {
+    border-color: #94a3b8;
+}
+
+input[type=range] {
+    -webkit-appearance: none;
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+    height: 5px;
+    background: #ddd;
+    border: none;
+    border-radius: 3px;
+}
+
+.dark input[type=range]::-webkit-slider-runnable-track {
+    background: #666;
+}
+
+input[type=range]::-webkit-slider-thumb {
+    margin-top: -5px;
+}
+
+input[type=range]:focus {
+    outline: none;
+}
+
+input[type=range]:focus::-webkit-slider-runnable-track {
+    background: #ccc;
+}
+
+.dark input[type=range]:focus::-webkit-slider-runnable-track {
+    background: #888;
+}
+
+.dark input:-webkit-autofill,
+.dark textarea:-webkit-autofill,
+.dark select:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px #6474a0 inset !important;
+    -webkit-text-fill-color: #e2e8f0 !important;
+}
+
+.paw-bg {
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path fill="%23e2e8f0" d="M226.5 92.9c14.3 42.9-.3 86.2-32.6 96.8s-70.1-15.6-84.4-58.5s.3-86.2 32.6-96.8s70.1 15.6 84.4 58.5zM100.4 198.6c18.9 32.4 14.3 70.1-10.2 84.1s-59.7-.9-78.5-33.3S-2.7 179.3 21.8 165.3s59.7 .9 78.5 33.3zM69.2 401.2C121.6 259.9 214.7 224 256 224s134.4 35.9 186.8 177.2c3.6 9.7 5.2 20.1 5.2 30.5v1.6c0 25.8-20.9 46.7-46.7 46.7c-11.5 0-22.9-1.4-34-4.2l-88-22c-15.3-3.8-31.3-3.8-46.6 0l-88 22c-11.1 2.8-22.5 4.2-34 4.2C84.9 480 64 459.1 64 433.3v-1.6c0-10.4 1.6-20.8 5.2-30.5zM421.8 282.7c-24.5-14-29.1-51.7-10.2-84.1s54-47.3 78.5-33.3s29.1 51.7 10.2 84.1s-54 47.3-78.5 33.3zM310.1 189.7c-32.3-10.6-46.9-53.9-32.6-96.8s52.1-69.1 84.4-58.5s46.9 53.9 32.6 96.8s-52.1 69.1-84.4 58.5z"/></svg>');
+    background-size: 90% auto;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.dark .paw-bg {
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path fill="%23475569" d="M226.5 92.9c14.3 42.9-.3 86.2-32.6 96.8s-70.1-15.6-84.4-58.5s.3-86.2 32.6-96.8s70.1 15.6 84.4 58.5zM100.4 198.6c18.9 32.4 14.3 70.1-10.2 84.1s-59.7-.9-78.5-33.3S-2.7 179.3 21.8 165.3s59.7 .9 78.5 33.3zM69.2 401.2C121.6 259.9 214.7 224 256 224s134.4 35.9 186.8 177.2c3.6 9.7 5.2 20.1 5.2 30.5v1.6c0 25.8-20.9 46.7-46.7 46.7c-11.5 0-22.9-1.4-34-4.2l-88-22c-15.3-3.8-31.3-3.8-46.6 0l-88 22c-11.1 2.8-22.5 4.2-34 4.2C84.9 480 64 459.1 64 433.3v-1.6c0-10.4 1.6-20.8 5.2-30.5zM421.8 282.7c-24.5-14-29.1-51.7-10.2-84.1s54-47.3 78.5-33.3s29.1 51.7 10.2 84.1s-54 47.3-78.5 33.3zM310.1 189.7c-32.3-10.6-46.9-53.9-32.6-96.8s52.1-69.1 84.4-58.5s46.9 53.9 32.6 96.8s-52.1 69.1-84.4 58.5z"/></svg>');
 }

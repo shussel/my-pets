@@ -15,7 +15,7 @@ const props = defineProps({
     <PetHeader v-for="pet in data" :key="pet._id" :pet="pet" @click="$emit('nav', 'pets.show', pet._id);">
         <div>
             <h2>
-                <FAIcon :name="pet.species"/>
+                <FAIcon :name="pet.species" class="dark:text-slate-400"/>
                 {{ pet.name }}
             </h2>
             <SpeechBubble :message="pet.message"/>

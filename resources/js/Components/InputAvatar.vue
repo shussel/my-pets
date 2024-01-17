@@ -126,14 +126,14 @@ const closeModal = () => {
         height: 200
       }"
                  alt="Profile Image"
-                 class="border-2 border-dashed border-indigo-100 cropper block cursor-pointer base-image-input w-full h-auto"
+                 class="border-4 border-dashed border-lt/50 cropper block cursor-pointer base-image-input w-full h-auto"
                  image-restriction="stencil"
         />
 
         <div
                 v-show="!cropImageUrl"
                 class="text-center placeholder w-[200px] h-[200px] relative flex justify-center items-center mx-auto">
-            <PetImage :pet="pet" class="w-[200px] h-[200px] hover:bg-blue-200" @click="chooseImage"/>
+            <PetImage :pet="pet" class="w-[200px] h-[200px] hover:bg-lt/50" @click="chooseImage"/>
             <ButtonDelete v-show="pet.avatar" class="absolute bottom-0 right-1 z-50" title="Delete Image"
                           @click="confirmAvatarDeletion"/>
         </div>
@@ -162,5 +162,9 @@ const closeModal = () => {
 .vue-advanced-cropper__background, .vue-advanced-cropper__foreground {
     opacity: 1;
     background: white;
+}
+
+.dark .vue-advanced-cropper__background, .dark .vue-advanced-cropper__foreground {
+    background: #334155;
 }
 </style>

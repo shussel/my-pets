@@ -29,15 +29,14 @@ function clickItem(item) {
 </script>
 
 <template>
-    <div
-            class="mt-1 flex flex-wrap gap-2 justify-center items-center focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+    <div class="mt-1 flex flex-wrap justify-center items-center focus:border-lt/50 focus:ring-lt/50 rounded-md shadow-sm">
         <ButtonSelect v-for="item in options"
                       :selected="item.value === selected"
                       :selection="selected"
                       class="w-auto"
                       @click.prevent="clickItem(item.value)"
         >
-            <FAIcon :name="item.value" class="mr-1"/>
+            <FAIcon :name="item.value" class="mr-1 text-slate-500 dark:text-slate-300"/>
             {{ item.label }}
         </ButtonSelect>
     </div>

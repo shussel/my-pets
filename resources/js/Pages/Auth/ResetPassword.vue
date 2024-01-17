@@ -36,9 +36,9 @@ const submit = () => {
 <template>
     <Head title="Reset Password"/>
 
-    <h2 class="text-center p-2">Change Password</h2>
+    <h2 class="mt-3 -mb-3 z-10 self-center">Change Password</h2>
 
-    <form class="border px-4 py-2 rounded-lg w-full max-w-sm mx-auto" @submit.prevent="submit">
+    <form class="w-full max-w-sm mx-auto" @submit.prevent="submit">
         <div>
             <InputLabel for="email" value="Email"/>
 

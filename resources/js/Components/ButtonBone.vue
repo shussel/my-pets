@@ -1,5 +1,5 @@
 <template>
-    <button class="bone inline-flex text-center justify-center leading-none w-full text-xl font-bold text-white p-3 rounded-md"
+    <button class="bone relative inline-flex text-center justify-center leading-none w-full text-xl font-bold text-white p-3 rounded-md"
             @click="$emit('click')">
         <span><slot/></span>
     </button>
@@ -22,8 +22,14 @@
 <style>
 .bone {
     filter: url('#goo');
-    background: #999;
-    position: relative;
+}
+
+.bone,
+.bone::before,
+.bone::after,
+.bone span::before,
+.bone span::after {
+    background: #9ca3af;
 }
 
 .bone:hover,
@@ -31,7 +37,7 @@
 .bone:hover::after,
 .bone:hover span::before,
 .bone:hover span::after {
-    background: #444;
+    background: #d1d5db;
 }
 
 .bone::before,
@@ -43,7 +49,6 @@
     height: 1.7em;
     position: absolute;
     display: inline-block;
-    background: #999;
     border-radius: 50%;
     z-index: -1;
 }

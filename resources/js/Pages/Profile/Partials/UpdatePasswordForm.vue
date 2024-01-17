@@ -35,7 +35,7 @@ const updatePassword = () => {
 
 <template>
   <section>
-      <h2 class="ml-2 bg-white">Update Password</h2>
+      <h2 class="ml-2">Update Password</h2>
 
       <form class="border p-4 pt-5 -mt-3 space-y-3 lg:p-6" @submit.prevent="updatePassword">
           <div>
@@ -79,8 +79,8 @@ const updatePassword = () => {
           <InputError :message="form.errors.password" class="mt-2"/>
           <InputError :message="form.errors.password_confirmation" class="mt-2"/>
           <div class="pt-1 flex gap-4 justify-between items-center">
-              <div class="grow text-sm">Password must be at least 8 characters and include uppercase, lowercase, numbers
-                  and symbols.
+              <div class="grow text-sm text-slate-600 dark:text-slate-300">Password at least 8 characters including
+                  uppercase, lowercase, numbers and symbols.
               </div>
               <div class="pr-2">
                   <ButtonPrimary v-if="!form.recentlySuccessful"
@@ -95,7 +95,7 @@ const updatePassword = () => {
                           leave-active-class="transition ease-in-out"
                           leave-to-class="opacity-0"
                   >
-                      <p v-if="form.recentlySuccessful" class="text-sm text-gray-600">Saved</p>
+                      <p v-if="form.recentlySuccessful" class="text-sm text-slate-600">Saved</p>
                   </Transition>
               </div>
       </div>

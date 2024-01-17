@@ -26,8 +26,8 @@ const submit = () => {
 <template>
     <Head title="Forgot Password"/>
 
-    <h2 class="text-center p-2">Forgot Password</h2>
-    <div class="mb-4 text-sm text-gray-600 text-center">
+    <h2 class="mt-3 mb-2 z-10 self-center">Forgot Password</h2>
+    <div class="mb-4 text-sm text-slate-600 dark:text-slate-300 text-center">
         Enter your registered email address for a reset password link.
     </div>
 
@@ -35,7 +35,7 @@ const submit = () => {
         {{ status }}
     </div>
 
-    <form class="border px-4 py-2 rounded-lg w-full max-w-sm mx-auto" @submit.prevent="submit">
+    <form class="w-full max-w-sm mx-auto" @submit.prevent="submit">
         <div>
             <InputLabel for="email" value="Email"/>
 

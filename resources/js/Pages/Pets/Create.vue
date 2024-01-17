@@ -81,7 +81,7 @@ const keepCropper = ref(false);
 
 <template>
     <Card>
-        <form class="border px-4 py-2 rounded-lg" @submit.prevent="submit">
+        <form @submit.prevent="submit">
 
             <InputAvatar v-if="form.species || keepCropper" ref="inputAvatar"
                          :pet="form"
@@ -110,7 +110,7 @@ const keepCropper = ref(false);
                 <div class="grow min-w-1/2">
                     <InputLabel for="species" value="Species"/>
 
-                    <InputButtons v-model="form.species" :options="meta.species"/>
+                    <InputButtons v-model="form.species" :options="meta.species" class="gap-2"/>
 
                     <InputError :message="form.errors.species" class="mt-2"/>
                 </div>
@@ -118,7 +118,7 @@ const keepCropper = ref(false);
                 <div v-if="form.species || form.sex" class="w-1/2">
                     <InputLabel for="sex" value="Sex"/>
 
-                    <InputButtons v-model="form.sex" :options="meta.sexes"/>
+                    <InputButtons v-model="form.sex" :options="meta.sexes" class="gap-2"/>
 
                     <InputError :message="form.errors.sex" class="mt-2"/>
                 </div>
@@ -176,7 +176,7 @@ const keepCropper = ref(false);
                                 v-model="form.weight"
                                 :max="maxWeight"
                                 autocomplete=""
-                                class="block w-full"
+                                class="block w-full accent-lt"
                                 min="1"
                                 type="range"
                         />
@@ -197,7 +197,7 @@ const keepCropper = ref(false);
                                :class="{ 'opacity-25': form.processing }"
                                :disabled="form.processing"
                 >
-                    Add Pet
+                    Save
                 </ButtonPrimary>
             </div>
         </form>

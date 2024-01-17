@@ -31,8 +31,8 @@ const submit = () => {
 <template>
     <Head title="Register"/>
 
-    <h2 class="text-center p-2">Register</h2>
-    <form class="border px-4 py-2 rounded-lg w-full max-w-sm mx-auto" @submit.prevent="submit">
+    <h2 class="mt-3 -mb-3 z-10 self-center">Register</h2>
+    <form class="w-full max-w-sm mx-auto" @submit.prevent="submit">
         <div>
             <InputLabel for="name" value="Name"/>
 
@@ -78,7 +78,9 @@ const submit = () => {
 
                 <InputError :message="form.errors.zip_code" class="mt-2"/>
             </div>
-            <div class="w-1/2 text-sm text-gray-500 italic">to help connect with local pet resources</div>
+            <div class="w-1/2 text-sm text-slate-500 dark:text-slate-300 italic">to help connect with local pet
+                resources
+            </div>
         </div>
 
         <div class="mt-4">
@@ -96,7 +98,8 @@ const submit = () => {
             <InputError :message="form.errors.password" class="mt-2"/>
         </div>
 
-        <div class="mt-4 text-center text-sm text-gray-500 italic">Password must be at least 8 characters and include
+        <div class="mt-4 text-center text-sm text-slate-500 dark:text-slate-300 italic">Password must be at least 8
+            characters and include
             uppercase,
             lowercase, numbers and
             symbols.
@@ -118,9 +121,8 @@ const submit = () => {
         </div>
 
         <div class="flex items-center justify-end mt-4">
-            {{ disableButton }}
             <a
-                    class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 cursor-pointer"
+                    class="underline text-sm text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 cursor-pointer"
                     @click="$emit('nav','login')"
             >
                 Already registered?

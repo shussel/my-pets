@@ -6,6 +6,7 @@ import ButtonPrimary from "@/Components/ButtonPrimary.vue";
 import InputText from "@/Components/InputText.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import InputError from "@/Components/InputError.vue";
+import InputCheckbox from "@/Components/InputCheckbox.vue";
 import Modal from "@/Components/Modal.vue";
 
 const confirmingUserDeletion = ref(false);
@@ -43,13 +44,14 @@ const closeModal = () => {
         <h2 class="ml-2 bg-white">Delete Account</h2>
 
         <div
-                class="flex flex-col items-center gap-2 justify-center md:flex-row md:justify-between border p-4 pt-5 -mt-3 lg:p-6">
-            <p class="mt-1 text-sm text-gray-600 md:w-1/2 md:gap-4">
+                class="flex flex-col items-center gap-2 justify-center md:flex-row md:justify-between border rounded-lg border-slate-400 p-4 pt-5 -mt-3 lg:p-6">
+            <p class="mt-1 text-sm text-slate-600 dark:text-slate-300 md:w-1/2 md:gap-4">
                 Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting
                 your account, please download any data or information that you wish to retain.
             </p>
             <div class="mt-2 flex flex-col gap-4 md:w-1/2">
-                <div class="text-center text-sm"><input v-model="enableDelete" type=checkbox> Yes, I want to delete my
+                <div class="text-center text-sm">
+                    <InputCheckbox v-model="enableDelete" :checked="false"/> &nbsp;Yes, I want to delete my
                     account.
                 </div>
                 <div class="text-center">
@@ -62,15 +64,15 @@ const closeModal = () => {
 
         <Modal :show="confirmingUserDeletion" maxWidth="sq" @close="closeModal">
             <div class="p-6">
-                <h2 class="text-center">
+                <h2 class="bg-transparent text-lg">
                     Confirm Account Deletion
                 </h2>
 
-                <p class="mt-1 text-sm text-gray-600">
+                <p class="mt-1 text-sm text-slate-600 dark:text-slate-300">
                     Please enter your password to confirm you would like to permanently delete your account.
                 </p>
 
-                <div class="mt-8">
+                <div class="mt-6">
                     <InputLabel class="sr-only" for="password" value="Password"/>
 
                     <InputText
@@ -78,7 +80,7 @@ const closeModal = () => {
                             ref="passwordInput"
                             v-model="form.password"
                             autocomplete="no"
-                            class="mt-1 block w-3/4 mx-auto"
+                            class="mt-1 block w-3/4 mx-auto dark:text-slate-100"
                             placeholder="Password"
                             type="password"
                             @keyup.enter="deleteUser"

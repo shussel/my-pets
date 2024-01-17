@@ -34,12 +34,12 @@ const submit = () => {
 <template>
     <Head title="Login"/>
 
-    <h2 class="text-center p-2">Log In</h2>
+    <h2 class="mt-3 -mb-3 z-10 self-center">Log In</h2>
     <div v-if="status" class="mb-4 font-medium text-sm text-green-600 text-center">
         {{ status }}
     </div>
 
-    <form class="border px-4 py-2 rounded-lg w-full max-w-sm mx-auto" @submit.prevent="submit">
+    <form class="w-full max-w-sm mx-auto" @submit.prevent="submit">
         <div>
             <InputLabel for="email" value="Email"/>
 
@@ -74,17 +74,27 @@ const submit = () => {
         <div class="block mt-4">
             <label class="flex items-center">
                 <InputCheckbox v-model:checked="form.remember" name="remember"/>
-                <span class="ms-2 text-sm text-gray-600">Remember me</span>
+                <span class="ms-2 text-sm text-slate-600 dark:text-slate-300">Remember me</span>
             </label>
         </div>
 
-        <div class="flex items-center justify-end mt-4">
+        <div class="flex items-center justify-between mt-4 gap-5">
+            <a
+                    class="underline text-sm text-slate-600 hover:text-slate-900
+                        dark:text-slate-300 dark:hover:text-slate-200
+                    cursor-pointer"
+                    @click="$emit('nav','register')"
+            >
+                Register
+            </a>
             <a
                     v-if="canResetPassword"
-                    class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 cursor-pointer"
+                    class="underline text-sm text-slate-600 hover:text-slate-900
+                        dark:text-slate-300 dark:hover:text-slate-200
+                    cursor-pointer"
                     @click="$emit('nav','password.request')"
             >
-                Forgot your password?
+                Forgot password?
             </a>
 
             <ButtonPrimary :class="{ 'opacity-25': form.processing }" :disabled="form.processing" class="ms-4">

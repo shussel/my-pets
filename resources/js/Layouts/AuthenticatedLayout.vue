@@ -32,9 +32,9 @@ function toDashboard() {
 
     <Head :title="pageTitle"/>
 
-    <div class="min-h-screen bg-gray-100 sm:p-4">
+    <div class="min-h-screen bg-slate-100 dark:bg-slate-900 dark:text-slate-200 sm:p-4">
         <div class="w-full max-w-7xl mx-auto">
-            <nav class="max-w-7xl bg-white shadow-md sm:rounded-full">
+            <nav class="max-w-7xl bg-white dark:bg-slate-700 shadow-md sm:rounded-full">
                 <!-- Primary Navigation Menu -->
                 <div class="mx-2 sm:pr-2">
                     <div class="flex justify-between h-16">
@@ -43,13 +43,13 @@ function toDashboard() {
                             <div class="shrink-0 flex items-center">
                                 <a @click="$emit('nav','pets.index')">
                                     <ApplicationLogo
-                                            class="block h-[55px] w-auto fill-current"
+                                            class="block h-[55px] w-auto fill-black dark:fill-slate-400"
                                     />
                                 </a>
                             </div>
 
                             <div class="m-2 mr-1">
-                                <h1 class="font-semibold text-2xl text-gray-800 leading-tight">
+                                <h1 class="font-semibold text-2xl leading-tight dark:text-slate-200">
                                     {{ pageTitle }}
                                 </h1>
                             </div>
@@ -70,7 +70,7 @@ function toDashboard() {
                                         <span class="inline-flex rounded-md">
                                             <button
                                                     type="button"
-                                                    class="inline-flex items-center py-1 border border-transparent text-xs leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150"
+                                                    class="inline-flex items-center py-1 border border-transparent text-xs leading-4 font-medium rounded-md text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-700 hover:text-slate-700 dark:hover:text-slate-300 focus:outline-none transition ease-in-out duration-150"
                                             >
                                                 <FAIcon class="text-4xl" name="user"/>
                                             </button>
@@ -78,7 +78,8 @@ function toDashboard() {
                                     </template>
 
                                     <template #content>
-                                        <div class="p-2 border-b-2 font-bold text-center">{{ $page.props.auth.user.name
+                                        <div class="p-2 border-b-2 dark:border-slate-600 font-bold text-center dark:text-slate-300">
+                                            {{ $page.props.auth.user.name
                                             }}
                                         </div>
                                         <DropdownLink :href="route('profile.edit')"> Profile </DropdownLink>
@@ -93,8 +94,8 @@ function toDashboard() {
                         <!-- Hamburger -->
                         <div class="-me-2 flex items-center sm:hidden">
                             <button
-                                @click="showingNavigationDropdown = !showingNavigationDropdown"
-                                class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out"
+                                    @click="showingNavigationDropdown = !showingNavigationDropdown"
+                                    class="inline-flex items-center justify-center p-2 rounded-md text-slate-400 dark:bg-slate-400 dark:text-slate-700 hover:text-slate-500 dark:hover:bg-slate-300 hover:bg-slate-100 focus:outline-none focus:bg-slate-100 focus:text-slate-500 transition duration-150 ease-in-out"
                             >
                                 <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                                     <path
@@ -130,19 +131,19 @@ function toDashboard() {
                 >
                     <div class="">
                         <a v-if="!route().current('pets.index')" :active="route().current('pets.index')"
-                           class="block w-full ps-4 pe-4 py-3 border-t-2 text-start text-xl font-bold text-gray-600 hover:text-gray-800 hover:bg-blue-100 hover:border-blue-100 focus:outline-none focus:text-gray-800 focus:bg-blue-200 focus:border-blue-200 transition duration-150 ease-in-out cursor-pointer"
+                           class="block w-full ps-4 pe-4 py-3 border-t-2 text-start text-xl font-bold text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-lt/50 dark:hover:bg-blue-900 hover:border-lt/50 dark:hover:border-blue-900 focus:outline-none focus:text-slate-800 dark:focus:text-slate-200 focus:bg-lt/50 dark:focus:bg-blue-800 focus:border-lt/50 dark:focus:border-blue-800 transition duration-150 ease-in-out cursor-pointer"
                            @click="toDashboard">
                             All Pets
                         </a>
                     </div>
 
                     <!-- Responsive Settings Options -->
-                    <div class="border-t border-gray-200">
-                        <div class="px-4 py-1 bg-gray-50">
-                            <div class="font-medium text-base text-gray-800">
+                    <div class="border-t border-slate-200 dark:border-slate-800">
+                        <div class="px-4 py-1 bg-slate-50">
+                            <div class="font-medium text-base text-slate-800 dark:text-slate-200">
                                 {{ $page.props.auth.user.name }}
                             </div>
-                            <div class="font-medium text-sm text-gray-500">{{ $page.props.auth.user.email }}</div>
+                            <div class="font-medium text-sm text-slate-500">{{ $page.props.auth.user.email }}</div>
                         </div>
 
                         <div class="">
