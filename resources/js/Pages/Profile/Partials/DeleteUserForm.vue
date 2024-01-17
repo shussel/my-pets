@@ -44,7 +44,7 @@ const closeModal = () => {
         <h2 class="ml-2 bg-white">Delete Account</h2>
 
         <div
-                class="flex flex-col items-center gap-2 justify-center md:flex-row md:justify-between border rounded-lg border-slate-400 p-4 pt-5 -mt-3 lg:p-6">
+                class="flex flex-col items-center gap-2 justify-center md:flex-row md:justify-between border rounded-lg border-slate-300 dark:border-slate-400 p-4 pt-5 -mt-3 lg:p-6">
             <p class="mt-1 text-sm text-slate-600 dark:text-slate-300 md:w-1/2 md:gap-4">
                 Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting
                 your account, please download any data or information that you wish to retain.

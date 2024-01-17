@@ -18,6 +18,14 @@
     html[data-theme='red'] {
         --color-lt: 254 202 202;
     }
+
+    html[data-theme='yellow'] {
+        --color-lt: 253 224 71;
+    }
+
+    html[data-theme='purple'] {
+        --color-lt: 196 181 253;
+    }
 }
 
 h2 {
