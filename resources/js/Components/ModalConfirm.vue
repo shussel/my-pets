@@ -5,10 +5,6 @@ import ButtonPrimary from "@/Components/ButtonPrimary.vue";
 import ButtonDefault from "@/Components/ButtonDefault.vue";
 
 const props = defineProps({
-    message: {
-        type: Boolean,
-        default: false,
-    },
     show: {
         type: Boolean,
         default: false,
@@ -24,14 +20,9 @@ const emit = defineEmits(["confirm", "closeModal"]);
             <p class="mt-6 grow flex items-center text-center text-lg font-medium text-slate-900 dark:text-slate-100">
                 <slot/>
             </p>
-
-            <div class="mb-12 flex justify-center gap-3">
-                <ButtonDefault autofocus @click="emit('closeModal')">No</ButtonDefault>
-                <ButtonPrimary
-                        @click="emit('confirm');"
-                >
-                    Yes
-                </ButtonPrimary>
+            <div v-if="show" class="mb-12 flex justify-center gap-3">
+                <ButtonDefault @click="emit('confirm');">Yes</ButtonDefault>
+                <ButtonPrimary autofocus @click="emit('closeModal')">No</ButtonPrimary>
             </div>
         </div>
     </Modal>
