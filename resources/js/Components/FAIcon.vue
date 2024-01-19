@@ -1,5 +1,6 @@
 <script setup>
-import {library} from "@fortawesome/fontawesome-svg-core";
+import { ref } from "vue";
+import { library } from "@fortawesome/fontawesome-svg-core";
 import {
     faBaseball,
     faBone,
@@ -7,6 +8,7 @@ import {
     faCarSide,
     faCat,
     faCircleHalfStroke,
+    faCircle,
     faCircleUser,
     faCrow,
     faDog,
@@ -20,6 +22,7 @@ import {
     faPaw,
     faPoop,
     faRectangleXmark,
+    faSquare,
     faSun,
     faTree,
     faXmark,
@@ -34,6 +37,7 @@ library.add(
     faCarSide,
     faCat,
     faCircleHalfStroke,
+    faCircle,
     faCircleUser,
     faCrow,
     faDog,
@@ -47,6 +51,7 @@ library.add(
     faPaw,
     faPoop,
     faRectangleXmark,
+    faSquare,
     faSun,
     faTree,
     faXmark,
@@ -56,6 +61,9 @@ const props = defineProps({
     name: {
         type: String,
         required: true
+    },
+    color: {
+        type: String,
     },
 });
 
@@ -79,11 +87,29 @@ const namedIcons = {
     play: "fa-baseball",
     poop: "fa-poop",
     reptile: "fa-dragon",
+    swatch: "fa-circle",
     tree: "fa-tree",
     user: "fa-circle-user",
 };
+
+const icon = ref(namedIcons[props.name]);
+const colorStyle = ref(null);
+const colorClass = ref("text-slate-500 dark:text-slate-300");
+
+if (props.color) {
+    if (props.color.charAt(0) === "#") {
+        colorStyle.value = "color: " + props.color;
+        colorClass.value = null;
+    } else {
+        colorClass.value = props.color;
+    }
+    // use color swatch if icon does not exist
+    if (!icon.value) {
+        icon.value = namedIcons["swatch"];
+    }
+}
 </script>
 
 <template>
-    <font-awesome-icon :icon="namedIcons[name]"/>
+    <font-awesome-icon v-if="icon" :class="colorClass" :icon="icon" :style="colorStyle"/>
 </template>
