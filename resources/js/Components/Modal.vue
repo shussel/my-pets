@@ -8,11 +8,15 @@ const props = defineProps({
     },
     maxWidth: {
         type: String,
-        default: '2xl',
+        default: "2xl",
     },
     closeable: {
         type: Boolean,
         default: true,
+    },
+    paw: {
+        type: Boolean,
+        default: false,
     },
 });
 
@@ -87,8 +91,8 @@ const maxWidthClass = computed(() => {
                 >
                     <div
                             v-show="show"
-                            class="paw-bg mt-12 bg-white dark:bg-slate-700 rounded-lg overflow-hidden shadow-xl transform transition-all mx-auto"
-                            :class="maxWidthClass"
+                            :class="[maxWidthClass, {pawBg: paw}]"
+                            class="p-4 mt-12 bg-white dark:bg-slate-700 rounded-lg overflow-hidden shadow-xl transform transition-all mx-auto"
                     >
                         <slot v-if="show"/>
                     </div>

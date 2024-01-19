@@ -36,7 +36,7 @@ function clickItem(item) {
                       class="w-auto"
                       @click.prevent="clickItem(item.value)"
         >
-            <FAIcon :name="item.value" class="mr-1 text-slate-500 dark:text-slate-300"/>
+            <FAIcon :color="item.color" :name="item.value" class="mr-1"/>
             {{ item.label }}
         </ButtonSelect>
     </div>

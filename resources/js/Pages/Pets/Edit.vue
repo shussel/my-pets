@@ -16,9 +16,6 @@ const props = defineProps({
     meta: {
         type: Object,
     },
-    message: {
-        type: String,
-    },
     currentData: {
         type: Object,
         required: true,

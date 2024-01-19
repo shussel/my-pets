@@ -63,43 +63,42 @@ const closeModal = () => {
         </div>
 
         <Modal :show="confirmingUserDeletion" maxWidth="sq" @close="closeModal">
-            <div class="p-6">
-                <h2 class="bg-transparent text-lg">
-                    Confirm Account Deletion
-                </h2>
 
-                <p class="mt-1 text-sm text-slate-600 dark:text-slate-300">
-                    Please enter your password to confirm you would like to permanently delete your account.
-                </p>
+            <h2 class="bg-transparent text-lg">
+                Confirm Account Deletion
+            </h2>
 
-                <div class="mt-6">
-                    <InputLabel class="sr-only" for="password" value="Password"/>
+            <p class="mt-1 text-sm text-slate-600 dark:text-slate-300">
+                Please enter your password to confirm you would like to permanently delete your account.
+            </p>
 
-                    <InputText
-                            id="password"
-                            ref="passwordInput"
-                            v-model="form.password"
-                            autocomplete="no"
-                            class="mt-1 block w-3/4 mx-auto dark:text-slate-100"
-                            placeholder="Password"
-                            type="password"
-                            @keyup.enter="deleteUser"
-                    />
+            <div class="mt-6">
+                <InputLabel class="sr-only" for="password" value="Password"/>
 
-                    <InputError :message="form.errors.password" class="mt-2"/>
-                </div>
+                <InputText
+                        id="password"
+                        ref="passwordInput"
+                        v-model="form.password"
+                        autocomplete="no"
+                        class="mt-1 block w-3/4 mx-auto dark:text-slate-100"
+                        placeholder="Password"
+                        type="password"
+                        @keyup.enter="deleteUser"
+                />
 
-                <div class="mt-6 flex justify-center gap-4">
-                    <ButtonDefault @click="closeModal">Cancel</ButtonDefault>
+                <InputError :message="form.errors.password" class="mt-2"/>
+            </div>
 
-                    <ButtonPrimary
-                            :class="{ 'opacity-25': form.processing }"
-                            :disabled="form.processing"
-                            class=""
-                            @click="deleteUser"
-                    >Delete
-                    </ButtonPrimary>
-                </div>
+            <div class="mt-6 flex justify-center gap-4">
+                <ButtonDefault @click="closeModal">Cancel</ButtonDefault>
+
+                <ButtonPrimary
+                        :class="{ 'opacity-25': form.processing }"
+                        :disabled="form.processing"
+                        class=""
+                        @click="deleteUser"
+                >Delete
+                </ButtonPrimary>
             </div>
         </Modal>
     </section>

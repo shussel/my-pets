@@ -14,8 +14,8 @@ const props = defineProps({
 
 const classes = computed(() =>
     props.active
-        ? "block w-full ps-4 pe-4 py-2 border-t-2 text-start text-lg font-bold text-lt/50 dark:text-lt bg-lt/50 dark:bg-blue-800 focus:outline-none focus:text-blue-800 focus:bg-lt/50 focus:border-lt/50 dark:focus:text-lt/50 dark:focus:bg-blue-800 dark:focus:border-blue-800 transition duration-150 ease-in-out"
-        : "block w-full ps-4 pe-4 py-2 border-t-2 text-start text-lg font-bold text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-lt/50 dark:hover:bg-blue-900 hover:border-lt/50 dark:hover:border-blue-900 focus:outline-none focus:text-slate-800 dark:focus:text-slate-200 focus:bg-lt/50 dark:focus:bg-blue-800 focus:border-lt/50 dark:focus:border-blue-800 transition duration-150 ease-in-out"
+        ? "block w-full ps-8 pe-4 py-2 text-start text-lg font-bold text-slate-800 dark:text-slate-200 bg-lt/50 focus:text-slate-900 focus:bg-lt/50 dark:focus:text-slate-100 transition duration-150 ease-in-out border-b border-b-slate-200 dark:border-b-slate-500"
+        : "block w-full ps-8 pe-4 py-2 text-start text-lg font-bold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-lt/50 dark:hover:bg-lt/50 focus:text-slate-900 dark:focus:text-slate-100 focus:bg-lt/50 transition duration-150 ease-in-out border-b border-b-slate-200 dark:border-b-slate-500"
 );
 </script>
 
