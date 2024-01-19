@@ -40,14 +40,14 @@ function toRoute(route_name, id) {
     currentRoute.value = route_name;
     currentId.value = id;
     history.pushState(null, null, route(toValue(route_name), toValue(id)));
-    setTimeout(() => {
-        showMessage.value = false;
-    }, 5000);
 }
 
 const showMessage = ref(true);
 router.on("finish", () => {
     showMessage.value = true;
+    setTimeout(() => {
+        showMessage.value = false;
+    }, 5000);
 });
 
 const currentData = computed(() => {
