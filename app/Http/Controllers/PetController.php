@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\PetRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Enums\SpeciesEnum;
 use App\Enums\SexEnum;
 use Inertia\Inertia;
+use Inertia\Response;
+use App\Http\Requests\PetRequest;
+use \Illuminate\Http\RedirectResponse;
 
 class PetController extends Controller
 {
-    protected function petsResponse(): \Inertia\Response
+    protected function petsResponse(): Response
     {
         return Inertia::render('Pets/Pets', [
             'data' => auth()->user()->pets,
@@ -25,7 +27,7 @@ class PetController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): \Inertia\Response
+    public function index(): Response
     {
         return $this->petsResponse();
     }
@@ -33,7 +35,7 @@ class PetController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(): \Inertia\Response
+    public function create(): Response
     {
         return $this->petsResponse();
     }
@@ -41,7 +43,7 @@ class PetController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($pet): \Inertia\Response
+    public function show($pet): Response
     {
         return $this->petsResponse();
     }
@@ -49,7 +51,7 @@ class PetController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($pet_id): \Inertia\Response
+    public function edit($pet_id): Response
     {
         return $this->petsResponse();
     }
@@ -57,7 +59,7 @@ class PetController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(PetRequest $request): \Illuminate\Http\RedirectResponse
+    public function store(PetRequest $request): RedirectResponse
     {
         $validated = $request->validated();
 
@@ -73,7 +75,7 @@ class PetController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(PetRequest $request, $pet_id): \Illuminate\Http\RedirectResponse
+    public function update(PetRequest $request, $pet_id): RedirectResponse
     {
         $validated = $request->validated();
 
@@ -98,7 +100,7 @@ class PetController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($pet_id): \Illuminate\Http\RedirectResponse
+    public function destroy($pet_id): RedirectResponse
     {
         if ($pet = auth()->user()->pets()->find($pet_id)) {
             // move avatar to deleted folder

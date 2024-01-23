@@ -26,14 +26,14 @@ const { currentView, baseRoute, currentRoute } = useRoute(
 
 const { currentData } = useCurrentData(currentRoute, props);
 
-const { title: pageTitle } = useCrudTitle(baseRoute, currentData, "Pet", "Pets");
+const { title } = useCrudTitle(baseRoute, currentData, "Pet", "Pets");
 
 </script>
 
 <template>
-    <AuthenticatedLayout :pageTitle="pageTitle" @nav="useRoute($event)">
+    <AuthenticatedLayout :pageTitle="title" @nav="useRoute($event)">
 
-        <component :is="currentView" :currentData="currentData" :data="data" :meta="meta" @nav="useRoute($event)"/>
+        <component :is="currentView" :meta="meta" :pet="currentData" :pets="data" @nav="useRoute($event)"/>
 
     </AuthenticatedLayout>
 </template>
