@@ -7,6 +7,7 @@ import DropdownLink from "@/Components/DropdownLink.vue";
 import NavLinkResponsive from "@/Components/NavLinkResponsive.vue";
 import FAIcon from "@/Components/FAIcon.vue";
 import Modal from "@/Components/Modal.vue";
+import Loading from "@/Components/Loading.vue";
 import SettingsForm from "@/Pages/Settings/SettingsForm.vue";
 import useSettings from "@/Composables/useSettings.js";
 import useRoute from "@/Composables/useRoute.js";
@@ -174,9 +175,11 @@ const { message } = useFlashMessage();
                                 <a class="block w-full ps-8 pe-4 py-2 text-start text-lg font-bold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-lt/50 dark:hover:bg-lt/50 focus:text-slate-900 dark:focus:text-slate-100 focus:bg-lt/50 transition duration-150 ease-in-out border-b border-b-slate-200 dark:border-b-slate-500"
                                    href="#" @click.prevent="openSettings"> Settings</a>
                                 <NavLinkResponsive :active="route().current('profile.edit')"
-                                                   :href="route('profile.edit')"> Profile
+                                                   :href="route('profile.edit')"
+                                                   @click="showingNavigationDropdown = false"> Profile
                                 </NavLinkResponsive>
-                                <NavLinkResponsive :href="route('logout')" as="button" method="post">
+                                <NavLinkResponsive :href="route('logout')" as="button" method="post"
+                                                   @click="showingNavigationDropdown = false">
                                     Log Out
                                 </NavLinkResponsive>
                             </div>
@@ -198,4 +201,6 @@ const { message } = useFlashMessage();
     <Modal :paw="false" :show="showSettings" maxWidth="sm">
         <SettingsForm @closeSettings="showSettings = false"/>
     </Modal>
+
+    <Loading/>
 </template>
