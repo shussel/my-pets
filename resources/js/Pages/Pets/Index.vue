@@ -12,7 +12,8 @@ const props = defineProps({
 </script>
 
 <template>
-    <PetHeader v-for="pet in data" :key="pet._id" :pet="pet" @click="$emit('nav', 'pets.show', pet._id);">
+    <PetHeader v-for="pet in data" :key="pet._id" :pet="pet"
+               @click="$emit('nav', { name: 'pets.show', params: pet._id });">
         <div>
             <h2>
                 <FAIcon :name="pet.species" class="dark:text-slate-400"/>
@@ -22,6 +23,6 @@ const props = defineProps({
         </div>
     </PetHeader>
     <div class="sm:self-stretch sm:w-full text-center">
-        <ButtonPrimary class="mb-4" @click="$emit('nav', 'pets.create')">Add a Pet</ButtonPrimary>
+        <ButtonPrimary class="mb-4" @click="$emit('nav', { name: 'pets.create' })">Add a Pet</ButtonPrimary>
     </div>
 </template>

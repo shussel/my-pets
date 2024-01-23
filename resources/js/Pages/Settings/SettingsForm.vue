@@ -2,7 +2,7 @@
 import InputLabel from "@/Components/InputLabel.vue";
 import ButtonPrimary from "@/Components/ButtonPrimary.vue";
 import InputButtons from "@/Components/InputButtons.vue";
-import useSettings from "@/Components/useSettings.js";
+import useSettings from "@/Composables/useSettings.js";
 
 const emit = defineEmits(["closeSettings"]);
 

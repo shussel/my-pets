@@ -13,7 +13,7 @@ class PetController extends Controller
 {
     protected function petsResponse(): \Inertia\Response
     {
-        return Inertia::render('Pets', [
+        return Inertia::render('Pets/Pets', [
             'data' => auth()->user()->pets,
             'meta' => fn() => [
                 'species' => SpeciesEnum::options(),

@@ -1,12 +1,12 @@
 <script setup>
-import {ref} from "vue";
-import Home from "./Auth/Home.vue";
-import Login from "./Auth/Login.vue";
-import Register from "./Auth/Register.vue";
-import ForgotPassword from "./Auth/ForgotPassword.vue";
 import Layout from "@/Layouts/GuestLayout.vue";
+import home from "./Auth/Home.vue";
+import login from "./Auth/Login.vue";
+import register from "./Auth/Register.vue";
+import request from "./Auth/ForgotPassword.vue";
+import useRoute from "@/Composables/useRoute.js";
 
-defineOptions({layout: Layout});
+defineOptions({ layout: Layout });
 
 const props = defineProps({
     canLogin: {
@@ -23,26 +23,15 @@ const props = defineProps({
     }
 });
 
-const currentRoute = ref(route().current() || "home");
-
-const views = {
-    "home": Home,
-    "login": Login,
-    "register": Register,
-    "password.request": ForgotPassword,
-};
-
-const currentView = ref(views[currentRoute.value]);
-
-function toPage(route_name) {
-    currentView.value = views[route_name];
-    history.pushState(null, null, route(route_name));
-}
+const { currentView } = useRoute(
+    { name: route().current() },
+    { home, login, register, request }
+);
 
 </script>
 
 <template>
     <component :is="currentView" :canLogin="canLogin" :canRegister="canRegister" :canResetPassword="canResetPassword"
-               :status="status" @nav="(i) => toPage(i)"/>
+               :status="status" @nav="useRoute($event)"/>
 </template>
 

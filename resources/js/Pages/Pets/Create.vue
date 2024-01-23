@@ -67,10 +67,10 @@ const saveWithCrop = (cropped) => {
     }
     form.post(route("pets.store"), {
         onSuccess: () => {
-            emit("nav", "pets.index");
+            emit("nav", { name: "pets.index" });
         },
         onError: () => {
-            emit("nav", "pets.create");
+            emit("nav", { name: "pets.create" });
         },
     });
 };
@@ -189,7 +189,7 @@ const keepCropper = ref(false);
             <div class="flex items-center justify-center mt-8 gap-4">
                 <ButtonDefault :class="{ 'opacity-25': form.processing }"
                                :disabled="form.processing"
-                               @click.prevent="emit('nav', 'pets.index')"
+                               @click.prevent="emit('nav', { name: 'pets.index' })"
                 >
                     Cancel
                 </ButtonDefault>

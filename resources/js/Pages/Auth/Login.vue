@@ -83,7 +83,7 @@ const submit = () => {
                     class="underline text-sm text-slate-600 hover:text-slate-900
                         dark:text-slate-300 dark:hover:text-slate-200
                     cursor-pointer"
-                    @click="$emit('nav','register')"
+                    @click="$emit('nav',{ name:'register'})"
             >
                 Register
             </a>
@@ -92,7 +92,7 @@ const submit = () => {
                     class="underline text-sm text-slate-600 hover:text-slate-900
                         dark:text-slate-300 dark:hover:text-slate-200
                     cursor-pointer"
-                    @click="$emit('nav','password.request')"
+                    @click="$emit('nav',{ name:'password.request'})"
             >
                 Forgot password?
             </a>

@@ -123,7 +123,7 @@ const submit = () => {
         <div class="flex items-center justify-end mt-4">
             <a
                     class="underline text-sm text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 cursor-pointer"
-                    @click="$emit('nav','login')"
+                    @click="$emit('nav',{ name:'login'})"
             >
                 Already registered?
             </a>

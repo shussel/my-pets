@@ -8,7 +8,9 @@ import NavLinkResponsive from "@/Components/NavLinkResponsive.vue";
 import FAIcon from "@/Components/FAIcon.vue";
 import Modal from "@/Components/Modal.vue";
 import SettingsForm from "@/Pages/Settings/SettingsForm.vue";
-import useSettings from "@/Components/useSettings.js";
+import useSettings from "@/Composables/useSettings.js";
+import useRoute from "@/Composables/useRoute.js";
+import useFlashMessage from "@/Composables/useFlashMessage.js";
 
 const props = defineProps({
     pageTitle: {
@@ -16,8 +18,6 @@ const props = defineProps({
         default: "MyPets"
     },
 });
-
-const emit = defineEmits(["nav"]);
 
 const { settings, useDark } = useSettings();
 
@@ -27,20 +27,20 @@ const openSettings = () => {
     showSettings.value = true;
     showingNavigationDropdown.value = false;
 };
-const closeSettings = () => {
-    showSettings.value = false;
-};
 
 const showingNavigationDropdown = ref(false);
 
 function toDashboard() {
     if (route().current().slice(0, 4) === "pets") {
-        emit("nav", "pets.index");
+        useRoute({ name: "pets.index" });
         showingNavigationDropdown.value = false;
     } else {
         router.visit(route("pets.index"));
     }
 }
+
+const { message } = useFlashMessage();
+
 </script>
 
 <template>
@@ -58,7 +58,7 @@ function toDashboard() {
                             <div class="flex items-center">
                                 <!-- Logo -->
                                 <div class="shrink-0 flex items-center">
-                                    <a @click="$emit('nav','pets.index')">
+                                    <a @click.prevent="toDashboard">
                                         <ApplicationLogo
                                                 class="block h-[55px] w-auto fill-black dark:fill-slate-200"
                                         />
@@ -75,8 +75,8 @@ function toDashboard() {
                             <div class="hidden sm:flex sm:items-center sm:ms-6">
                                 <!-- Navigation Links -->
                                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex cursor-pointer">
-                                    <a v-if="!route().current('pets.index')" :active="route().current('pets.index')"
-                                       class="font-medium text-lg" @click="toDashboard">
+                                    <a v-if="!route().current('pets.index')"
+                                       class="font-medium text-lg" @click.prevent="toDashboard">
                                         Pets
                                     </a>
                                 </div>
@@ -150,7 +150,7 @@ function toDashboard() {
                     >
                         <a v-if="!route().current('pets.index')" :active="route().current('pets.index')"
                            class="block w-full mt-1 ps-4 pe-4 py-3 text-start text-2xl font-bold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-lt/50 dark:hover:bg-lt/50 focus:text-slate-900 dark:focus:text-slate-100 focus:bg-lt/50 dark:focus:bg-lt/50  transition duration-150 ease-in-out cursor-pointer border-t border-t-slate-200 dark:border-t-slate-500"
-                           @click="toDashboard">
+                           @click.prevent="toDashboard">
                             Pets
                         </a>
 
@@ -186,6 +186,9 @@ function toDashboard() {
                 <!-- Page Content -->
                 <main
                         class="m-3 flex flex-col justify-start items-center gap-4 sm:m-6 sm:flex-row sm:justify-center sm:items-stretch sm:flex-wrap sm:gap-6">
+                    <div v-if="message" class="text-center font-bold w-full">
+                        {{ message }}
+                    </div>
                     <slot/>
                 </main>
             </div>
@@ -193,6 +196,6 @@ function toDashboard() {
     </div>
 
     <Modal :paw="false" :show="showSettings" maxWidth="sm">
-        <SettingsForm @closeSettings="closeSettings"/>
+        <SettingsForm @closeSettings="showSettings = false"/>
     </Modal>
 </template>

@@ -74,10 +74,10 @@ const saveWithCrop = (cropped) => {
     }
     form.post(route("pets.update", form._id), {
         onSuccess: () => {
-            emit("nav", "pets.index");
+            emit("nav", { name: "pets.index" });
         },
         onError: () => {
-            emit("nav", "pets.edit", form._id);
+            emit("nav", { name: "pets.edit", params: form._id });
         },
     });
 };
@@ -100,7 +100,7 @@ function deletePet() {
     closeModal();
     deleteForm.delete(route("pets.destroy", props.currentData._id), {
         onSuccess: () => {
-            emit("nav", "pets.index");
+            emit("nav", { name: "pets.index" });
         },
     });
 }
@@ -220,7 +220,7 @@ const closeModal = () => {
             <div class="flex items-stretch justify-center mt-8 gap-4">
                 <ButtonDefault :class="{ 'opacity-25': form.processing }"
                                :disabled="form.processing"
-                               @click.prevent="emit('nav', 'pets.index')"
+                               @click.prevent="emit('nav', { name: 'pets.index' })"
                 >
                     Cancel
                 </ButtonDefault>

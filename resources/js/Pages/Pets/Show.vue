@@ -29,7 +29,7 @@ const emit = defineEmits(["nav"]);
     </PetHeader>
     <div class="sm:self-stretch sm:w-full text-center">
         <ButtonDefault :class="{ 'opacity-25': disableButtons }" :disabled="disableButtons" class="m-2"
-                       @click="$emit('nav', 'pets.edit', currentData._id)">Edit Pet
+                       @click="$emit('nav', { name: 'pets.edit', params: currentData._id})">Edit Pet
         </ButtonDefault>
     </div>
 </template>
