@@ -62,7 +62,7 @@ const closeModal = () => {
             </div>
         </div>
 
-        <Modal :show="confirmingUserDeletion" maxWidth="sq" @close="closeModal">
+        <Modal :paw="true" :show="confirmingUserDeletion" maxWidth="sq" @close="closeModal">
 
             <h2 class="bg-transparent text-lg">
                 Confirm Account Deletion
