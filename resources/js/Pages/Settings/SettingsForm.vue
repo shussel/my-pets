@@ -17,11 +17,13 @@ const { settings, settingsKey, options } = useSettings();
             <div class="flex flex-wrap gap-2">
                 <div class="grow min-w-1/2">
                     <InputLabel for="theme" value="Theme Color"/>
-                    <InputButtons :key="settingsKey" v-model="settings.theme" :options="options.theme" class="gap-2"/>
+                    <InputButtons id="theme" :key="settingsKey" v-model="settings.theme" :options="options.theme"
+                                  class="gap-2"/>
                 </div>
                 <div class="grow min-w-1/2">
                     <InputLabel for="darkMode" value="Dark Mode"/>
-                    <InputButtons :key="settingsKey" v-model="settings.darkMode" :options="options.darkMode"
+                    <InputButtons id="darkMode" :key="settingsKey" v-model="settings.darkMode"
+                                  :options="options.darkMode"
                                   class="gap-2"/>
                 </div>
             </div>

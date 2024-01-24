@@ -113,7 +113,7 @@ const keepCropper = ref(false);
                 <div class="grow min-w-1/2">
                     <InputLabel for="species" value="Species"/>
 
-                    <InputButtons v-model="form.species" :options="meta.species" class="gap-2"/>
+                    <InputButtons id="species" v-model="form.species" :options="meta.species" class="gap-2"/>
 
                     <InputError :message="form.errors.species" class="mt-2"/>
                 </div>
@@ -121,7 +121,7 @@ const keepCropper = ref(false);
                 <div v-if="form.species || form.sex" class="w-1/2">
                     <InputLabel for="sex" value="Sex"/>
 
-                    <InputButtons v-model="form.sex" :options="meta.sexes" class="gap-2"/>
+                    <InputButtons id="sex" v-model="form.sex" :options="meta.sexes" class="gap-2"/>
 
                     <InputError :message="form.errors.sex" class="mt-2"/>
                 </div>
@@ -133,7 +133,7 @@ const keepCropper = ref(false);
 
                     <InputLabel for="age" value="Age"/>
 
-                    <BirthdayCalc v-model="form.birth_date" :maxAge="maxAge"/>
+                    <BirthdayCalc id="age" v-model="form.birth_date" :maxAge="maxAge"/>
 
                 </div>
 
@@ -145,7 +145,7 @@ const keepCropper = ref(false);
                             v-model="form.birth_date"
                             :max="maxBirthday"
                             :min="minBirthday"
-                            autocomplete=""
+                            autocomplete="no"
                             class="mt-1 block w-full"
                             required
                             type="date"
@@ -165,7 +165,7 @@ const keepCropper = ref(false);
                                 id="weight"
                                 v-model="form.weight"
                                 :max="maxWeight"
-                                autocomplete=""
+                                autocomplete="no"
                                 autofocus
                                 class="block w-full"
                                 min="1"
@@ -178,7 +178,7 @@ const keepCropper = ref(false);
                                 id="weight"
                                 v-model="form.weight"
                                 :max="maxWeight"
-                                autocomplete=""
+                                autocomplete="no"
                                 class="block w-full accent-lt"
                                 min="1"
                                 type="range"

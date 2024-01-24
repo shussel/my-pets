@@ -50,9 +50,10 @@ const closeModal = () => {
                 your account, please download any data or information that you wish to retain.
             </p>
             <div class="mt-2 flex flex-col gap-4 md:w-1/2">
-                <div class="text-center text-sm">
-                    <InputCheckbox v-model="enableDelete" :checked="false"/> &nbsp;Yes, I want to delete my
-                    account.
+                <div class="text-center">
+                    <InputCheckbox id="enableDelete" v-model="enableDelete" :checked="false"/>
+                    <InputLabel class="inline pl-2" for="enableDelete" value="Yes, I want to delete my
+                    account."/>&nbsp;
                 </div>
                 <div class="text-center">
                     <ButtonPrimary :class="{ 'opacity-25': !enableDelete }" :disabled="!enableDelete"

@@ -12,6 +12,7 @@ import ButtonPrimary from "@/Components/ButtonPrimary.vue";
 import ModalConfirm from "@/Components/ModalConfirm.vue";
 import Card from "@/Components/Card.vue";
 import usePageTitle from "@/Composables/usePageTitle.js";
+import usePetMessage from "@/Composables/usePetMessage.js";
 
 const props = defineProps({
     meta: {
@@ -36,7 +37,6 @@ const form = useForm({
     birth_date: props.pet.birth_date,
     avatar: props.pet.avatar,
     newAvatar: null,
-    message: "edited",
     _method: "put"
 });
 
@@ -77,6 +77,8 @@ const saveWithCrop = (cropped) => {
     }
     form.post(route("pets.update", form._id), {
         onSuccess: () => {
+            usePetMessage(form, "Edited");
+            console.log("pre-edit", toRaw(props.pet));
             emit("nav", { name: "pets.index" });
         },
         onError: () => {
@@ -144,7 +146,7 @@ const closeModal = () => {
                 <div class="grow min-w-1/2">
                     <InputLabel for="species" value="Species"/>
 
-                    <InputButtons v-model="form.species" :options="meta.species" class="gap-2"/>
+                    <InputButtons id="species" v-model="form.species" :options="meta.species" class="gap-2"/>
 
                     <InputError :message="form.errors.species" class="mt-2"/>
                 </div>
@@ -152,7 +154,7 @@ const closeModal = () => {
                 <div v-if="form.species || form.sex" class="w-1/2">
                     <InputLabel for="sex" value="Sex"/>
 
-                    <InputButtons v-model="form.sex" :options="meta.sexes" class="gap-2"/>
+                    <InputButtons id="sex" v-model="form.sex" :options="meta.sexes" class="gap-2"/>
 
                     <InputError :message="form.errors.sex" class="mt-2"/>
                 </div>
@@ -177,7 +179,7 @@ const closeModal = () => {
                             v-model="form.birth_date"
                             :max="maxBirthday"
                             :min="minBirthday"
-                            autocomplete=""
+                            autocomplete="no"
                             class="mt-1 block w-full"
                             required
                             type="date"
@@ -197,7 +199,7 @@ const closeModal = () => {
                                 id="weight"
                                 v-model="form.weight"
                                 :max="maxWeight"
-                                autocomplete=""
+                                autocomplete="no"
                                 class="block w-full"
                                 min="1"
                                 type="number"
@@ -209,7 +211,7 @@ const closeModal = () => {
                                 id="weight"
                                 v-model="form.weight"
                                 :max="maxWeight"
-                                autocomplete=""
+                                autocomplete="no"
                                 class="block w-full accent-lt"
                                 min="1"
                                 type="range"

@@ -96,7 +96,7 @@ watch(() => props.modelValue, (newBirthday) => {
                 id="age"
                 v-model="age.count"
                 :max="maxAge"
-                autocomplete=""
+                autocomplete="no"
                 class="mt-1 w-[52px] px-2 max-h-[42px]"
                 min="0"
                 type="number"

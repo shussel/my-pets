@@ -27,7 +27,7 @@ usePageTitle("Pets");
                     <FAIcon :name="pet.species" class="dark:text-slate-400"/>
                     {{ pet.name }}
                 </h2>
-                <SpeechBubble :message="pet.message"/>
+                <SpeechBubble :pet="pet"/>
             </div>
         </div>
         <PetButtons :pet="pet"/>
