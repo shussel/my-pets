@@ -6,7 +6,8 @@ import show from "@/Pages/Pets/Show.vue";
 import edit from "@/Pages/Pets/Edit.vue";
 import useRoute from "@/Composables/useRoute.js";
 import useCurrentData from "@/Composables/useCurrentData.js";
-import useCrudTitle from "@/Composables/useCrudTitle.js";
+
+defineOptions({ layout: AuthenticatedLayout });
 
 const props = defineProps({
     data: {
@@ -26,14 +27,8 @@ const { currentView, baseRoute, currentRoute } = useRoute(
 
 const { currentData } = useCurrentData(currentRoute, props);
 
-const { title } = useCrudTitle(baseRoute, currentData, "Pet", "Pets");
-
 </script>
 
 <template>
-    <AuthenticatedLayout :pageTitle="title" @nav="useRoute($event)">
-
         <component :is="currentView" :meta="meta" :pet="currentData" :pets="data" @nav="useRoute($event)"/>
-
-    </AuthenticatedLayout>
 </template>

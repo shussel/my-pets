@@ -5,12 +5,16 @@ import PetButtons from "@/Components/PetButtons.vue";
 import ButtonPrimary from "@/Components/ButtonPrimary.vue";
 import SpeechBubble from "@/Components/SpeechBubble.vue";
 import FAIcon from "@/Components/FAIcon.vue";
+import usePageTitle from "@/Composables/usePageTitle.js";
 
 const props = defineProps({
     pets: {
         type: Object,
     },
 });
+
+usePageTitle("Pets");
+
 </script>
 
 <template>

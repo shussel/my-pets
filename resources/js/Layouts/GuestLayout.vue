@@ -3,6 +3,7 @@ import { Link } from "@inertiajs/vue3";
 import ApplicationLogo from "@/Components/ApplicationLogo.vue";
 import useSettings from "@/Composables/useSettings.js";
 import useRoute from "@/Composables/useRoute.js";
+import Loading from "@/Components/Loading.vue";
 
 const { settings, useDark } = useSettings();
 </script>
@@ -27,4 +28,6 @@ const { settings, useDark } = useSettings();
             </div>
         </div>
     </div>
+
+    <Loading/>
 </template>

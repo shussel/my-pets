@@ -10,12 +10,15 @@ import InputAvatar from "@/Components/InputAvatar.vue";
 import BirthdayCalc from "@/Components/BirthdayCalc.vue";
 import ButtonDefault from "@/Components/ButtonDefault.vue";
 import ButtonPrimary from "@/Components/ButtonPrimary.vue";
+import usePageTitle from "@/Composables/usePageTitle.js";
 
 const props = defineProps({
     meta: {
         type: Object,
     },
 });
+
+usePageTitle("Add Pet");
 
 const emit = defineEmits(["nav"]);
 

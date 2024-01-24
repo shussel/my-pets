@@ -12,13 +12,9 @@ import SettingsForm from "@/Pages/Settings/SettingsForm.vue";
 import useSettings from "@/Composables/useSettings.js";
 import useRoute from "@/Composables/useRoute.js";
 import useFlashMessage from "@/Composables/useFlashMessage.js";
+import usePageTitle from "@/Composables/usePageTitle.js";
 
-const props = defineProps({
-    pageTitle: {
-        type: String,
-        default: "MyPets"
-    },
-});
+const { pageTitle } = usePageTitle();
 
 const { settings, useDark } = useSettings();
 
@@ -34,10 +30,10 @@ const showingNavigationDropdown = ref(false);
 function toDashboard() {
     if (route().current().slice(0, 4) === "pets") {
         useRoute({ name: "pets.index" });
-        showingNavigationDropdown.value = false;
     } else {
         router.visit(route("pets.index"));
     }
+    showingNavigationDropdown.value = false;
 }
 
 const { message } = useFlashMessage();

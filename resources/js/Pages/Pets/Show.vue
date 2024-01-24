@@ -3,6 +3,7 @@ import Card from "@/Components/Card.vue";
 import PetImage from "@/Components/PetImage.vue";
 import PetButtons from "@/Components/PetButtons.vue";
 import ButtonDefault from "@/Components/ButtonDefault.vue";
+import usePageTitle from "@/Composables/usePageTitle.js";
 
 const props = defineProps({
     pet: {
@@ -10,6 +11,8 @@ const props = defineProps({
         required: true,
     }
 });
+
+usePageTitle(props.pet.name);
 
 const emit = defineEmits(["nav"]);
 

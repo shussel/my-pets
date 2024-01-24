@@ -11,6 +11,7 @@ import ButtonDefault from "@/Components/ButtonDefault.vue";
 import ButtonPrimary from "@/Components/ButtonPrimary.vue";
 import ModalConfirm from "@/Components/ModalConfirm.vue";
 import Card from "@/Components/Card.vue";
+import usePageTitle from "@/Composables/usePageTitle.js";
 
 const props = defineProps({
     meta: {
@@ -21,6 +22,8 @@ const props = defineProps({
         required: true,
     }
 });
+
+usePageTitle("Edit " + props.pet.name);
 
 const emit = defineEmits(["nav"]);
 
