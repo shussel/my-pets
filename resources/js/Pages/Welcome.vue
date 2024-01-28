@@ -32,6 +32,6 @@ const { currentView } = useRoute(
 
 <template>
     <component :is="currentView" :canLogin="canLogin" :canRegister="canRegister" :canResetPassword="canResetPassword"
-               :status="status" @nav="useRoute($event)"/>
+               :status="status"/>
 </template>
 

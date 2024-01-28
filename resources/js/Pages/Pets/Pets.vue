@@ -30,5 +30,5 @@ const { currentData } = useCurrentData(currentRoute, props);
 </script>
 
 <template>
-        <component :is="currentView" :meta="meta" :pet="currentData" :pets="data" @nav="useRoute($event)"/>
+        <component :is="currentView" :meta="meta" :pet="currentData" :pets="data"/>
 </template>

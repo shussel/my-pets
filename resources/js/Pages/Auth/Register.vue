@@ -6,6 +6,7 @@ import InputText from "@/Components/InputText.vue";
 import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import ButtonPrimary from "@/Components/ButtonPrimary.vue";
+import useRoute from "@/Composables/useRoute.js";
 
 defineOptions({layout: Layout});
 
@@ -123,7 +124,7 @@ const submit = () => {
         <div class="flex items-center justify-end mt-4">
             <a
                     class="underline text-sm text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 cursor-pointer"
-                    @click="$emit('nav',{ name:'login'})"
+                    @click="useRoute({ name:'login'})"
             >
                 Already registered?
             </a>

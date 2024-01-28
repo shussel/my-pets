@@ -6,6 +6,7 @@ import InputLabel from "@/Components/InputLabel.vue";
 import InputError from "@/Components/InputError.vue";
 import InputCheckbox from "@/Components/InputCheckbox.vue";
 import ButtonPrimary from "@/Components/ButtonPrimary.vue";
+import useRoute from "@/Composables/useRoute.js";
 
 defineOptions({layout: Layout});
 
@@ -83,7 +84,7 @@ const submit = () => {
                     class="underline text-sm text-slate-600 hover:text-slate-900
                         dark:text-slate-300 dark:hover:text-slate-200
                     cursor-pointer"
-                    @click="$emit('nav',{ name:'register'})"
+                    @click="useRoute({ name:'register'})"
             >
                 Register
             </a>
@@ -92,7 +93,7 @@ const submit = () => {
                     class="underline text-sm text-slate-600 hover:text-slate-900
                         dark:text-slate-300 dark:hover:text-slate-200
                     cursor-pointer"
-                    @click="$emit('nav',{ name:'password.request'})"
+                    @click="useRoute({ name:'password.request'})"
             >
                 Forgot password?
             </a>

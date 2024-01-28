@@ -13,6 +13,7 @@ import ButtonDefault from "@/Components/ButtonDefault.vue";
 import ButtonPrimary from "@/Components/ButtonPrimary.vue";
 import usePageTitle from "@/Composables/usePageTitle.js";
 import usePetAI from "@/Composables/usePetAI.js";
+import useRoute from "@/Composables/useRoute.js";
 
 const props = defineProps({
     meta: {
@@ -21,8 +22,6 @@ const props = defineProps({
 });
 
 usePageTitle("Add Pet");
-
-const emit = defineEmits(["nav"]);
 
 const form = useForm({
     _id: null,
@@ -74,10 +73,10 @@ const saveWithCrop = (cropped) => {
     form.post(route("pets.store"), {
         onSuccess: () => {
             usePetAI(form, { name: "added", pet: form });
-            emit("nav", { name: "pets.index" });
+            useRoute({ name: "pets.index" });
         },
         onError: () => {
-            emit("nav", { name: "pets.create" });
+            useRoute({ name: "pets.create" });
         },
     });
 };
@@ -196,7 +195,7 @@ const keepCropper = ref(false);
             <div class="flex items-center justify-center mt-8 gap-4">
                 <ButtonDefault :class="{ 'opacity-25': form.processing }"
                                :disabled="form.processing"
-                               @click.prevent="emit('nav', { name: 'pets.index' })"
+                               @click.prevent="useRoute({ name: 'pets.index' })"
                 >
                     Cancel
                 </ButtonDefault>

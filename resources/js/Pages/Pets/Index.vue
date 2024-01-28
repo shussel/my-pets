@@ -6,6 +6,7 @@ import ButtonPrimary from "@/Components/ButtonPrimary.vue";
 import PetStatus from "@/Components/PetStatus.vue";
 import FAIcon from "@/Components/FAIcon.vue";
 import usePageTitle from "@/Composables/usePageTitle.js";
+import useRoute from "@/Composables/useRoute.js";
 
 const props = defineProps({
     pets: {
@@ -19,7 +20,7 @@ usePageTitle("Pets");
 
 <template>
     <Card v-for="pet in pets" :key="pet._id" :pet="pet"
-          @click="$emit('nav', { name: 'pets.show', params: pet._id });">
+          @click.prevent="useRoute({ name: 'pets.show', params: pet._id })">
         <div class="flex justify-start gap-2">
             <PetImage :pet="pet"/>
             <div class="grow">
@@ -33,6 +34,6 @@ usePageTitle("Pets");
         <PetButtons :pet="pet"/>
     </Card>
     <div class="sm:self-stretch sm:w-full text-center">
-        <ButtonPrimary class="mb-4" @click="$emit('nav', { name: 'pets.create' })">Add a Pet</ButtonPrimary>
+        <ButtonPrimary class="mb-4" @click.prevent="useRoute({ name: 'pets.create' })">Add a Pet</ButtonPrimary>
     </div>
 </template>

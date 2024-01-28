@@ -2,6 +2,7 @@
 import {Head} from "@inertiajs/vue3";
 import ButtonBone from "@/Components/ButtonBone.vue";
 import Layout from "@/Layouts/GuestLayout.vue";
+import useRoute from "@/Composables/useRoute.js";
 
 defineOptions({layout: Layout});
 
@@ -20,11 +21,11 @@ const props = defineProps({
     <div class="w-1/2 mt-5 mb-6 self-center">
         <div v-if="canRegister">
             <h2 class="block text-center text-lg">New Users</h2>
-            <ButtonBone @click="$emit('nav',{ name:'register'})">Register</ButtonBone>
+            <ButtonBone @click="useRoute({ name:'register'})">Register</ButtonBone>
         </div>
         <div v-if="canLogin">
             <h2 class="block text-center mt-3 text-lg">Existing Users</h2>
-            <ButtonBone class="mb-4" @click="$emit('nav',{ name:'login'})">Log In</ButtonBone>
+            <ButtonBone class="mb-4" @click="useRoute({ name:'login'})">Log In</ButtonBone>
         </div>
     </div>
 </template>

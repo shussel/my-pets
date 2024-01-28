@@ -4,6 +4,7 @@ import PetImage from "@/Components/PetImage.vue";
 import PetButtons from "@/Components/PetButtons.vue";
 import ButtonDefault from "@/Components/ButtonDefault.vue";
 import usePageTitle from "@/Composables/usePageTitle.js";
+import useRoute from "@/Composables/useRoute.js";
 
 const props = defineProps({
     pet: {
@@ -13,8 +14,6 @@ const props = defineProps({
 });
 
 usePageTitle(props.pet.name);
-
-const emit = defineEmits(["nav"]);
 
 </script>
 
@@ -48,7 +47,7 @@ const emit = defineEmits(["nav"]);
                 </div>
                 <div class="text-center">
                     <ButtonDefault :class="{ 'opacity-25': disableButtons }" :disabled="disableButtons" class="m-2"
-                                   @click="$emit('nav', { name: 'pets.edit', params: pet._id})">Edit
+                                   @click="useRoute({ name: 'pets.edit', params: pet._id})">Edit
                     </ButtonDefault>
                 </div>
             </div>

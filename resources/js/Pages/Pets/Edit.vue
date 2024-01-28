@@ -13,6 +13,7 @@ import ModalConfirm from "@/Components/ModalConfirm.vue";
 import Card from "@/Components/Card.vue";
 import usePageTitle from "@/Composables/usePageTitle.js";
 import usePetAI from "@/Composables/usePetAI.js";
+import useRoute from "@/Composables/useRoute.js";
 
 const props = defineProps({
     meta: {
@@ -25,8 +26,6 @@ const props = defineProps({
 });
 
 usePageTitle("Edit " + props.pet.name);
-
-const emit = defineEmits(["nav"]);
 
 const form = useForm({
     _id: props.pet._id,
@@ -80,10 +79,10 @@ const saveWithCrop = (cropped) => {
     form.post(route("pets.update", form._id), {
         onSuccess: () => {
             usePetAI(form, { name: "edited", oldPet: startData, newPet: form });
-            emit("nav", { name: "pets.index" });
+            useRoute({ name: "pets.index" });
         },
         onError: () => {
-            emit("nav", { name: "pets.edit", params: form._id });
+            useRoute({ name: "pets.edit", params: form._id });
         },
     });
 };
@@ -106,7 +105,7 @@ function deletePet() {
     closeModal();
     deleteForm.delete(route("pets.destroy", props.pet._id), {
         onSuccess: () => {
-            emit("nav", { name: "pets.index" });
+            useRoute({ name: "pets.index" });
         },
     });
 }
@@ -226,7 +225,7 @@ const closeModal = () => {
             <div class="flex items-stretch justify-center mt-8 gap-4">
                 <ButtonDefault :class="{ 'opacity-25': form.processing }"
                                :disabled="form.processing"
-                               @click.prevent="emit('nav', { name: 'pets.index' })"
+                               @click.prevent="useRoute({ name: 'pets.index' })"
                 >
                     Cancel
                 </ButtonDefault>
