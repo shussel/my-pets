@@ -1,6 +1,7 @@
 <script setup>
-import {toRaw, computed, ref} from "vue";
-import {useForm} from "@inertiajs/vue3";
+import { toRaw, computed, ref } from "vue";
+import ObjectID from "bson-objectid";
+import { useForm } from "@inertiajs/vue3";
 import Card from "@/Components/Card.vue";
 import InputText from "@/Components/InputText.vue";
 import InputError from "@/Components/InputError.vue";
@@ -11,6 +12,7 @@ import BirthdayCalc from "@/Components/BirthdayCalc.vue";
 import ButtonDefault from "@/Components/ButtonDefault.vue";
 import ButtonPrimary from "@/Components/ButtonPrimary.vue";
 import usePageTitle from "@/Composables/usePageTitle.js";
+import usePetAI from "@/Composables/usePetAI.js";
 
 const props = defineProps({
     meta: {
@@ -23,6 +25,7 @@ usePageTitle("Add Pet");
 const emit = defineEmits(["nav"]);
 
 const form = useForm({
+    _id: null,
     name: "",
     species: "",
     sex: "",
@@ -30,7 +33,6 @@ const form = useForm({
     birth_date: "",
     avatar: null,
     newAvatar: null,
-    message: "hello",
 });
 
 const maxAge = computed(() => {
@@ -68,8 +70,10 @@ const saveWithCrop = (cropped) => {
     if (cropped) {
         form.newAvatar = cropped;
     }
+    form._id = ObjectID().toHexString();
     form.post(route("pets.store"), {
         onSuccess: () => {
+            usePetAI(form, { name: "added", pet: form });
             emit("nav", { name: "pets.index" });
         },
         onError: () => {

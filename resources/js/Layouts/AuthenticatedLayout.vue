@@ -48,7 +48,7 @@ const { message } = useFlashMessage();
 
         <div class="min-h-screen bg-slate-100 dark:bg-slate-900 dark:text-slate-200 pb-3 sm:p-4">
             <div class="w-full max-w-7xl mx-auto">
-                <nav class="fixed top-0 left-0 right-0 sm:top-4 sm:right-4 sm:left-4 lg:mx-auto max-w-7xl bg-white dark:bg-slate-700 shadow-md sm:rounded-full">
+                <nav class="fixed top-0 left-0 right-0 sm:top-4 sm:right-4 sm:left-4 lg:mx-auto max-w-7xl bg-white dark:bg-slate-700 shadow-md sm:rounded-full z-50">
                     <!-- Primary Navigation Menu -->
                     <div class="mx-2 sm:pr-2">
                         <div class="flex justify-between h-16">
@@ -184,7 +184,7 @@ const { message } = useFlashMessage();
                 </nav>
                 <!-- Page Content -->
                 <main
-                        class="mx-3 pt-[75px] flex flex-col justify-start items-center gap-4 sm:m-6 sm:flex-row sm:justify-center sm:items-stretch sm:flex-wrap sm:gap-6">
+                        class="mx-3 sm:mx-6 pt-[75px] sm:pt-[85px] flex flex-col sm:flex-row justify-start items-center sm:justify-center sm:items-stretch sm:flex-wrap gap-4 sm:gap-6">
                     <div v-if="message" class="text-center font-bold w-full">
                         {{ message }}
                     </div>

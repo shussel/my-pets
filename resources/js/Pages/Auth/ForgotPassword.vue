@@ -28,7 +28,7 @@ const submit = () => {
 
     <h2 class="mt-3 mb-2 z-10 self-center">Forgot Password</h2>
     <div class="mb-4 text-sm text-slate-600 dark:text-slate-300 text-center">
-        Enter your registered email address for a reset password link.
+        Enter your registered email address for a password reset link.
     </div>
 
     <div v-if="status" class="mb-4 font-medium text-sm text-green-600 text-center">

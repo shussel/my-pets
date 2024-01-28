@@ -3,7 +3,7 @@ import Card from "@/Components/Card.vue";
 import PetImage from "@/Components/PetImage.vue";
 import PetButtons from "@/Components/PetButtons.vue";
 import ButtonPrimary from "@/Components/ButtonPrimary.vue";
-import SpeechBubble from "@/Components/SpeechBubble.vue";
+import PetStatus from "@/Components/PetStatus.vue";
 import FAIcon from "@/Components/FAIcon.vue";
 import usePageTitle from "@/Composables/usePageTitle.js";
 
@@ -27,7 +27,7 @@ usePageTitle("Pets");
                     <FAIcon :name="pet.species" class="dark:text-slate-400"/>
                     {{ pet.name }}
                 </h2>
-                <SpeechBubble :pet="pet"/>
+                <PetStatus :pet="pet"/>
             </div>
         </div>
         <PetButtons :pet="pet"/>

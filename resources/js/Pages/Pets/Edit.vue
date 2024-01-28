@@ -1,6 +1,6 @@
 <script setup>
-import {computed, ref, toRaw} from "vue";
-import {useForm} from "@inertiajs/vue3";
+import { computed, ref, toRaw } from "vue";
+import { useForm } from "@inertiajs/vue3";
 import InputText from "@/Components/InputText.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import InputError from "@/Components/InputError.vue";
@@ -12,7 +12,7 @@ import ButtonPrimary from "@/Components/ButtonPrimary.vue";
 import ModalConfirm from "@/Components/ModalConfirm.vue";
 import Card from "@/Components/Card.vue";
 import usePageTitle from "@/Composables/usePageTitle.js";
-import usePetMessage from "@/Composables/usePetMessage.js";
+import usePetAI from "@/Composables/usePetAI.js";
 
 const props = defineProps({
     meta: {
@@ -39,6 +39,8 @@ const form = useForm({
     newAvatar: null,
     _method: "put"
 });
+
+const startData = { ...props.pet };
 
 const maxAge = computed(() => {
     if (!form.species) {
@@ -77,8 +79,7 @@ const saveWithCrop = (cropped) => {
     }
     form.post(route("pets.update", form._id), {
         onSuccess: () => {
-            usePetMessage(form, "Edited");
-            console.log("pre-edit", toRaw(props.pet));
+            usePetAI(form, { name: "edited", oldPet: startData, newPet: form });
             emit("nav", { name: "pets.index" });
         },
         onError: () => {

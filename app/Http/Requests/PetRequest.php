@@ -26,6 +26,7 @@ class PetRequest extends FormRequest
     public function rules(): array
     {
         return [
+            '_id' => 'sometimes|string|nullable',
             'name' => 'required|string|max:255',
             'species' => ['required', Rule::enum(SpeciesEnum::class)],
             'sex' => ['required', Rule::enum(SexEnum::class)],
