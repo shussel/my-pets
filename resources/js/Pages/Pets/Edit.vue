@@ -78,11 +78,11 @@ const saveWithCrop = (cropped) => {
     }
     form.post(route("pets.update", form._id), {
         onSuccess: () => {
-            usePetAI(form, { name: "edited", oldPet: startData, newPet: form });
+            usePetAI(props.pet, { name: "edited", oldPet: startData, newPet: props.pet });
             useRoute({ name: "pets.index" });
         },
         onError: () => {
-            useRoute({ name: "pets.edit", params: form._id });
+            useRoute({ name: "pets.edit", params: props.pet._id });
         },
     });
 };
