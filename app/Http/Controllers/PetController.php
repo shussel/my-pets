@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PetSettingsRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Enums\SpeciesEnum;
 use App\Enums\SexEnum;
+use App\Enums\FeedEnum;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Http\Requests\PetRequest;
@@ -20,6 +22,7 @@ class PetController extends Controller
             'meta' => fn() => [
                 'species' => SpeciesEnum::options(),
                 'sexes' => SexEnum::options(),
+                'feed' => FeedEnum::options(),
             ]
         ]);
     }
@@ -57,6 +60,14 @@ class PetController extends Controller
     }
 
     /**
+     * Show the form for editing pet settings.
+     */
+    public function settings($pet_id): Response
+    {
+        return $this->petsResponse();
+    }
+
+    /**
      * Store a newly created resource in storage.
      */
     public function store(PetRequest $request): RedirectResponse
@@ -86,15 +97,26 @@ class PetController extends Controller
 
         // delete previous avatar
         if (!$validated['avatar'] && ($previous_avatar = Auth::user()->pets()->find($pet_id)->avatar)) {
-             Storage::disk('local')->put(
-                 'deleted/'.$previous_avatar,
-                 Storage::disk('public')->get($previous_avatar));
+            Storage::disk('local')->put(
+                'deleted/'.$previous_avatar,
+                Storage::disk('public')->get($previous_avatar));
             Storage::disk('public')->delete($previous_avatar);
         }
 
         auth()->user()->pets()->find($pet_id)->update($validated);
 
         return redirect()->route('pets.index')->with('message', "$request->name updated");
+    }
+
+    public function saveSettings(PetSettingsRequest $request, $pet_id): RedirectResponse
+    {
+        $validated = $request->validated();
+
+        $pet = auth()->user()->pets()->find($pet_id);
+        $pet->settings = array_replace(is_array($pet->settings) ? $pet->settings : [], $validated);
+        $pet->save();
+
+        return redirect()->route('pets.settings', $pet_id)->with('message', "settings updated");
     }
 
     /**

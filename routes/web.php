@@ -17,6 +17,14 @@ use Illuminate\Support\Facades\Route;
 
 Route::resource('pets', PetController::class)->middleware(['auth', 'verified']);
 
+Route::get('/pets/{pet}/settings', [PetController::class, 'settings'])->middleware([
+    'auth', 'verified'
+])->name('pets.settings');
+
+Route::patch('/pets/{pet}/settings', [PetController::class, 'saveSettings'])->middleware([
+    'auth', 'verified'
+])->name('pets.saveSettings');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

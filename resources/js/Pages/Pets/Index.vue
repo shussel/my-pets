@@ -19,15 +19,19 @@ usePageTitle("Pets");
 </script>
 
 <template>
-    <Card v-for="pet in pets" :key="pet._id" :pet="pet"
-          @click.prevent="useRoute({ name: 'pets.show', params: pet._id })">
+    <Card v-for="pet in pets" :key="pet._id" :pet="pet">
         <div class="flex justify-start gap-2">
-            <PetImage :pet="pet"/>
+            <PetImage :pet="pet" @click="useRoute({ name: 'pets.show', params: pet._id })"/>
             <div class="grow">
-                <h2>
-                    <FAIcon :name="pet.species" class="dark:text-slate-400"/>
-                    {{ pet.name }}
-                </h2>
+                <div class="flex justify-between">
+                    <h2>
+                        <FAIcon :name="pet.species" class="dark:text-slate-400"/>
+                        {{ pet.name }}
+                    </h2>
+                    <FAIcon class="text-xl"
+                            color="text-slate-300 hover:text-slate-400 dark:text-slate-500 dark:hover:text-slate-400"
+                            name="gear" title="profile" @click="useRoute({ name: 'pets.settings', params: pet._id })"/>
+                </div>
                 <PetStatus :pet="pet"/>
             </div>
         </div>

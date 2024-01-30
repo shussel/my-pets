@@ -4,6 +4,7 @@ import index from "@/Pages/Pets/Index.vue";
 import create from "@/Pages/Pets/Create.vue";
 import show from "@/Pages/Pets/Show.vue";
 import edit from "@/Pages/Pets/Edit.vue";
+import settings from "@/Pages/Pets/Settings.vue";
 import useRoute from "@/Composables/useRoute.js";
 import useCurrentData from "@/Composables/useCurrentData.js";
 
@@ -22,7 +23,7 @@ const props = defineProps({
 
 const { currentView, baseRoute, currentRoute } = useRoute(
     { name: route().current(), params: route().params.pet },
-    { index, create, show, edit }
+    { index, create, show, edit, settings }
 );
 
 const { currentData } = useCurrentData(currentRoute, props);
