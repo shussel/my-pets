@@ -7,6 +7,7 @@ import ButtonPrimary from "@/Components/ButtonPrimary.vue";
 import InputText from "@/Components/InputText.vue";
 import InputButtons from "@/Components/InputButtons.vue";
 import useRoute from "@/Composables/useRoute.js";
+import usePetAI from "@/Composables/usePetAI.js";
 import FAIcon from "@/Components/FAIcon.vue";
 
 const props = defineProps({
@@ -78,6 +79,7 @@ const isSavable = computed(() => {
 const saveSettings = () => {
     form.patch(route("pets.saveSettings", props.pet._id), {
         onSuccess: () => {
+            usePetAI(props.pet, { name: "food" });
             useRoute({ name: "pets.settings", params: props.pet._id });
         },
         onError: () => {

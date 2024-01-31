@@ -14,7 +14,7 @@ export default function useRoute(setRoute = {}, views = {}) {
     // init or change route
     if (Object.keys(setRoute).length) {
         // current route exists, update history
-        if (Object.keys(currentRoute.value).length) {
+        if (Object.keys(currentRoute.value).length && (currentRoute.value.name !== setRoute.name)) {
             history.pushState(null, null, route(setRoute.name, setRoute.params));
         }
         currentRoute.value = setRoute;

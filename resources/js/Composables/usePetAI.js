@@ -5,50 +5,52 @@ const petState = ref({});
 
 // preset pet responses
 const petResponses = {
-    noAvatar: [{ speak: null, think: "I need a picture" }, { speak: "Add my picture" }],
-    newAvatar: [{ speak: null, think: "I'm so cute" }, { speak: "I like that pic" }, {
-        speak: null,
-        think: "That's my good side"
-    }],
-    weightGain: [{ speak: null, think: "I'm getting bigger" }],
-    weightLoss: [{ speak: null, think: "I'm shrinking" }],
-    speciesChange: [{ speak: null, think: "I changed species?" }],
+    newAvatar: [
+        { think: { text: "I'm so cute" } },
+        { speak: { text: "I like that pic" } },
+        { think: { text: "That's my good side" } }
+    ],
+    food: [{ think: { text: "mmm, food" } }],
+    weightGain: [{ think: { text: "I'm getting bigger" } }],
+    weightLoss: [{ think: { text: "I'm shrinking" } }],
+    speciesChange: [{ think: { text: "I changed species?" } }],
     species: {
-        dog: [{ speak: "woof" }],
-        cat: [{ speak: "meow" }, { speak: null, think: "Is it nap time yet?" }],
-        bird: [{ speak: "tweet" }],
-        fish: [{ speak: null, think: "fish can't talk" }],
-        horse: [{ speak: "neigh" }],
-        reptile: [{ speak: "ssssss" }],
+        dog: [{ speak: { text: "woof" } }, { speak: { text: "arf" } }],
+        cat: [{ speak: { text: "meow" } }, { think: { text: "Is it nap time yet?" } }, { speak: { text: "purr" } }, , { speak: { text: "mew" } }],
+        bird: [{ speak: { text: "tweet" } }, { speak: { text: "chirp" } }, { speak: { text: "caw" } }, , { speak: { text: "squawk" } }],
+        fish: [{ think: { text: "fish can't talk" } }],
+        horse: [{ speak: { text: "neigh" } }, { speak: { text: "whinny" } }],
+        reptile: [{ speak: { text: "ssssss" } }],
     }
 };
 
 petResponses.added = function(event) {
     const { pet = {} } = event;
+    console.log("added", pet.name, event);
     const possibleResponses = [];
     if (pet.avatar) {
         possibleResponses.push(...petResponses.newAvatar);
     } else {
-        possibleResponses.push(...[{
-            speak: null,
-            think: "I need a picture",
-            route: { name: "pets.edit", params: pet._id }
-        }, { speak: "Add my picture", route: { name: "pets.edit", params: pet._id } }]);
+        possibleResponses.push(...[
+            { think: { text: "I need a picture", route: { name: "pets.edit", params: pet._id } } },
+            { speak: { text: "Add my picture", route: { name: "pets.edit", params: pet._id } } }
+        ]);
     }
+    console.log("possible responses", possibleResponses);
     return possibleResponses;
 };
 
 petResponses.edited = function(event) {
     const { oldPet = {}, newPet = {} } = event;
+    console.log("edited", newPet.name, event);
     const possibleResponses = [];
     if (newPet.avatar && !oldPet.avatar) {
         possibleResponses.push(...petResponses.newAvatar);
     } else if (oldPet.avatar && !newPet.avatar) {
-        possibleResponses.push(...[{
-            speak: null,
-            think: "I need a picture",
-            route: { name: "pets.edit", params: newPet._id }
-        }, { speak: "Add my picture", route: { name: "pets.edit", params: newPet._id } }]);
+        possibleResponses.push(...[
+            { think: { text: "I need a picture", route: { name: "pets.edit", params: newPet._id } } },
+            { speak: { text: "Add my picture", route: { name: "pets.edit", params: newPet._id } } }
+        ]);
     }
     if (newPet.weight > oldPet.weight) {
         possibleResponses.push(...petResponses.weightGain);
@@ -58,17 +60,20 @@ petResponses.edited = function(event) {
     if (newPet.species !== oldPet.species) {
         possibleResponses.push(...petResponses.speciesChange);
     }
+    console.log("possible responses", possibleResponses);
     return possibleResponses;
 };
 
 // get one random response from array of possible responses
 const pickResponse = (responses) => {
-    return responses[Math.floor(Math.random() * responses.length)] || {};
+    const response = responses[Math.floor(Math.random() * responses.length)] || {};
+    console.log("response", response);
+    return response;
 };
 
 // get one of possible pet responses to event
 const processEvent = (event) => {
-    console.log(event);
+    console.log("event", event);
     const responses = petResponses[event.name];
     if (typeof responses === "function") {
         return pickResponse(responses(event));
@@ -79,33 +84,38 @@ const processEvent = (event) => {
 
 // get one of possible pet responses to current state
 const currentResponse = (pet) => {
+    const { _id: id, name, species, avatar } = pet;
     const possibleResponses = [];
-    possibleResponses.push(...petResponses["species"][pet.species]);
-    if (!pet.avatar) {
-        possibleResponses.push(...[{
-            speak: null,
-            think: "I need a picture",
-            route: { name: "pets.edit", params: pet._id }
-        }, { speak: "Add my picture", route: { name: "pets.edit", params: pet._id } }]);
+    console.log("get tick response", name, pet);
+    possibleResponses.push(...petResponses["species"][species]);
+    if (!avatar) {
+        possibleResponses.push(...[
+            { think: { text: "I need a picture", route: { name: "pets.edit", params: id } } },
+            { speak: { text: "Add my picture", route: { name: "pets.edit", params: id } } }
+        ]);
     }
     return pickResponse(possibleResponses);
 };
 
 const updatePetStatus = (pet) => {
 
-    const { _id: id } = pet;
+    const { _id: id, name } = pet;
+
+    console.log("update status", name, pet);
 
     petState.value[id]["status"] = null;
 
     if (!pet.settings) {
-        petState.value[id]["status"] = "Review pet settings";
-        petState.value[id]["route"] = { name: "pets.settings", params: id };
+        petState.value[id]["status"] = { text: "Review pet settings", route: { name: "pets.settings", params: id } };
     }
 };
 
 // periodic activity in pet state
 const brainTick = (pet) => {
     const { _id: id, name } = pet;
+
+    console.log("tick", name, pet);
+    updatePetStatus(pet);
 
     const randomize = Math.random();
     if (randomize < .25) {
@@ -114,13 +124,10 @@ const brainTick = (pet) => {
         petState.value[id] = { ...petState.value[id], ...currentResponse(pet) };
     } else if (randomize < .85) {
         // erase any previous responses
-        petState.value[id] = { ...petState.value[id], think: null, speak: null, route: null };
-    }
-
-    // status response
-    if (!petState.value[id]["speak"] && !petState.value[id]["think"]) {
-        petState.value[id]["route"] = null;
-        updatePetStatus(pet);
+        console.log(name, "mind blanks");
+        petState.value[id] = { ...petState.value[id], think: null, speak: null };
+    } else {
+        console.log(name, "continuing thought");
     }
 };
 
@@ -133,33 +140,39 @@ export default function usePetAI(pet, event = {}) {
         if (!(id in petState.value)) {
             // init pet state object
             petState.value[id] = {};
-        }
-
-        if (!petState.value[id].ticker) {
-            updatePetStatus(pet);
-            // start thinking interval
-            petState.value[id].ticker = true;
-            let ticker = setInterval(() => {
-                brainTick(pet);
-            }, Math.floor(Math.random() * (40000) + 10000));
-
-            onBeforeUnmount(() => {
-                // stop thinking interval
-                clearInterval(ticker);
-                petState.value[id].ticker = false;
-            });
+            console.log("init", pet);
         }
 
         if (Object.keys(event).length) {
             // merge event result with pet state
             petState.value[id] = { ...petState.value[id], ...processEvent(event) };
+
+        } else if (!petState.value[id].ticker) {
+            console.log("waking", name);
+            updatePetStatus(pet);
+            // start thinking interval
+            petState.value[id].ticker = setTimeout(function think() {
+                brainTick(pet);
+                const nextThought = Math.floor(Math.random() * (50000) + 10000);
+                console.log("next thought for", name, nextThought / 1000);
+                petState.value[id].ticker = setTimeout(think, nextThought);
+            }, Math.floor(Math.random() * (50000) + 10000));
+
+            onBeforeUnmount(() => {
+                // stop thinking interval
+                console.log("sleeping", name);
+                clearInterval(petState.value[id].ticker);
+                petState.value[id].ticker = null;
+            });
         }
     }
 
     // set state properties to be cleared after this view
     const clearPetState = (petId, property) => {
         if (petId && property && petState.value[petId] && petState.value[petId][property]) {
+            console.log("set clear", petId, property);
             onBeforeUnmount(() => {
+                console.log("clearing", petId, property);
                 petState.value[petId][property] = null;
             });
         }

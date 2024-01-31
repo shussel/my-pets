@@ -72,7 +72,7 @@ const saveWithCrop = (cropped) => {
     form._id = ObjectID().toHexString();
     form.post(route("pets.store"), {
         onSuccess: () => {
-            usePetAI(form, { name: "added", pet: form });
+            usePetAI(form.data(), { name: "added", pet: form.data() });
             useRoute({ name: "pets.index" });
         },
         onError: () => {
