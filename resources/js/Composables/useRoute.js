@@ -13,11 +13,15 @@ export default function useRoute(setRoute = {}, views = {}) {
 
     // init or change route
     if (Object.keys(setRoute).length) {
-        // current route exists, update history
-        if (Object.keys(currentRoute.value).length && (currentRoute.value.name !== setRoute.name)) {
-            history.pushState(null, null, route(setRoute.name, setRoute.params));
-        }
+        console.log("change route", setRoute);
+        let sameRoute = (JSON.stringify(setRoute) === JSON.stringify(currentRoute.value));
         currentRoute.value = setRoute;
+        if (!sameRoute) {
+            console.log("history route");
+            history.pushState(null, null, route(setRoute.name, setRoute.params));
+        } else {
+            console.log("same route");
+        }
     }
 
     // trim prefix from route name
