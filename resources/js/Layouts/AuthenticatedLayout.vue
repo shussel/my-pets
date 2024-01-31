@@ -44,8 +44,7 @@ const { message } = useFlashMessage();
 
     <Head :title="pageTitle"/>
 
-    <div :class="{ dark: useDark }" :data-theme="settings.theme || 'default'">
-
+    <div id="page" :class="{ dark: useDark }" :data-theme="settings.theme || 'default'">
         <div class="min-h-screen bg-slate-100 dark:bg-slate-900 dark:text-slate-200 pb-3 sm:p-4">
             <div class="w-full max-w-7xl mx-auto">
                 <nav class="fixed top-0 left-0 right-0 sm:top-4 sm:right-4 sm:left-4 lg:mx-auto max-w-7xl bg-white dark:bg-slate-700 shadow-md sm:rounded-full z-50">
