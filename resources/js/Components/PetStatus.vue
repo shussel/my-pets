@@ -49,6 +49,6 @@ watchEffect(() => {
         <div v-if="showClock" class="mr-auto">
             <FAIcon class="text-2xl" name="clock"/>
         </div>
-        <div class="mx-auto">{{ message?.text }}</div>
+        <div class="mx-auto text-center leading-snug">{{ message?.text }}</div>
     </div>
 </template>
