@@ -32,23 +32,37 @@ const form = useForm({
     }
 });
 
+const autofillMessage = ref(null);
+
 watch(() => form.food.feed, () => {
+
+    let suggest = false;
 
     switch (form.food.feed) {
         case "once":
-            form.food.feed_time_1 = (form.food.feed_time_1 && form.food.feed_time_1 !== "00:00") ? form.food.feed_time_1 : "07:00";
+            if (!form.food.feed_time_1 || form.food.feed_time_1 === "00:00") {
+                form.food.feed_time_1 = "07:00";
+                suggest = true;
+            }
             delete form.food.feed_time_2;
             delete form.food.feed_interval;
             break;
         case "twice":
-            form.food.feed_time_1 = (form.food.feed_time_1 && form.food.feed_time_1 !== "00:00") ? form.food.feed_time_1 : "07:00";
-            form.food.feed_time_2 = (form.food.feed_time_2 && form.food.feed_time_2 !== "23:59") ? form.food.feed_time_2 : "19:00";
+            if (!form.food.feed_time_1 || form.food.feed_time_1 === "00:00") {
+                form.food.feed_time_1 = "07:00";
+                suggest = true;
+            }
+            if (!form.food.feed_time_2 || form.food.feed_time_2 === "00:00") {
+                form.food.feed_time_2 = "19:00";
+                suggest = true;
+            }
             delete form.food.feed_interval;
             break;
         case "multi":
             form.food.feed_time_1 = "00:00";
             form.food.feed_time_2 = "23:59";
             form.food.feed_interval = 3;
+            suggest = true;
             break;
         case "free":
             delete form.food.feed_time_1;
@@ -57,6 +71,13 @@ watch(() => form.food.feed, () => {
             break;
         default:
     }
+
+    if (suggest) {
+        autofillMessage.value = "Suggested Values - Edit or";
+    } else {
+        autofillMessage.value = null;
+    }
+    console.log("suggest", suggest);
 });
 
 const feed_time_1_title = computed(() => {
@@ -76,7 +97,9 @@ const isSavable = computed(() => {
 });
 
 const saveSettings = () => {
+    autofillMessage.value = null;
     form.patch(route("pets.saveSettings", props.pet._id), {
+        preserveScroll: true,
         onSuccess: () => {
             usePetAI(props.pet, { name: "food" });
             useRoute({ name: "pets.settings", params: props.pet._id });
@@ -154,20 +177,21 @@ const saveSettings = () => {
                 <InputError :message="form.errors.feed_time_2" class="mt-1"/>
             </div>
 
-            <div v-show="isSavable || form.recentlySuccessful" class="text-center mb-3">
-                <ButtonPrimary v-if="!form.recentlySuccessful"
-                               :class="{ 'opacity-25': (form.processing || !form.isDirty) }"
-                               :disabled="form.processing || !form.isDirty">Save
-                </ButtonPrimary>
-
+            <div v-show="isSavable || form.recentlySuccessful"
+                 class="text-center pb-2 flex justify-center items-center gap-3 font-medium text-slate-400">
+                <div class="">{{ autofillMessage }}</div>
                 <Transition
                         enter-active-class="transition ease-in-out"
                         enter-from-class="opacity-0"
                         leave-active-class="transition ease-in-out"
                         leave-to-class="opacity-0"
                 >
-                    <p v-if="form.recentlySuccessful" class="text-sm text-slate-600">Saved</p>
+                    <p v-if="form.recentlySuccessful" class="text-sm text-slate-600 dark:text-slate-400">Saved</p>
                 </Transition>
+                <ButtonPrimary v-if="!form.recentlySuccessful"
+                               :class="{ 'opacity-25': (form.processing || !form.isDirty) }"
+                               :disabled="form.processing || !form.isDirty">Save
+                </ButtonPrimary>
             </div>
 
         </form>
