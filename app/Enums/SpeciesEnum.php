@@ -51,6 +51,18 @@ enum SpeciesEnum: string
         };
     }
 
+    public function poop(): array
+    {
+        return match ($this) {
+            SpeciesEnum::DOG => $this->toOptions([PoopEnum::YARD, PoopEnum::WALKS, PoopEnum::KENNEL]),
+            SpeciesEnum::CAT => $this->toOptions([PoopEnum::LITTERBOX, PoopEnum::YARD, PoopEnum::WALKS]),
+            SpeciesEnum::FISH => $this->toOptions([PoopEnum::TANK, PoopEnum::POND]),
+            SpeciesEnum::BIRD => $this->toOptions([PoopEnum::CAGE, PoopEnum::AVIARY]),
+            SpeciesEnum::REPTILE => $this->toOptions([PoopEnum::TANK]),
+            SpeciesEnum::HORSE => $this->toOptions([PoopEnum::STABLE, PoopEnum::PASTURE]),
+        };
+    }
+
     public static function options(): array
     {
         $cases = static::cases();
@@ -65,6 +77,18 @@ enum SpeciesEnum: string
                 'label' => Str::title($label),
                 'maxAge' => $case->maxAge(),
                 'maxWeight' => $case->maxWeight(),
+                'poop' => $case->poop(),
+            ];
+        }
+        return $options;
+    }
+
+    public function toOptions($optionList)
+    {
+        foreach ($optionList as $option) {
+            $options[] = [
+                'value' => $option->value,
+                'label' => Str::title(Str::replace('_', ' ', $option->name)),
             ];
         }
         return $options;

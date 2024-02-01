@@ -7,8 +7,8 @@ import ButtonPrimary from "@/Components/ButtonPrimary.vue";
 import InputText from "@/Components/InputText.vue";
 import InputButtons from "@/Components/InputButtons.vue";
 import useRoute from "@/Composables/useRoute.js";
-import usePetAI from "@/Composables/usePetAI.js";
 import FAIcon from "@/Components/FAIcon.vue";
+import usePetAI from "@/Composables/usePetAI.js";
 
 const props = defineProps({
     pet: {
@@ -22,7 +22,6 @@ const props = defineProps({
 });
 
 const settings = ref(props.pet?.settings?.food || {});
-const originalSettings = { ...settings };
 
 const form = useForm({
     food: {

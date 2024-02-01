@@ -6,6 +6,10 @@ defineProps({
     },
     selection: {
         type: String,
+    },
+    singleChoice: {
+        type: Boolean,
+        default: false,
     }
 });
 </script>
@@ -30,7 +34,7 @@ defineProps({
         <span>
             <slot/>
         </span>
-        <span>></span>
+        <span>{{ singleChoice ? "." : ">" }}</span>
     </button>
     <button
             v-else-if="!selection"

@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PetRequest;
 use App\Http\Requests\PetSettingsRequest;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Inertia\Inertia;
+use Inertia\Response;
 use App\Enums\SpeciesEnum;
 use App\Enums\SexEnum;
 use App\Enums\FeedEnum;
-use Inertia\Inertia;
-use Inertia\Response;
-use App\Http\Requests\PetRequest;
-use \Illuminate\Http\RedirectResponse;
+use App\Enums\PoopEnum;
 
 class PetController extends Controller
 {
@@ -116,7 +117,7 @@ class PetController extends Controller
         $pet->settings = array_replace(is_array($pet->settings) ? $pet->settings : [], $validated);
         $pet->save();
 
-        return redirect()->route('pets.settings', $pet_id)->with('message', "settings updated");
+        return redirect()->route('pets.settings', $pet_id);
     }
 
     /**

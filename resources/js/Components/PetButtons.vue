@@ -15,13 +15,13 @@ const props = defineProps({
             <FAIcon class="text-2xl" name="food"/>
         </ButtonDefault>
         <ButtonDefault class="w-[50px] h-[50px]">
-            <FAIcon class="text-2xl" name="poop"/>
-        </ButtonDefault>
-        <ButtonDefault class="w-[50px] h-[50px]">
             <FAIcon class="text-2xl" name="play"/>
         </ButtonDefault>
         <ButtonDefault class="w-[50px] h-[50px]">
             <FAIcon class="text-2xl" name="car"/>
+        </ButtonDefault>
+        <ButtonDefault class="w-[50px] h-[50px]">
+            <FAIcon class="text-2xl" name="document"/>
         </ButtonDefault>
         <ButtonDefault class="w-[50px] h-[50px]">
             <FAIcon class="text-2xl" name="help"/>

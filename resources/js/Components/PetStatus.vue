@@ -2,6 +2,7 @@
 import { computed, watchEffect } from "vue";
 import usePetAI from "@/Composables/usePetAI.js";
 import useRoute from "@/Composables/useRoute.js";
+import FAIcon from "@/Components/FAIcon.vue";
 
 const props = defineProps({
     pet: {
@@ -14,6 +15,10 @@ const { petState, clearPetState } = usePetAI(props.pet);
 
 const message = computed(() => {
     return petState.value["speak"] ? petState.value["speak"] : (petState.value["think"] ? petState.value["think"] : petState.value["status"]);
+});
+
+const showClock = computed(() => {
+    return !petState.value["speak"] && !petState.value["think"];
 });
 
 const messageClass = computed(() => {
@@ -41,6 +46,9 @@ watchEffect(() => {
     <div :class="[messageClass, {'underline cursor-pointer': message?.route}]"
          class="mt-3 p-3 flex justify-center items-center h-[56px]"
          @click="useRoute(message?.route)">
-        <div>{{ message?.text }}</div>
+        <div v-if="showClock" class="mr-auto">
+            <FAIcon class="text-2xl" name="clock"/>
+        </div>
+        <div class="mx-auto">{{ message?.text }}</div>
     </div>
 </template>

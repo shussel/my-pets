@@ -15,12 +15,13 @@ export default function useRoute(setRoute = {}, views = {}) {
     if (Object.keys(setRoute).length) {
         console.log("change route", setRoute);
         let sameRoute = (JSON.stringify(setRoute) === JSON.stringify(currentRoute.value));
+        let first_route = !Object.keys(currentRoute.value).length;
         currentRoute.value = setRoute;
-        if (!sameRoute) {
+        if (!sameRoute && !first_route) {
             console.log("history route");
             history.pushState(null, null, route(setRoute.name, setRoute.params));
         } else {
-            console.log("same route");
+            console.log("not saved to history");
         }
     }
 

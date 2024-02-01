@@ -3,6 +3,8 @@ import Card from "@/Components/Card.vue";
 import PetImage from "@/Components/PetImage.vue";
 import ButtonDefault from "@/Components/ButtonDefault.vue";
 import Food from "@/Pages/Pets/Settings/Food.vue";
+import Poop from "@/Pages/Pets/Settings/Poop.vue";
+import Sleep from "@/Pages/Pets/Settings/Sleep.vue";
 import usePageTitle from "@/Composables/usePageTitle.js";
 import useRoute from "@/Composables/useRoute.js";
 import FAIcon from "@/Components/FAIcon.vue";
@@ -65,6 +67,14 @@ usePageTitle("Pet Settings");
 
     <Card>
         <Food :meta="meta" :pet="pet"/>
+    </Card>
+
+    <Card>
+        <Poop :meta="meta" :pet="pet"/>
+    </Card>
+
+    <Card>
+        <Sleep :meta="meta" :pet="pet"/>
     </Card>
 
 </template>

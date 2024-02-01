@@ -11,6 +11,7 @@ const petResponses = {
         { think: { text: "That's my good side" } }
     ],
     food: [{ think: { text: "mmm, food" } }],
+    poop: [{ speak: { text: "everybody poops" } }],
     weightGain: [{ think: { text: "I'm getting bigger" } }],
     weightLoss: [{ think: { text: "I'm shrinking" } }],
     speciesChange: [{ think: { text: "I changed species?" } }],
@@ -105,8 +106,15 @@ const updatePetStatus = (pet) => {
 
     petState.value[id]["status"] = null;
 
-    if (!pet.settings) {
-        petState.value[id]["status"] = { text: "Review pet settings", route: { name: "pets.settings", params: id } };
+    // settings review
+    for (const setting of ["", "food", "poop", "sleep"]) {
+        if ((!setting && !pet.settings) || (setting && !pet.settings[setting])) {
+            petState.value[id]["status"] = {
+                text: `Review ${setting} settings`,
+                route: { name: "pets.settings", params: id }
+            };
+            break;
+        }
     }
 };
 
