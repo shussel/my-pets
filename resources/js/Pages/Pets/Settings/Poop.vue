@@ -91,11 +91,6 @@ watch(() => form.poop.location, () => {
         default:
     }
 
-    if (form.poop.pet_door) {
-        delete form.poop.poop_time_1;
-        delete form.poop.poop_time_2;
-    }
-
     if (suggest) {
         autofillMessage.value = "Suggested Values - Edit or";
     } else {
@@ -103,10 +98,17 @@ watch(() => form.poop.location, () => {
     }
 });
 
+watch(() => form.poop.pet_door, () => {
+    if (form.poop.pet_door) {
+        delete form.poop.poop_time_1;
+        delete form.poop.poop_time_2;
+    }
+});
+
 const poop_time_1_title = computed(() => {
     switch (form.poop.location) {
         case "yard":
-        case "stable":
+        case "pasture":
         case "kennel":
             return "Let Out Time";
         case "walks":
@@ -119,7 +121,7 @@ const poop_time_1_title = computed(() => {
 const poop_time_2_title = computed(() => {
     switch (form.poop.location) {
         case "yard":
-        case "stable":
+        case "pasture":
         case "kennel":
             return "Let In Time";
         case "walks":
