@@ -40,7 +40,7 @@ const form = useForm({
 });
 
 const isSavable = computed(() => {
-    return form.isDirty && (form[settingGroup].activity || form[settingGroup].sociability || form[settingGroup].intelligence || form[settingGroup].noise);
+    return form.isDirty && form[settingGroup].activity && form[settingGroup].sociability && form[settingGroup].intelligence && form[settingGroup].noise;
 });
 
 const saveSettings = () => {
@@ -81,7 +81,7 @@ const saveSettings = () => {
                 </div>
 
                 <div class="grow min-w-1/2 mb-2">
-                    <InputLabel for="sociability" value="Sociability"/>
+                    <InputLabel class="w-auto" for="sociability" value="Sociability"/>
                     <InputButtons id="sociability" v-model="form[settingGroup].sociability"
                                   :options="behaviorOptions.sociability" class="gap-2"/>
                 </div>
@@ -90,7 +90,7 @@ const saveSettings = () => {
             <div class="flex flex-wrap items-center gap-2">
 
                 <div class="grow min-w-1/2 mb-2">
-                    <InputLabel for="intelligence" value="Intelligence"/>
+                    <InputLabel class="w-auto" for="intelligence" value="Intelligence"/>
                     <InputButtons id="intelligence" v-model="form[settingGroup].intelligence"
                                   :options="behaviorOptions.intelligence" class="gap-2"/>
                 </div>

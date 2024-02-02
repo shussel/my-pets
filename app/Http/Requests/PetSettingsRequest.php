@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\CollarColorEnum;
 use App\Enums\FeedEnum;
 use App\Enums\PoopEnum;
 use App\Enums\SleepEnum;
@@ -51,6 +52,12 @@ class PetSettingsRequest extends FormRequest
             'behavior.sociability' => ['sometimes', Rule::enum(SociabilityEnum::class)],
             'behavior.intelligence' => ['sometimes', Rule::enum(IntelligenceEnum::class)],
             'behavior.noise' => ['sometimes', Rule::enum(NoiseEnum::class)],
+            'identity' => 'sometimes|array|nullable',
+            'identity.collar' => ['sometimes', Rule::enum(CollarColorEnum::class)],
+            'identity.chipped' => 'sometimes',
+            'identity.registry' => 'sometimes',
+            'identity.chip_id' => 'sometimes',
+            'identity.marks' => 'sometimes',
         ];
     }
 }

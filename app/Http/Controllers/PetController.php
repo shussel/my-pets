@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\CollarColorEnum;
 use App\Http\Requests\PetRequest;
 use App\Http\Requests\PetSettingsRequest;
 use Illuminate\Http\RedirectResponse;
@@ -33,6 +34,9 @@ class PetController extends Controller
                         'sociability' => SociabilityEnum::options(),
                         'intelligence' => IntelligenceEnum::options(),
                         'noise' => NoiseEnum::options(),
+                    ],
+                    'identity' => [
+                        'collar' => CollarColorEnum::options(),
                     ]
                 ]
             ]

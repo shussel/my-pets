@@ -24,7 +24,7 @@ usePageTitle("Pets");
             <PetImage :pet="pet" @click="useRoute({ name: 'pets.show', params: pet._id })"/>
             <div class="grow">
                 <div class="flex justify-between">
-                    <h2>
+                    <h2 class="-ml-[15px]">
                         <FAIcon :name="pet.species" class="dark:text-slate-400"/>
                         {{ pet.name }}
                     </h2>

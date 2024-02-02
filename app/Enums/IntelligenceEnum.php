@@ -11,4 +11,5 @@ enum IntelligenceEnum: string
     case DUMB = 'dumb';
     case AVERAGE = 'averge';
     case SMART = 'smart';
+    case SPECIAL = 'special';
 }

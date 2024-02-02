@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
+    faAddressCard,
     faBaseball,
     faBone,
     faBowlRice,
@@ -34,6 +35,7 @@ import {
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 
 library.add(
+    faAddressCard,
     faBaseball,
     faBone,
     faBowlRice,
@@ -91,6 +93,7 @@ const namedIcons = {
     gear: "fa-gear",
     help: "fa-kit-medical",
     horse: "fa-horse",
+    identity: "fa-address-card",
     light: "fa-sun",
     paw: "fa-paw",
     play: "fa-baseball",

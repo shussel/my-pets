@@ -6,6 +6,7 @@ import Food from "@/Pages/Pets/Settings/Food.vue";
 import Poop from "@/Pages/Pets/Settings/Poop.vue";
 import Sleep from "@/Pages/Pets/Settings/Sleep.vue";
 import Behavior from "@/Pages/Pets/Settings/Behavior.vue";
+import Identity from "@/Pages/Pets/Settings/Identity.vue";
 import usePageTitle from "@/Composables/usePageTitle.js";
 import useRoute from "@/Composables/useRoute.js";
 import FAIcon from "@/Components/FAIcon.vue";
@@ -31,7 +32,7 @@ usePageTitle("Pet Settings");
             <PetImage :pet="pet" class="w-[200px] h-[200px] max-h-[200px]"/>
             <div class="grow space-y-2">
                 <h2 class="text-xl px-0">
-                    <FAIcon :name="pet.species" class="dark:text-slate-400"/>
+                    <FAIcon :name="pet.species" class="-ml-[30px] dark:text-slate-400"/>
                     {{ pet.name }}
                 </h2>
                 <div class="flex justify-between items-end">
@@ -80,6 +81,10 @@ usePageTitle("Pet Settings");
 
     <Card>
         <Behavior :behaviorOptions="meta.settings.behavior" :pet="pet"/>
+    </Card>
+
+    <Card>
+        <Identity :identityOptions="meta.settings.identity" :pet="pet"/>
     </Card>
 
 </template>

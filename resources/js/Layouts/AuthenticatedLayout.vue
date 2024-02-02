@@ -185,7 +185,7 @@ const { message } = useFlashMessage();
                 </div>
                 <!-- Page Content -->
                 <main
-                        class="mx-3 sm:mx-6 pt-[75px] sm:pt-[85px] flex flex-col sm:flex-row justify-start items-center sm:justify-center sm:items-stretch sm:flex-wrap gap-4 sm:gap-6">
+                        class="mx-3 sm:mx-6 pt-[75px] sm:pt-[85px] flex flex-col sm:flex-row justify-start items-center sm:justify-center sm:items-start sm:flex-wrap gap-4 sm:gap-6">
                     <div v-if="message" class="text-center font-bold w-full">
                         {{ message }}
                     </div>

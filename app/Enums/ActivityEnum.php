@@ -8,8 +8,8 @@ enum ActivityEnum: string
 {
     use EnumTraits;
 
-    case CALM = 'calm';
+    case LOW = 'low';
     case AVERAGE = 'average';
-    case ACTIVE = 'active';
+    case HIGH = 'high';
     case SPECIAL = 'special';
 }
