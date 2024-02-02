@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\ChipRegistryEnum;
 use App\Enums\CollarColorEnum;
 use App\Http\Requests\PetRequest;
 use App\Http\Requests\PetSettingsRequest;
@@ -37,6 +38,7 @@ class PetController extends Controller
                     ],
                     'identity' => [
                         'collar' => CollarColorEnum::options(),
+                        'registry' => ChipRegistryEnum::options(),
                     ]
                 ]
             ]

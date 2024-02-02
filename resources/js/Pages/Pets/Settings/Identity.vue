@@ -116,18 +116,13 @@ const saveSettings = () => {
                 </div>
             </div>
 
-            <div v-if="showChipDetails" class="flex items-center gap-2">
-                <div class="basis-0 grow mb-2">
+            <div v-if="showChipDetails" class="flex flex-wrap items-center gap-2">
+                <div class="grow min-w-1/2 mb-2">
                     <InputLabel for="registry" value="Registry"/>
-                    <InputText
-                            id="registry"
-                            v-model="form[settingGroup].registry"
-                            autocomplete="no"
-                            class="block w-full mt-1"
-                            type="text"
-                    />
+                    <InputButtons id="registry" v-model="form[settingGroup].registry"
+                                  :options="identityOptions.registry" class="gap-2"/>
                 </div>
-                <div class="basis-0 grow mb-2">
+                <div class="mb-2">
                     <InputLabel for="chip-id" value="Chip ID"/>
                     <InputText
                             id="chip-id"

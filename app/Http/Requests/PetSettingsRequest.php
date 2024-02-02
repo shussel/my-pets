@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\ChipRegistryEnum;
 use App\Enums\CollarColorEnum;
 use App\Enums\FeedEnum;
 use App\Enums\PoopEnum;
@@ -55,7 +56,7 @@ class PetSettingsRequest extends FormRequest
             'identity' => 'sometimes|array|nullable',
             'identity.collar' => ['sometimes', Rule::enum(CollarColorEnum::class)],
             'identity.chipped' => 'sometimes',
-            'identity.registry' => 'sometimes',
+            'identity.registry' => ['sometimes', Rule::enum(ChipRegistryEnum::class)],
             'identity.chip_id' => 'sometimes',
             'identity.marks' => 'sometimes',
         ];
