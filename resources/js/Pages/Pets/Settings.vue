@@ -5,6 +5,7 @@ import ButtonDefault from "@/Components/ButtonDefault.vue";
 import Food from "@/Pages/Pets/Settings/Food.vue";
 import Poop from "@/Pages/Pets/Settings/Poop.vue";
 import Sleep from "@/Pages/Pets/Settings/Sleep.vue";
+import Behavior from "@/Pages/Pets/Settings/Behavior.vue";
 import usePageTitle from "@/Composables/usePageTitle.js";
 import useRoute from "@/Composables/useRoute.js";
 import FAIcon from "@/Components/FAIcon.vue";
@@ -66,15 +67,19 @@ usePageTitle("Pet Settings");
     </Card>
 
     <Card>
-        <Food :meta="meta" :pet="pet"/>
+        <Food :feedOptions="meta.settings.feed" :pet="pet"/>
     </Card>
 
     <Card>
-        <Poop :meta="meta" :pet="pet"/>
+        <Poop :pet="pet" :species="meta.species"/>
     </Card>
 
     <Card>
-        <Sleep :meta="meta" :pet="pet"/>
+        <Sleep :pet="pet" :species="meta.species"/>
+    </Card>
+
+    <Card>
+        <Behavior :behaviorOptions="meta.settings.behavior" :pet="pet"/>
     </Card>
 
 </template>

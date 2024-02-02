@@ -15,15 +15,15 @@ const props = defineProps({
         type: Object,
         required: true
     },
-    meta: {
-        type: Object,
-        default: {}
+    feedOptions: {
+        type: Array,
+        default: []
     },
 });
 
 const settingGroup = "food";
 
-const suggestValues = ref(props.meta?.feed?.length === 1);
+const suggestValues = ref(props.feedOptions.length === 1);
 
 const autofillMessage = computed(() => {
     return suggestValues.value ? "Suggested Values - Edit or" : null;
@@ -127,7 +127,7 @@ const saveSettings = () => {
 
                 <div class="grow min-w-1/2 mb-2">
                     <InputLabel for="feed" value="Daily Feedings"/>
-                    <InputButtons id="feed" v-model="form[settingGroup].feed" :options="meta.feed" class="gap-2"/>
+                    <InputButtons id="feed" v-model="form[settingGroup].feed" :options="feedOptions" class="gap-2"/>
                 </div>
 
                 <div v-if="form[settingGroup].feed === 'multi'" class="min-w-1/2 mb-2">

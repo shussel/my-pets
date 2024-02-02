@@ -12,7 +12,10 @@ use Inertia\Response;
 use App\Enums\SpeciesEnum;
 use App\Enums\SexEnum;
 use App\Enums\FeedEnum;
-use App\Enums\PoopEnum;
+use App\Enums\ActivityEnum;
+use App\Enums\IntelligenceEnum;
+use App\Enums\NoiseEnum;
+use App\Enums\SociabilityEnum;
 
 class PetController extends Controller
 {
@@ -23,7 +26,15 @@ class PetController extends Controller
             'meta' => fn() => [
                 'species' => SpeciesEnum::options(),
                 'sexes' => SexEnum::options(),
-                'feed' => FeedEnum::options(),
+                'settings' => [
+                    'feed' => FeedEnum::options(),
+                    'behavior' => [
+                        'activity' => ActivityEnum::options(),
+                        'sociability' => SociabilityEnum::options(),
+                        'intelligence' => IntelligenceEnum::options(),
+                        'noise' => NoiseEnum::options(),
+                    ]
+                ]
             ]
         ]);
     }

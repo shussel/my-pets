@@ -16,16 +16,16 @@ const props = defineProps({
         type: Object,
         required: true
     },
-    meta: {
-        type: Object,
-        default: {}
+    species: {
+        type: Array,
+        default: []
     },
 });
 
 const settingGroup = "sleep";
 
 const speciesOptions = computed(() => {
-    return toRaw(props.meta.species).filter(function(specie) {
+    return toRaw(props.species).filter(function(specie) {
         return specie.value === props.pet.species;
     })[0][settingGroup];
 });

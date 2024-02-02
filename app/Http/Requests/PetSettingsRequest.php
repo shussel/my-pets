@@ -5,6 +5,10 @@ namespace App\Http\Requests;
 use App\Enums\FeedEnum;
 use App\Enums\PoopEnum;
 use App\Enums\SleepEnum;
+use App\Enums\ActivityEnum;
+use App\Enums\SociabilityEnum;
+use App\Enums\IntelligenceEnum;
+use App\Enums\NoiseEnum;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -42,6 +46,11 @@ class PetSettingsRequest extends FormRequest
             'sleep.time_1' => 'sometimes',
             'sleep.time_2' => 'sometimes',
             'sleep.assist' => 'sometimes',
+            'behavior' => 'sometimes|array|nullable',
+            'behavior.activity' => ['sometimes', Rule::enum(ActivityEnum::class)],
+            'behavior.sociability' => ['sometimes', Rule::enum(SociabilityEnum::class)],
+            'behavior.intelligence' => ['sometimes', Rule::enum(IntelligenceEnum::class)],
+            'behavior.noise' => ['sometimes', Rule::enum(NoiseEnum::class)],
         ];
     }
 }
