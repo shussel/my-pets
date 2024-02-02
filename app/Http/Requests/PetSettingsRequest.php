@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Enums\FeedEnum;
 use App\Enums\PoopEnum;
+use App\Enums\SleepEnum;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -27,15 +28,20 @@ class PetSettingsRequest extends FormRequest
         return [
             'food' => 'sometimes|array|nullable',
             'food.feed' => ['sometimes', Rule::enum(FeedEnum::class)],
-            'food.feed_time_1' => 'sometimes',
-            'food.feed_time_2' => 'sometimes',
-            'food.feed_interval' => 'sometimes',
+            'food.time_1' => 'sometimes',
+            'food.time_2' => 'sometimes',
+            'food.interval' => 'sometimes',
             'poop' => 'sometimes|array|nullable',
             'poop.location' => ['sometimes', Rule::enum(PoopEnum::class)],
-            'poop.poop_time_1' => 'sometimes',
-            'poop.poop_time_2' => 'sometimes',
-            'poop.clean_interval' => 'sometimes',
-            'poop.pet_door' => 'sometimes',
+            'poop.time_1' => 'sometimes',
+            'poop.time_2' => 'sometimes',
+            'poop.interval' => 'sometimes',
+            'poop.door' => 'sometimes',
+            'sleep' => 'sometimes|array|nullable',
+            'sleep.location' => ['sometimes', Rule::enum(SleepEnum::class)],
+            'sleep.time_1' => 'sometimes',
+            'sleep.time_2' => 'sometimes',
+            'sleep.assist' => 'sometimes',
         ];
     }
 }

@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, toRaw, watch, onMounted } from "vue";
+import { computed, ref, toRaw, watch } from "vue";
 import { useForm } from "@inertiajs/vue3";
 import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
@@ -7,8 +7,8 @@ import ButtonPrimary from "@/Components/ButtonPrimary.vue";
 import InputText from "@/Components/InputText.vue";
 import InputCheckbox from "@/Components/InputCheckbox.vue";
 import InputButtons from "@/Components/InputButtons.vue";
-import useRoute from "@/Composables/useRoute.js";
 import FAIcon from "@/Components/FAIcon.vue";
+import useRoute from "@/Composables/useRoute.js";
 import usePetAI from "@/Composables/usePetAI.js";
 
 const props = defineProps({
@@ -22,91 +22,155 @@ const props = defineProps({
     },
 });
 
-const settings = ref(props.pet?.settings?.poop || {});
+const settingGroup = "poop";
+
+const speciesOptions = computed(() => {
+    return toRaw(props.meta.species).filter(function(specie) {
+        return specie.value === props.pet.species;
+    })[0][settingGroup];
+});
+
+const suggestValues = ref(speciesOptions?.value?.length === 1);
+
+const autofillMessage = computed(() => {
+    return suggestValues.value ? "Suggested Values - Edit or" : null;
+});
+
+const settings = ref(props.pet?.settings?.[settingGroup] || {});
 
 const form = useForm({
-    poop: {
+    [settingGroup]: {
         location: settings.value.location,
-        poop_time_1: settings.value.poop_time_1,
-        poop_time_2: settings.value.poop_time_2,
-        clean_interval: settings.value.clean_interval,
-        pet_door: settings.value.pet_door
+        time_1: settings.value.time_1,
+        time_2: settings.value.time_2,
+        interval: settings.value.interval,
+        door: settings.value.door
     }
 });
 
-const poopOptions = computed(() => {
-    return toRaw(props.meta.species).filter(function(specie) {
-        return specie.value === props.pet.species;
-    })[0]["poop"];
-});
+// suggest based on location
+watch(() => form[settingGroup].location, () => {
 
-const autofillMessage = ref(null);
-
-watch(() => form.poop.location, () => {
-    let suggest = false;
-
-    switch (form.poop.location) {
+    switch (form[settingGroup].location) {
         case "walks":
-            delete form.poop.pet_door;
+            if (!form[settingGroup].time_1 || form[settingGroup].time_1 === "00:00") {
+                form[settingGroup].time_1 = "07:00";
+                suggestValues.value = true;
+            }
+            if (!form[settingGroup].time_2 || form[settingGroup].time_2 === "00:00") {
+                form[settingGroup].time_2 = "19:00";
+                suggestValues.value = true;
+            }
+            delete form[settingGroup].interval;
+            form[settingGroup].door = null;
+            break;
         case "yard":
+            if (form[settingGroup].door) {
+                delete form[settingGroup].time_1;
+                delete form[settingGroup].time_2;
+            } else {
+                if (!form[settingGroup].time_1 || form[settingGroup].time_1 === "00:00") {
+                    form[settingGroup].time_1 = "07:00";
+                    suggestValues.value = true;
+                }
+                if (!form[settingGroup].time_2 || form[settingGroup].time_2 === "00:00") {
+                    form[settingGroup].time_2 = "19:00";
+                    suggestValues.value = true;
+                }
+            }
+            delete form[settingGroup].interval;
+            break;
         case "pasture":
-            if (!form.poop.poop_time_1 || form.poop.poop_time_1 === "00:00") {
-                form.poop.poop_time_1 = "07:00";
-                suggest = true;
+            if (form[settingGroup].door) {
+                if (!form[settingGroup].time_1 || form[settingGroup].time_1 === "00:00") {
+                    form[settingGroup].time_1 = "07:00";
+                    suggestValues.value = true;
+                }
+                if (!form[settingGroup].time_2 || form[settingGroup].time_2 === "00:00") {
+                    form[settingGroup].time_2 = "19:00";
+                    suggestValues.value = true;
+                }
+            } else {
+                delete form[settingGroup].time_1;
+                delete form[settingGroup].time_2;
             }
-            if (!form.poop.poop_time_2 || form.poop.poop_time_2 === "00:00") {
-                form.poop.poop_time_2 = "19:00";
-                suggest = true;
-            }
-            delete form.poop.clean_interval;
+            delete form[settingGroup].interval;
             break;
         case "cage":
         case "litterbox":
         case "kennel":
-            if (!form.poop.clean_interval) {
-                form.poop.clean_interval = 2;
-                suggest = true;
+            if (!form[settingGroup].interval) {
+                form[settingGroup].interval = 2;
+                suggestValues.value = true;
             }
-            delete form.poop.poop_time_1;
-            delete form.poop.poop_time_2;
-            delete form.poop.pet_door;
+            delete form[settingGroup].time_1;
+            delete form[settingGroup].time_2;
+            form[settingGroup].door = null;
             break;
         case "stable":
         case "tank":
-            if (!form.poop.clean_interval) {
-                form.poop.clean_interval = 7;
-                suggest = true;
+            if (!form[settingGroup].interval) {
+                form[settingGroup].interval = 7;
+                suggestValues.value = true;
             }
-            delete form.poop.poop_time_1;
-            delete form.poop.poop_time_2;
-            delete form.poop.pet_door;
+            delete form[settingGroup].time_1;
+            delete form[settingGroup].time_2;
+            form[settingGroup].door = null;
             break;
         case "aviary":
         case "pond":
-            delete form.poop.poop_time_1;
-            delete form.poop.poop_time_2;
-            delete form.poop.clean_interval;
-            delete form.poop.pet_door;
+            delete form[settingGroup].time_1;
+            delete form[settingGroup].time_2;
+            delete form[settingGroup].interval;
+            form[settingGroup].door = null;
             break;
         default:
     }
+});
 
-    if (suggest) {
-        autofillMessage.value = "Suggested Values - Edit or";
-    } else {
-        autofillMessage.value = null;
+const showDoor = computed(() => {
+    return ["yard", "pasture"].includes(form[settingGroup].location);
+});
+
+watch(() => form[settingGroup].door, () => {
+    if (form[settingGroup].location === "pasture" ^ form[settingGroup].door) {
+        delete form[settingGroup].time_1;
+        delete form[settingGroup].time_2;
+    } else if (form[settingGroup].location === "pasture" && form[settingGroup].door) {
+        if (!form[settingGroup].time_1 || form[settingGroup].time_1 === "00:00") {
+            form[settingGroup].time_1 = "07:00";
+            suggestValues.value = true;
+        }
+        if (!form[settingGroup].time_2 || form[settingGroup].time_2 === "00:00") {
+            form[settingGroup].time_2 = "19:00";
+            suggestValues.value = true;
+        }
     }
 });
 
-watch(() => form.poop.pet_door, () => {
-    if (form.poop.pet_door) {
-        delete form.poop.poop_time_1;
-        delete form.poop.poop_time_2;
+const doorTitle = computed(() => {
+    switch (form[settingGroup].location) {
+        case "yard":
+            return "has Pet Door";
+        case "pasture":
+            return "Let Out";
+        default:
+            return null;
     }
 });
 
-const poop_time_1_title = computed(() => {
-    switch (form.poop.location) {
+const cleanSchedule = computed(() => {
+    return ["kennel", "litterbox", "tank", "cage", "stable"].includes(form[settingGroup].location);
+});
+
+const showTimes = computed(() => {
+    return ["yard", "walks"].includes(form[settingGroup].location) && !form[settingGroup].door ||
+        ["pasture"].includes(form[settingGroup].location) && form[settingGroup].door;
+});
+
+const timeTitle1 = computed(() => {
+
+    switch (form[settingGroup].location) {
         case "yard":
         case "pasture":
         case "kennel":
@@ -118,8 +182,9 @@ const poop_time_1_title = computed(() => {
     }
 });
 
-const poop_time_2_title = computed(() => {
-    switch (form.poop.location) {
+const timeTitle2 = computed(() => {
+
+    switch (form[settingGroup].location) {
         case "yard":
         case "pasture":
         case "kennel":
@@ -131,37 +196,30 @@ const poop_time_2_title = computed(() => {
     }
 });
 
-const cleanSchedule = computed(() => {
-    return ["kennel", "litterbox", "tank", "cage", "stable"].includes(form.poop.location);
-});
-
-const showTimes = computed(() => {
-    return ["yard", "walks", "pasture"].includes(form.poop.location) && !form.poop.pet_door;
-});
-
-const petDoor = computed(() => {
-    return ["yard", "pasture"].includes(form.poop.location);
-});
-
 const isSavable = computed(() => {
-    return form.isDirty && (form.poop.location === "yard" ||
-        form.poop.location === "pond" ||
-        form.poop.location === "pasture" ||
-        form.poop.location === "aviary" ||
-        ((form.poop.location === "litterbox" || form.poop.location === "kennel" || form.poop.location === "cage" || form.poop.location === "tank" || form.poop.location === "stable") && form.poop.clean_interval) ||
-        (form.poop.location === "walks" && form.poop.poop_time_1)
+    return form.isDirty && (form[settingGroup].location === "yard" ||
+        form[settingGroup].location === "pond" ||
+        form[settingGroup].location === "pasture" ||
+        form[settingGroup].location === "aviary" ||
+        ((form[settingGroup].location === "litterbox" || form[settingGroup].location === "kennel" || form[settingGroup].location === "cage" || form[settingGroup].location === "tank" || form[settingGroup].location === "stable") && form[settingGroup].interval) ||
+        (form[settingGroup].location === "walks" && form[settingGroup].time_1)
     );
 });
 
 const saveSettings = () => {
-    autofillMessage.value = null;
+    suggestValues.value = false;
     form.patch(route("pets.saveSettings", props.pet._id), {
         preserveScroll: true,
         onSuccess: () => {
-            usePetAI(props.pet, { name: "poop" });
+            usePetAI(props.pet, { name: settingGroup });
             useRoute({ name: "pets.settings", params: props.pet._id });
         },
         onError: () => {
+            // clear errors when the form changes
+            let unwatch = watch(form, () => {
+                form.clearErrors();
+                unwatch();
+            });
             useRoute({ name: "pets.settings", params: props.pet._id });
         },
     });
@@ -180,24 +238,25 @@ const saveSettings = () => {
             <div class="flex flex-wrap items-center gap-2">
 
                 <div class="grow min-w-1/2 mb-2">
-                    <InputLabel for="location" value="Where does pet go?"/>
-                    <InputButtons id="location" v-model="form.poop.location" :options="poopOptions" class="gap-2"/>
+                    <InputLabel for="location" value="Location"/>
+                    <InputButtons id="location" v-model="form[settingGroup].location" :options="speciesOptions"
+                                  class="gap-2"/>
                 </div>
 
                 <div v-if="cleanSchedule" class="min-w-1/2 mb-2">
                     <InputLabel
-                            :value="'Clean ' + (form.poop.location && form.poop.location[0].toUpperCase() + form.poop.location.slice(1))"
-                            for="clean_interval"/>
+                            :value="'Clean ' + (form[settingGroup].location && form[settingGroup].location[0].toUpperCase() + form[settingGroup].location.slice(1))"
+                            for="interval"/>
                     <div class="flex gap-2 items-center">
                         <div class="ml-2">every</div>
                         <div>
                             <InputText
-                                    id="clean_interval"
-                                    v-model="form.poop.clean_interval"
-                                    autocomplete="poop-time-1"
+                                    id="interval"
+                                    v-model="form[settingGroup].interval"
+                                    autocomplete="time-1"
                                     class="block w-[60px] mt-1"
                                     max="30"
-                                    min="1"
+                                    min="0"
                                     type="number"
                             />
                         </div>
@@ -205,30 +264,31 @@ const saveSettings = () => {
                     </div>
                 </div>
 
-                <div v-if="petDoor" class="grow min-w-1/2 mb-2 mt-4 text-center">
-                    <InputCheckbox id="petDoor" v-model="form.poop.pet_door" :checked="form.poop.pet_door"/>
-                    <InputLabel class="inline pl-2" for="petDoor" value="Has Pet Door"/>
+                <div v-if="showDoor" class="grow min-w-1/2 mb-2 mt-4 text-center">
+                    <InputCheckbox id="petDoor" v-model="form[settingGroup].door"
+                                   :checked="form[settingGroup].door"/>
+                    <InputLabel :value="doorTitle" class="inline pl-2" for="petDoor"/>
                 </div>
 
                 <div v-if="showTimes"
                      class="grow min-w-1/2 mb-2 flex flex-wrap items-center gap-2">
                     <div class="grow min-w-1/2">
-                        <InputLabel :value="poop_time_1_title" for="poop_time_1"/>
+                        <InputLabel :value="timeTitle1" for="time_1"/>
                         <InputText
-                                id="poop_time_1"
-                                v-model="form.poop.poop_time_1"
-                                autocomplete="poop-time-1"
+                                id="time_1"
+                                v-model="form[settingGroup].time_1"
+                                autocomplete="time-1"
                                 class="block w-full mt-1"
                                 type="time"
                         />
                     </div>
                     <div v-if="showTimes"
                          class="grow min-w-1/2">
-                        <InputLabel :value="poop_time_2_title" for="poop_time_2"/>
+                        <InputLabel :value="timeTitle2" for="time_2"/>
                         <InputText
-                                id="poop_time_2"
-                                v-model="form.poop.poop_time_2"
-                                autocomplete="poop-time-2"
+                                id="time_2"
+                                v-model="form[settingGroup].time_2"
+                                autocomplete="time-2"
                                 class="block w-full mt-1"
                                 type="time"
                         />
@@ -236,14 +296,14 @@ const saveSettings = () => {
                 </div>
             </div>
 
-            <div>
-                <InputError :message="form.errors.location" class="mt-1"/>
-                <InputError :message="form.errors.poop_time_1" class="mt-1"/>
-                <InputError :message="form.errors.poop_time_2" class="mt-1"/>
-            </div>
-
-            <div v-show="isSavable || form.recentlySuccessful"
+            <div v-show="isSavable || form.recentlySuccessful || form.hasErrors"
                  class="text-center pb-2 flex justify-center items-center gap-3 font-medium text-slate-400">
+                <div>
+                    <InputError :message="form.errors[settingGroup + '.location']" class="mb-1"/>
+                    <InputError :message="form.errors[settingGroup + '.time_1']" class="mb-1"/>
+                    <InputError :message="form.errors[settingGroup + '.time_2']" class="mb-1"/>
+                    <InputError :message="form.errors[settingGroup + '.interval']" class="mb-1"/>
+                </div>
                 <div class="">{{ autofillMessage }}</div>
                 <Transition
                         enter-active-class="transition ease-in-out"
@@ -253,7 +313,7 @@ const saveSettings = () => {
                 >
                     <p v-if="form.recentlySuccessful" class="text-sm text-slate-600 dark:text-slate-400">Saved</p>
                 </Transition>
-                <ButtonPrimary v-if="!form.recentlySuccessful"
+                <ButtonPrimary v-if="!form.recentlySuccessful && !form.hasErrors"
                                :class="{ 'opacity-25': (form.processing || !form.isDirty) }"
                                :disabled="form.processing || !form.isDirty">Save
                 </ButtonPrimary>

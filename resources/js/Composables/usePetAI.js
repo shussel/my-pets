@@ -1,4 +1,4 @@
-import { ref, onBeforeUnmount, computed, watch } from "vue";
+import { ref, onBeforeUnmount, computed } from "vue";
 
 // global pet state
 const petState = ref({});
@@ -12,6 +12,7 @@ const petResponses = {
     ],
     food: [{ think: { text: "mmm, food" } }],
     poop: [{ speak: { text: "everybody poops" } }],
+    sleep: [{ think: { text: "I'm sleepy" } }],
     weightGain: [{ think: { text: "I'm getting bigger" } }],
     weightLoss: [{ think: { text: "I'm shrinking" } }],
     speciesChange: [{ think: { text: "I changed species?" } }],

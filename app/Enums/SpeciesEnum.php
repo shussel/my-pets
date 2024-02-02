@@ -63,6 +63,23 @@ enum SpeciesEnum: string
         };
     }
 
+    public function sleep(): array
+    {
+        return match ($this) {
+            SpeciesEnum::DOG => $this->toOptions([
+                sleepEnum::INSIDE, sleepEnum::BED, sleepEnum::CRATE, sleepEnum::KENNEL, sleepEnum::DOG_HOUSE,
+                sleepEnum::OUTSIDE
+            ]),
+            SpeciesEnum::CAT => $this->toOptions([
+                sleepEnum::INSIDE, sleepEnum::BED, sleepEnum::CRATE, sleepEnum::OUTSIDE
+            ]),
+            SpeciesEnum::FISH => $this->toOptions([sleepEnum::TANK, sleepEnum::POND]),
+            SpeciesEnum::BIRD => $this->toOptions([sleepEnum::CAGE, sleepEnum::AVIARY]),
+            SpeciesEnum::REPTILE => $this->toOptions([sleepEnum::TANK]),
+            SpeciesEnum::HORSE => $this->toOptions([sleepEnum::STABLE, sleepEnum::PASTURE]),
+        };
+    }
+
     public static function options(): array
     {
         $cases = static::cases();
@@ -78,6 +95,7 @@ enum SpeciesEnum: string
                 'maxAge' => $case->maxAge(),
                 'maxWeight' => $case->maxWeight(),
                 'poop' => $case->poop(),
+                'sleep' => $case->sleep(),
             ];
         }
         return $options;
