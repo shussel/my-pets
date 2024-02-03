@@ -74,7 +74,7 @@ const { message } = useFlashMessage();
                                     <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex cursor-pointer">
                                         <a v-if="!route().current('pets.index')"
                                            class="font-medium text-lg" @click.prevent="toDashboard">
-                                            Pets
+                                            All Pets
                                         </a>
                                     </div>
                                     <!-- Settings Dropdown -->
@@ -148,7 +148,7 @@ const { message } = useFlashMessage();
                             <a v-if="!route().current('pets.index')" :active="route().current('pets.index')"
                                class="block w-full mt-1 ps-4 pe-4 py-3 text-start text-2xl font-bold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-lt/50 dark:hover:bg-lt/50 focus:text-slate-900 dark:focus:text-slate-100 focus:bg-lt/50 dark:focus:bg-lt/50  transition duration-150 ease-in-out cursor-pointer border-t border-t-slate-200 dark:border-t-slate-500"
                                @click.prevent="toDashboard">
-                                Pets
+                                All Pets
                             </a>
 
                             <!-- Responsive Settings Options -->

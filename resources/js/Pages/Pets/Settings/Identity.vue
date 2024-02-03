@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, toRaw, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { useForm } from "@inertiajs/vue3";
 import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
@@ -65,6 +65,72 @@ watch(() => form[settingGroup].chipped, () => {
     }
 });
 
+const refresh = ref(0);
+
+// set registry based on chip id
+watch(() => form[settingGroup].chip_id, () => {
+    if (form[settingGroup]?.chip_id?.length === 3) {
+        refresh.value++;
+        switch (form[settingGroup].chip_id.substring(0, 3)) {
+            case "982":
+                form[settingGroup].registry = "24-petwatch";
+                console.log("found", form[settingGroup].registry);
+                break;
+            case "956":
+            case "TVN":
+                form[settingGroup].registry = "akc-reunite";
+                break;
+            case "977":
+                form[settingGroup].registry = "avid";
+                break;
+            case "981":
+                form[settingGroup].registry = "petlink";
+                break;
+            case "7E1":
+                form[settingGroup].registry = "buddy-id";
+                break;
+            case "985":
+                form[settingGroup].registry = "home-again";
+                break;
+            case "991":
+            case "900":
+            case "990":
+            case "992":
+                form[settingGroup].registry = "peeva";
+                break;
+            case "941":
+                form[settingGroup].registry = "petkey";
+                break;
+            default:
+                form[settingGroup].registry = "other";
+        }
+    }
+});
+
+const chipIdPlaceholder = computed(() => {
+    const msg = "starts with ";
+    switch (form[settingGroup].registry) {
+        case "24-petwatch":
+            return msg + "982";
+        case "akc-reunite":
+            return msg + "956";
+        case "avid":
+            return msg + "977";
+        case "petlink":
+            return msg + "981";
+        case "buddy-id":
+            return msg + "7E1";
+        case "home-again":
+            return msg + "985";
+        case "peeva":
+            return msg + "900,990,991 or 992";
+        case "petkey":
+            return msg + "941";
+        default:
+            return "enter to find registry";
+    }
+});
+
 const isSavable = computed(() => {
     return form.isDirty && (
         form[settingGroup].collar ||
@@ -75,6 +141,18 @@ const isSavable = computed(() => {
 
 const saveSettings = () => {
     suggestValues.value = false;
+    if (!form[settingGroup].chipped) {
+        delete form[settingGroup].chipped;
+    }
+    if (!form[settingGroup].registry) {
+        delete form[settingGroup].registry;
+    }
+    if (!form[settingGroup].chip_id) {
+        delete form[settingGroup].chip_id;
+    }
+    if (!form[settingGroup].marks) {
+        delete form[settingGroup].marks;
+    }
     form.patch(route("pets.saveSettings", props.pet._id), {
         preserveScroll: true,
         onSuccess: () => {
@@ -117,11 +195,6 @@ const saveSettings = () => {
             </div>
 
             <div v-if="showChipDetails" class="flex flex-wrap items-center gap-2">
-                <div class="grow min-w-1/2 mb-2">
-                    <InputLabel for="registry" value="Registry"/>
-                    <InputButtons id="registry" v-model="form[settingGroup].registry"
-                                  :options="identityOptions.registry" class="gap-2"/>
-                </div>
                 <div class="mb-2">
                     <InputLabel for="chip-id" value="Chip ID"/>
                     <InputText
@@ -130,7 +203,16 @@ const saveSettings = () => {
                             autocomplete="no"
                             class="block w-full mt-1"
                             type="text"
+                            :placeholder="chipIdPlaceholder"
+                            maxlength="15"
+                            minlength="9"
                     />
+                </div>
+                <div class="grow min-w-1/2 mb-2">
+                    <InputLabel for="registry" value="Registry"/>
+                    <InputButtons id="registry" :key="refresh"
+                                  v-model="form[settingGroup].registry" :options="identityOptions.registry"
+                                  class="gap-2"/>
                 </div>
             </div>
 
@@ -142,6 +224,7 @@ const saveSettings = () => {
                         autocomplete="no"
                         class="block w-full mt-1 mb-2"
                         type="text"
+                        maxlength="100"
                 />
             </div>
 

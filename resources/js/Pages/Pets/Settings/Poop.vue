@@ -133,18 +133,39 @@ const showDoor = computed(() => {
 });
 
 watch(() => form[settingGroup].door, () => {
-    if (form[settingGroup].location === "pasture" ^ form[settingGroup].door) {
-        delete form[settingGroup].time_1;
-        delete form[settingGroup].time_2;
-    } else if (form[settingGroup].location === "pasture" && form[settingGroup].door) {
-        if (!form[settingGroup].time_1 || form[settingGroup].time_1 === "00:00") {
-            form[settingGroup].time_1 = "07:00";
-            suggestValues.value = true;
-        }
-        if (!form[settingGroup].time_2 || form[settingGroup].time_2 === "00:00") {
-            form[settingGroup].time_2 = "19:00";
-            suggestValues.value = true;
-        }
+
+    switch (form[settingGroup].location) {
+        case "pasture":
+            if (form[settingGroup].door) {
+                if (!form[settingGroup].time_1 || form[settingGroup].time_1 === "00:00") {
+                    form[settingGroup].time_1 = "07:00";
+                    suggestValues.value = true;
+                }
+                if (!form[settingGroup].time_2 || form[settingGroup].time_2 === "00:00") {
+                    form[settingGroup].time_2 = "19:00";
+                    suggestValues.value = true;
+                }
+            } else {
+                delete form[settingGroup].time_1;
+                delete form[settingGroup].time_2;
+            }
+            break;
+        case "yard":
+            if (!form[settingGroup].door) {
+                if (!form[settingGroup].time_1 || form[settingGroup].time_1 === "00:00") {
+                    form[settingGroup].time_1 = "07:00";
+                    suggestValues.value = true;
+                }
+                if (!form[settingGroup].time_2 || form[settingGroup].time_2 === "00:00") {
+                    form[settingGroup].time_2 = "19:00";
+                    suggestValues.value = true;
+                }
+            } else {
+                delete form[settingGroup].time_1;
+                delete form[settingGroup].time_2;
+            }
+            break;
+        default:
     }
 });
 
@@ -208,6 +229,9 @@ const isSavable = computed(() => {
 
 const saveSettings = () => {
     suggestValues.value = false;
+    if (!form[settingGroup].door) {
+        delete form[settingGroup].door;
+    }
     form.patch(route("pets.saveSettings", props.pet._id), {
         preserveScroll: true,
         onSuccess: () => {
@@ -253,9 +277,9 @@ const saveSettings = () => {
                             <InputText
                                     id="interval"
                                     v-model="form[settingGroup].interval"
-                                    autocomplete="time-1"
+                                    autocomplete="no"
                                     class="block w-[60px] mt-1"
-                                    max="30"
+                                    max="90"
                                     min="0"
                                     type="number"
                             />
@@ -273,9 +297,9 @@ const saveSettings = () => {
                 <div v-if="showTimes"
                      class="grow min-w-1/2 mb-2 flex flex-wrap items-center gap-2">
                     <div class="grow min-w-1/2">
-                        <InputLabel :value="timeTitle1" for="time_1"/>
+                        <InputLabel :value="timeTitle1" for="time-1"/>
                         <InputText
-                                id="time_1"
+                                id="time-1"
                                 v-model="form[settingGroup].time_1"
                                 autocomplete="time-1"
                                 class="block w-full mt-1"
@@ -284,9 +308,9 @@ const saveSettings = () => {
                     </div>
                     <div v-if="showTimes"
                          class="grow min-w-1/2">
-                        <InputLabel :value="timeTitle2" for="time_2"/>
+                        <InputLabel :value="timeTitle2" for="time-2"/>
                         <InputText
-                                id="time_2"
+                                id="time-2"
                                 v-model="form[settingGroup].time_2"
                                 autocomplete="time-2"
                                 class="block w-full mt-1"

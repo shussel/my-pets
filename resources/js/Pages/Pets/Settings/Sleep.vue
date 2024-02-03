@@ -238,6 +238,9 @@ const isSavable = computed(() => {
 
 const saveSettings = () => {
     suggestValues.value = false;
+    if (!form[settingGroup].assist) {
+        delete form[settingGroup].assist;
+    }
     form.patch(route("pets.saveSettings", props.pet._id), {
         preserveScroll: true,
         onSuccess: () => {
@@ -282,22 +285,22 @@ const saveSettings = () => {
                 <div v-if="showTimes"
                      class="grow min-w-1/2 mb-2 flex flex-wrap items-center gap-2">
                     <div class="grow min-w-1/2">
-                        <InputLabel :value="timeTitle1" for="time_1"/>
+                        <InputLabel :value="timeTitle1" for="time-1"/>
                         <InputText
-                                id="time_1"
+                                id="time-1"
                                 v-model="form[settingGroup].time_1"
-                                autocomplete="no"
+                                autocomplete="time-1"
                                 class="block w-full mt-1"
                                 type="time"
                         />
                     </div>
                     <div v-if="showTimes"
                          class="grow min-w-1/2">
-                        <InputLabel :value="timeTitle2" for="time_2"/>
+                        <InputLabel :value="timeTitle2" for="time-2"/>
                         <InputText
-                                id="time_2"
+                                id="time-2"
                                 v-model="form[settingGroup].time_2"
-                                autocomplete="no"
+                                autocomplete="time-2"
                                 class="block w-full mt-1"
                                 type="time"
                         />

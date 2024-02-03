@@ -137,7 +137,7 @@ const saveSettings = () => {
                             <InputText
                                     id="interval"
                                     v-model="form[settingGroup].interval"
-                                    autocomplete="feed-time-1"
+                                    autocomplete="no"
                                     class="block w-[55px] mt-1"
                                     max="8"
                                     min="1"
@@ -151,9 +151,9 @@ const saveSettings = () => {
                 <div v-if="form[settingGroup].feed && form[settingGroup].feed !== 'free'"
                      class="grow min-w-1/2 mb-2 flex flex-wrap items-center gap-2">
                     <div class="grow min-w-1/2">
-                        <InputLabel :value="timeTitle1" for="time_1"/>
+                        <InputLabel :value="timeTitle1" for="time-1"/>
                         <InputText
-                                id="time_1"
+                                id="time-1"
                                 v-model="form[settingGroup].time_1"
                                 autocomplete="time-1"
                                 class="block w-full mt-1"
@@ -162,9 +162,9 @@ const saveSettings = () => {
                     </div>
                     <div v-if="form[settingGroup].feed && (form[settingGroup].feed === 'twice' || form[settingGroup].feed === 'multi')"
                          class="grow min-w-1/2">
-                        <InputLabel :value="timeTitle2" for="time_2"/>
+                        <InputLabel :value="timeTitle2" for="time-2"/>
                         <InputText
-                                id="time_2"
+                                id="time-2"
                                 v-model="form[settingGroup].time_2"
                                 autocomplete="time-2"
                                 class="block w-full mt-1"

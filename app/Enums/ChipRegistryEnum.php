@@ -11,7 +11,7 @@ enum ChipRegistryEnum: string
     use EnumTraits;
 
     case PETWATCH = '24-petwatch';
-    case AKC_Reunite = 'AKC-reunite';
+    case AKC_Reunite = 'akc-reunite';
     case AVID = 'avid';
     case PETLINK = 'petlink';
     case BUDDY_ID = 'buddy-id';

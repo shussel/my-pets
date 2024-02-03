@@ -30,7 +30,7 @@ usePageTitle("Pet Settings");
     <Card>
         <div class="flex justify-start gap-3 sm:gap-4 sm:p-1">
             <PetImage :pet="pet" class="w-[200px] h-[200px] max-h-[200px]"/>
-            <div class="grow space-y-2">
+            <div class="grow space-y-1">
                 <h2 class="text-xl px-0">
                     <FAIcon :name="pet.species" class="-ml-[30px] dark:text-slate-400"/>
                     {{ pet.name }}
@@ -55,10 +55,13 @@ usePageTitle("Pet Settings");
                     </div>
                 </div>
                 <div class="flex justify-between items-end">
-                    <div class="text-sm text-slate-500 dark:text-slate-300">Age</div>
-                    <div>{{ pet.age }}</div>
+                    <div class="mb-2 text-sm text-slate-500 dark:text-slate-300">Age</div>
+                    <div class="mb-2">{{ pet.age }}</div>
                 </div>
-                <div class="text-center">
+                <div class="flex justify-between items-center">
+                    <div class="mt-1" @click="useRoute({ name: 'pets.show', params: pet._id })">
+                        <FAIcon class="text-2xl" name="clock"/>
+                    </div>
                     <ButtonDefault :class="{ 'opacity-25': disableButtons }" :disabled="disableButtons" class="m-2"
                                    @click="useRoute({ name: 'pets.edit', params: pet._id})">Edit
                     </ButtonDefault>

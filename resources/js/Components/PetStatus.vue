@@ -46,7 +46,7 @@ watchEffect(() => {
     <div :class="[messageClass, {'underline cursor-pointer': message?.route}]"
          class="mt-3 p-3 flex justify-center items-center h-[56px]"
          @click="useRoute(message?.route)">
-        <div v-if="showClock" class="mr-auto">
+        <div v-if="showClock" class="mr-auto" @click="useRoute({ name: 'pets.show', params: pet._id })">
             <FAIcon class="text-2xl" name="clock"/>
         </div>
         <div class="mx-auto text-center leading-snug">{{ message?.text }}</div>
