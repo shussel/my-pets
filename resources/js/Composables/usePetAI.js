@@ -10,7 +10,7 @@ const petResponses = {
         { speak: { text: "I like that pic" } },
         { think: { text: "That's my good side" } }
     ],
-    food: [{ think: { text: "mmm, food" } }],
+    feed: [{ think: { text: "mmm, food" } }],
     poop: [{ speak: { text: "everybody poops" } }],
     sleep: [{ think: { text: "I'm sleepy" } }],
     behavior: [{ think: { text: "Get outta my brain" } }],

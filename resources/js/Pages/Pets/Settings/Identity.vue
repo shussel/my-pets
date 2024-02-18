@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, watch } from "vue";
+import { computed, ref, toRaw, watch } from "vue";
 import { useForm } from "@inertiajs/vue3";
 import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
@@ -17,8 +17,8 @@ const props = defineProps({
         required: true
     },
     identityOptions: {
-        type: Array,
-        default: []
+        type: Object,
+        default: {}
     },
 });
 
@@ -34,16 +34,23 @@ const settings = ref(props.pet?.settings?.[settingGroup] || {});
 
 const form = useForm({
     [settingGroup]: {
-        collar: settings.value.collar,
-        chipped: settings.value.chipped,
-        registry: settings.value.registry,
-        chip_id: settings.value.chip_id,
-        marks: settings.value.marks,
+        collar: settings.value.collar || null,
+        tags: settings.value.tags || null,
+        gps: settings.value.gps || null,
+        gps_provider: settings.value.gps_provider || null,
+        chipped: settings.value.chipped || null,
+        registry: settings.value.registry || null,
+        chip_id: settings.value.chip_id || null,
+        marks: settings.value.marks || null,
     }
 });
 
 const showCollar = computed(() => {
     return ["dog", "cat"].includes(props.pet.species);
+});
+
+const showGpsDetails = computed(() => {
+    return form[settingGroup].gps;
 });
 
 const showChip = computed(() => {
@@ -57,101 +64,52 @@ const showChipDetails = computed(() => {
 // update chipped options
 watch(() => form[settingGroup].chipped, () => {
     if (!form[settingGroup].chipped) {
-        delete form[settingGroup].registry;
-        delete form[settingGroup].chip_id;
-    } else if (showChip.value) {
         form[settingGroup].registry = null;
         form[settingGroup].chip_id = null;
     }
 });
 
-const refresh = ref(0);
+// clear gps provider if none
+watch(() => form[settingGroup].gps, () => {
+    if (!form[settingGroup].gps) {
+        form[settingGroup].gps_provider = null;
+    }
+});
+
+const refreshRegistry = ref(0);
 
 // set registry based on chip id
 watch(() => form[settingGroup].chip_id, () => {
     if (form[settingGroup]?.chip_id?.length === 3) {
-        refresh.value++;
-        switch (form[settingGroup].chip_id.substring(0, 3)) {
-            case "982":
-                form[settingGroup].registry = "24-petwatch";
-                console.log("found", form[settingGroup].registry);
-                break;
-            case "956":
-            case "TVN":
-                form[settingGroup].registry = "akc-reunite";
-                break;
-            case "977":
-                form[settingGroup].registry = "avid";
-                break;
-            case "981":
-                form[settingGroup].registry = "petlink";
-                break;
-            case "7E1":
-                form[settingGroup].registry = "buddy-id";
-                break;
-            case "985":
-                form[settingGroup].registry = "home-again";
-                break;
-            case "991":
-            case "900":
-            case "990":
-            case "992":
-                form[settingGroup].registry = "peeva";
-                break;
-            case "941":
-                form[settingGroup].registry = "petkey";
-                break;
-            default:
-                form[settingGroup].registry = "other";
-        }
+        form[settingGroup].registry = toRaw(props.identityOptions.registry).filter(function(registry) {
+            return registry.prefixes?.includes(form[settingGroup].chip_id);
+        })?.[0]?.value || "other";
+        refreshRegistry.value++;
     }
 });
 
+// chip id placeholder based on registry
 const chipIdPlaceholder = computed(() => {
-    const msg = "starts with ";
-    switch (form[settingGroup].registry) {
-        case "24-petwatch":
-            return msg + "982";
-        case "akc-reunite":
-            return msg + "956";
-        case "avid":
-            return msg + "977";
-        case "petlink":
-            return msg + "981";
-        case "buddy-id":
-            return msg + "7E1";
-        case "home-again":
-            return msg + "985";
-        case "peeva":
-            return msg + "900,990,991 or 992";
-        case "petkey":
-            return msg + "941";
-        default:
-            return "enter to find registry";
-    }
+    return form[settingGroup].registry ? "prefix " + toRaw(props.identityOptions.registry).filter(function(registry) {
+        return registry.value === form[settingGroup].registry;
+    })?.[0]?.prefixes?.toString() : "enter id to find registry";
 });
 
 const isSavable = computed(() => {
     return form.isDirty && (
         form[settingGroup].collar ||
         form[settingGroup].chipped ||
+        form[settingGroup].gps ||
         form[settingGroup].marks
     );
 });
 
 const saveSettings = () => {
     suggestValues.value = false;
-    if (!form[settingGroup].chipped) {
-        delete form[settingGroup].chipped;
-    }
-    if (!form[settingGroup].registry) {
-        delete form[settingGroup].registry;
-    }
-    if (!form[settingGroup].chip_id) {
-        delete form[settingGroup].chip_id;
-    }
-    if (!form[settingGroup].marks) {
-        delete form[settingGroup].marks;
+    for (const field in form.data()[settingGroup]) {
+        if (!form[settingGroup][field]) {
+            delete form[settingGroup][field];
+        }
     }
     form.patch(route("pets.saveSettings", props.pet._id), {
         preserveScroll: true,
@@ -180,38 +138,56 @@ const saveSettings = () => {
 
         <form class="border px-4 pb-1 pt-5 -mt-3 space-y-2 lg:p-6 lg:pb-2" @submit.prevent="saveSettings">
 
-            <div v-if="showCollar || showChip" class="flex flex-wrap justify-start items-center gap-4">
-                <div v-if="showCollar" class="grow min-w-1/2 mb-2">
+            <div v-if="showCollar || showChip" class="flex flex-wrap justify-start items-center gap-2 gap-y-0">
+                <div v-if="showCollar" class="grow min-w-1/4 mb-2">
                     <InputLabel for="collar" value="Collar Color"/>
                     <InputButtons id="collar" v-model="form[settingGroup].collar" :options="identityOptions.collar"
                                   class="gap-1"/>
                 </div>
-
-                <div v-if="showChip" class="min-w-1/2 mb-2 text-center">
+                <div v-if="showCollar" class="grow min-w-1/4 text-center pb-2">
+                    <InputCheckbox id="tags" v-model="form[settingGroup].tags"
+                                   :checked="form[settingGroup].tags"/>
+                    <InputLabel class="inline pl-1" for="tags" value="Tags"/>
+                </div>
+                <div v-if="showChip" class="min-w-1/4 text-center pb-2">
                     <InputCheckbox id="chipped" v-model="form[settingGroup].chipped"
                                    :checked="form[settingGroup].chipped"/>
-                    <InputLabel class="inline pl-2" for="chipped" value="Microchipped"/>
+                    <InputLabel class="inline pl-1" for="chipped" value="Chip"/>
+                </div>
+                <div v-if="showCollar" class="text-center grow min-w-1/4 pb-2">
+                    <InputCheckbox id="gps" v-model="form[settingGroup].gps"
+                                   :checked="form[settingGroup].gps"/>
+                    <InputLabel class="inline pl-1" for="gps" value="GPS"/>
                 </div>
             </div>
 
-            <div v-if="showChipDetails" class="flex flex-wrap items-center gap-2">
-                <div class="mb-2">
+            <div v-if="showChipDetails" class="flex flex-wrap justify-start items-center gap-3 gap-y-0">
+                <div class="grow min-w-1/2">
                     <InputLabel for="chip-id" value="Chip ID"/>
                     <InputText
                             id="chip-id"
                             v-model="form[settingGroup].chip_id"
-                            autocomplete="no"
-                            class="block w-full mt-1"
+                            autocomplete="off"
+                            class="block w-full mt-1 mb-2"
                             type="text"
                             :placeholder="chipIdPlaceholder"
                             maxlength="15"
                             minlength="9"
                     />
                 </div>
-                <div class="grow min-w-1/2 mb-2">
+                <div class="grow min-w-1/2">
                     <InputLabel for="registry" value="Registry"/>
-                    <InputButtons id="registry" :key="refresh"
+                    <InputButtons id="registry" :key="refreshRegistry"
                                   v-model="form[settingGroup].registry" :options="identityOptions.registry"
+                                  class="gap-2 mb-2"/>
+                </div>
+            </div>
+
+            <div v-if="showGpsDetails">
+                <div class="pb-2">
+                    <InputLabel for="gps-provider" value="GPS Brand"/>
+                    <InputButtons id="gps-provider"
+                                  v-model="form[settingGroup].gps_provider" :options="identityOptions.gps_provider"
                                   class="gap-2"/>
                 </div>
             </div>
@@ -221,7 +197,7 @@ const saveSettings = () => {
                 <InputText
                         id="marks"
                         v-model="form[settingGroup].marks"
-                        autocomplete="no"
+                        autocomplete="off"
                         class="block w-full mt-1 mb-2"
                         type="text"
                         maxlength="100"
@@ -232,7 +208,10 @@ const saveSettings = () => {
                  class="text-center pb-2 flex justify-center items-center gap-3 font-medium text-slate-400">
                 <div>
                     <InputError :message="form.errors[settingGroup + '.collar']" class="mb-1"/>
+                    <InputError :message="form.errors[settingGroup + '.tags']" class="mb-1"/>
                     <InputError :message="form.errors[settingGroup + '.chipped']" class="mb-1"/>
+                    <InputError :message="form.errors[settingGroup + '.gps']" class="mb-1"/>
+                    <InputError :message="form.errors[settingGroup + '.gps_provider']" class="mb-1"/>
                     <InputError :message="form.errors[settingGroup + '.registry']" class="mb-1"/>
                     <InputError :message="form.errors[settingGroup + '.chip_id']" class="mb-1"/>
                     <InputError :message="form.errors[settingGroup + '.marks']" class="mb-1"/>

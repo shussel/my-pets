@@ -29,12 +29,11 @@ defineProps({
                 dark:hover:bg-slate-900 dark:hover:text-slate-300
             focus:bg-slate-100 focus:border-lt/50 focus:ring-lt/50 focus:border-2 focus:outline-none
                 dark:focus:border-lt/50 dark:focus:ring-lt/50
-            disabled:opacity-25"
-    >
-        <span>
+            disabled:opacity-25">
+        <div>
             <slot/>
-        </span>
-        <span>{{ singleChoice ? "." : ">" }}</span>
+        </div>
+        <div>{{ singleChoice ? "." : ">" }}</div>
     </button>
     <button
             v-else-if="!selection"

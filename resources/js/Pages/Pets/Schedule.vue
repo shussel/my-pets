@@ -2,8 +2,9 @@
 import Card from "@/Components/Card.vue";
 import PetImage from "@/Components/PetImage.vue";
 import ButtonDefault from "@/Components/ButtonDefault.vue";
-import Behavior from "@/Pages/Pets/Settings/Behavior.vue";
-import Identity from "@/Pages/Pets/Settings/Identity.vue";
+import FormScheduleFeed from "@/Components/FormScheduleFeed.vue";
+import Poop from "@/Pages/Pets/Settings/Poop.vue";
+import Sleep from "@/Pages/Pets/Settings/Sleep.vue";
 import usePageTitle from "@/Composables/usePageTitle.js";
 import useRoute from "@/Composables/useRoute.js";
 import FAIcon from "@/Components/FAIcon.vue";
@@ -19,7 +20,7 @@ const props = defineProps({
     },
 });
 
-usePageTitle("Pet Settings");
+usePageTitle("Pet Schedule");
 
 </script>
 
@@ -56,7 +57,7 @@ usePageTitle("Pet Settings");
                     <div class="mb-2">{{ pet.age }}</div>
                 </div>
                 <div class="flex justify-between items-center">
-                    <div class="mt-1" @click="useRoute({ name: 'pets.schedule', params: pet._id })">
+                    <div class="mt-1" @click="useRoute({ name: 'pets.show', params: pet._id })">
                         <FAIcon class="text-2xl" name="clock"/>
                     </div>
                     <ButtonDefault :class="{ 'opacity-25': disableButtons }" :disabled="disableButtons" class="m-2"
@@ -68,11 +69,20 @@ usePageTitle("Pet Settings");
     </Card>
 
     <Card>
-        <Behavior :behaviorOptions="meta.settings.behavior" :pet="pet"/>
+        <FormScheduleFeed
+                :options="{
+                intervals: meta.schedule.intervals,
+                repeats: meta.schedule.repeats,
+            }"
+                :schedule="pet.schedule"/>
     </Card>
 
     <Card>
-        <Identity :identityOptions="meta.settings.identity" :pet="pet"/>
+        <Poop :pet="pet" :species="meta.species"/>
+    </Card>
+
+    <Card>
+        <Sleep :pet="pet" :species="meta.species"/>
     </Card>
 
 </template>

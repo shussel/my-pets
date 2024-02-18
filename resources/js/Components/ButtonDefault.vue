@@ -1,6 +1,6 @@
 <template>
     <button
-            class="inline-flex justify-center items-center text-center px-4 py-2
+            class="inline-flex justify-center items-center text-center
             transition ease-in-out duration-150
             border border-slate-300 rounded-md shadow-sm
                 dark:border-slate-600

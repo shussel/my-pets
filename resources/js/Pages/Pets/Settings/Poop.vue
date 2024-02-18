@@ -7,6 +7,7 @@ import ButtonPrimary from "@/Components/ButtonPrimary.vue";
 import InputText from "@/Components/InputText.vue";
 import InputCheckbox from "@/Components/InputCheckbox.vue";
 import InputButtons from "@/Components/InputButtons.vue";
+import ButtonTime from "@/Components/ButtonTime.vue";
 import FAIcon from "@/Components/FAIcon.vue";
 import useRoute from "@/Composables/useRoute.js";
 import usePetAI from "@/Composables/usePetAI.js";
@@ -40,11 +41,11 @@ const settings = ref(props.pet?.settings?.[settingGroup] || {});
 
 const form = useForm({
     [settingGroup]: {
-        location: settings.value.location,
-        time_1: settings.value.time_1,
-        time_2: settings.value.time_2,
-        interval: settings.value.interval,
-        door: settings.value.door
+        location: settings.value.location || null,
+        time_1: settings.value.time_1 || null,
+        time_2: settings.value.time_2 || null,
+        interval: settings.value.interval || null,
+        assist: settings.value.assist || null
     }
 });
 
@@ -53,48 +54,31 @@ watch(() => form[settingGroup].location, () => {
 
     switch (form[settingGroup].location) {
         case "walks":
-            if (!form[settingGroup].time_1 || form[settingGroup].time_1 === "00:00") {
-                form[settingGroup].time_1 = "07:00";
+            if (!form[settingGroup].time_1) {
+                form[settingGroup].time_1 = "08:00";
                 suggestValues.value = true;
             }
-            if (!form[settingGroup].time_2 || form[settingGroup].time_2 === "00:00") {
-                form[settingGroup].time_2 = "19:00";
-                suggestValues.value = true;
-            }
-            delete form[settingGroup].interval;
-            form[settingGroup].door = null;
+            form[settingGroup].time_2 = null;
+            form[settingGroup].interval = null;
+            form[settingGroup].assist = null;
             break;
         case "yard":
-            if (form[settingGroup].door) {
-                delete form[settingGroup].time_1;
-                delete form[settingGroup].time_2;
-            } else {
-                if (!form[settingGroup].time_1 || form[settingGroup].time_1 === "00:00") {
-                    form[settingGroup].time_1 = "07:00";
-                    suggestValues.value = true;
-                }
-                if (!form[settingGroup].time_2 || form[settingGroup].time_2 === "00:00") {
-                    form[settingGroup].time_2 = "19:00";
-                    suggestValues.value = true;
-                }
-            }
-            delete form[settingGroup].interval;
-            break;
         case "pasture":
-            if (form[settingGroup].door) {
-                if (!form[settingGroup].time_1 || form[settingGroup].time_1 === "00:00") {
+            if (form[settingGroup].assist) {
+                if (!form[settingGroup].time_1) {
                     form[settingGroup].time_1 = "07:00";
                     suggestValues.value = true;
                 }
-                if (!form[settingGroup].time_2 || form[settingGroup].time_2 === "00:00") {
+                if (!form[settingGroup].time_2) {
                     form[settingGroup].time_2 = "19:00";
                     suggestValues.value = true;
                 }
             } else {
-                delete form[settingGroup].time_1;
-                delete form[settingGroup].time_2;
+                form[settingGroup].time_1 = null;
+                form[settingGroup].time_2 = null;
+                suggestValues.value = false;
             }
-            delete form[settingGroup].interval;
+            form[settingGroup].interval = null;
             break;
         case "cage":
         case "litterbox":
@@ -103,9 +87,9 @@ watch(() => form[settingGroup].location, () => {
                 form[settingGroup].interval = 2;
                 suggestValues.value = true;
             }
-            delete form[settingGroup].time_1;
-            delete form[settingGroup].time_2;
-            form[settingGroup].door = null;
+            form[settingGroup].time_1 = null;
+            form[settingGroup].time_2 = null;
+            form[settingGroup].assist = null;
             break;
         case "stable":
         case "tank":
@@ -113,71 +97,48 @@ watch(() => form[settingGroup].location, () => {
                 form[settingGroup].interval = 7;
                 suggestValues.value = true;
             }
-            delete form[settingGroup].time_1;
-            delete form[settingGroup].time_2;
-            form[settingGroup].door = null;
+            form[settingGroup].time_1 = null;
+            form[settingGroup].time_2 = null;
+            form[settingGroup].assist = null;
             break;
         case "aviary":
         case "pond":
-            delete form[settingGroup].time_1;
-            delete form[settingGroup].time_2;
-            delete form[settingGroup].interval;
-            form[settingGroup].door = null;
+            form[settingGroup].time_1 = null;
+            form[settingGroup].time_2 = null;
+            form[settingGroup].interval = null;
+            form[settingGroup].assist = null;
+            suggestValues.value = false;
             break;
         default:
     }
 });
 
-const showDoor = computed(() => {
+const showAssist = computed(() => {
     return ["yard", "pasture"].includes(form[settingGroup].location);
 });
 
-watch(() => form[settingGroup].door, () => {
+watch(() => form[settingGroup].assist, () => {
 
-    switch (form[settingGroup].location) {
-        case "pasture":
-            if (form[settingGroup].door) {
-                if (!form[settingGroup].time_1 || form[settingGroup].time_1 === "00:00") {
-                    form[settingGroup].time_1 = "07:00";
-                    suggestValues.value = true;
-                }
-                if (!form[settingGroup].time_2 || form[settingGroup].time_2 === "00:00") {
-                    form[settingGroup].time_2 = "19:00";
-                    suggestValues.value = true;
-                }
-            } else {
-                delete form[settingGroup].time_1;
-                delete form[settingGroup].time_2;
+    if (["yard", "pasture"].includes(form[settingGroup].location)) {
+        if (form[settingGroup].assist) {
+            if (!form[settingGroup].time_1) {
+                form[settingGroup].time_1 = "07:00";
+                suggestValues.value = true;
             }
-            break;
-        case "yard":
-            if (!form[settingGroup].door) {
-                if (!form[settingGroup].time_1 || form[settingGroup].time_1 === "00:00") {
-                    form[settingGroup].time_1 = "07:00";
-                    suggestValues.value = true;
-                }
-                if (!form[settingGroup].time_2 || form[settingGroup].time_2 === "00:00") {
-                    form[settingGroup].time_2 = "19:00";
-                    suggestValues.value = true;
-                }
-            } else {
-                delete form[settingGroup].time_1;
-                delete form[settingGroup].time_2;
+            if (!form[settingGroup].time_2) {
+                form[settingGroup].time_2 = "19:00";
+                suggestValues.value = true;
             }
-            break;
-        default:
+        } else {
+            form[settingGroup].time_1 = null;
+            form[settingGroup].time_2 = null;
+            suggestValues.value = false;
+        }
     }
 });
 
-const doorTitle = computed(() => {
-    switch (form[settingGroup].location) {
-        case "yard":
-            return "has Pet Door";
-        case "pasture":
-            return "Let Out";
-        default:
-            return null;
-    }
+const assistTitle = computed(() => {
+    return ["yard", "pasture"].includes(form[settingGroup].location) ? "Let Out" : null;
 });
 
 const cleanSchedule = computed(() => {
@@ -185,52 +146,39 @@ const cleanSchedule = computed(() => {
 });
 
 const showTimes = computed(() => {
-    return ["yard", "walks"].includes(form[settingGroup].location) && !form[settingGroup].door ||
-        ["pasture"].includes(form[settingGroup].location) && form[settingGroup].door;
+    return ["walks"].includes(form[settingGroup].location) ||
+        (["pasture", "yard"].includes(form[settingGroup].location) && form[settingGroup].assist);
 });
 
 const timeTitle1 = computed(() => {
-
-    switch (form[settingGroup].location) {
-        case "yard":
-        case "pasture":
-        case "kennel":
-            return "Let Out Time";
-        case "walks":
-            return "Walk 1 Time";
-        default:
-            return null;
-    }
+    return ["pasture", "yard"].includes(form[settingGroup].location) ? "Let Out Time" :
+        (form[settingGroup].location === "walks" ? "Walk Time" + (form[settingGroup].time_2 ? " 1" : "") : null);
 });
 
 const timeTitle2 = computed(() => {
-
-    switch (form[settingGroup].location) {
-        case "yard":
-        case "pasture":
-        case "kennel":
-            return "Let In Time";
-        case "walks":
-            return "Walk 2 Time";
-        default:
-            return null;
-    }
+    return ["pasture", "yard"].includes(form[settingGroup].location) ? "Let In Time" :
+        (form[settingGroup].location === "walks" ? "Walk Time 2" : null);
 });
 
 const isSavable = computed(() => {
-    return form.isDirty && (form[settingGroup].location === "yard" ||
-        form[settingGroup].location === "pond" ||
-        form[settingGroup].location === "pasture" ||
-        form[settingGroup].location === "aviary" ||
-        ((form[settingGroup].location === "litterbox" || form[settingGroup].location === "kennel" || form[settingGroup].location === "cage" || form[settingGroup].location === "tank" || form[settingGroup].location === "stable") && form[settingGroup].interval) ||
-        (form[settingGroup].location === "walks" && form[settingGroup].time_1)
-    );
+    return form.isDirty && form[settingGroup].location &&
+        (
+            ["aviary", "pasture", "yard", "pond"].includes(form[settingGroup].location) ||
+            (
+                ["litterbox", "kennel", "cage", "tank", "stable"].includes(form[settingGroup].location) && form[settingGroup].interval
+            ) ||
+            (
+                ["walks"].includes(form[settingGroup].location) && form[settingGroup].time_1
+            )
+        );
 });
 
 const saveSettings = () => {
     suggestValues.value = false;
-    if (!form[settingGroup].door) {
-        delete form[settingGroup].door;
+    for (const field in form.data()[settingGroup]) {
+        if (!form[settingGroup][field]) {
+            delete form[settingGroup][field];
+        }
     }
     form.patch(route("pets.saveSettings", props.pet._id), {
         preserveScroll: true,
@@ -277,7 +225,7 @@ const saveSettings = () => {
                             <InputText
                                     id="interval"
                                     v-model="form[settingGroup].interval"
-                                    autocomplete="no"
+                                    autocomplete="off"
                                     class="block w-[60px] mt-1"
                                     max="90"
                                     min="0"
@@ -288,14 +236,14 @@ const saveSettings = () => {
                     </div>
                 </div>
 
-                <div v-if="showDoor" class="grow min-w-1/2 mb-2 mt-4 text-center">
-                    <InputCheckbox id="petDoor" v-model="form[settingGroup].door"
-                                   :checked="form[settingGroup].door"/>
-                    <InputLabel :value="doorTitle" class="inline pl-2" for="petDoor"/>
+                <div v-if="showAssist" class="grow min-w-1/2 mb-2 mt-4 text-center">
+                    <InputCheckbox id="petDoor" v-model="form[settingGroup].assist"
+                                   :checked="form[settingGroup].assist"/>
+                    <InputLabel :value="assistTitle" class="inline pl-2" for="petDoor"/>
                 </div>
 
                 <div v-if="showTimes"
-                     class="grow min-w-1/2 mb-2 flex flex-wrap items-center gap-2">
+                     class="grow min-w-1/2 mb-2 flex flex-wrap items-end gap-2">
                     <div class="grow min-w-1/2">
                         <InputLabel :value="timeTitle1" for="time-1"/>
                         <InputText
@@ -308,14 +256,22 @@ const saveSettings = () => {
                     </div>
                     <div v-if="showTimes"
                          class="grow min-w-1/2">
-                        <InputLabel :value="timeTitle2" for="time-2"/>
-                        <InputText
-                                id="time-2"
-                                v-model="form[settingGroup].time_2"
-                                autocomplete="time-2"
-                                class="block w-full mt-1"
-                                type="time"
-                        />
+                        <div v-if="form[settingGroup].time_2">
+                            <div class="flex justify-between items-end">
+                                <InputLabel :value="timeTitle2" for="time-2"/>
+                                <FAIcon v-if="form[settingGroup].location === 'walks'"
+                                        class="text-base text-slate-700 dark:text-slate-300" name="delete"
+                                        @click="form[settingGroup].time_2 = null"/>
+                            </div>
+                            <InputText
+                                    id="time-2"
+                                    v-model="form[settingGroup].time_2"
+                                    autocomplete="time-2"
+                                    class="block w-full mt-1"
+                                    type="time"
+                            />
+                        </div>
+                        <ButtonTime v-else @click.prevent="form[settingGroup].time_2 = '17:00'"/>
                     </div>
                 </div>
             </div>

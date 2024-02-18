@@ -5,6 +5,7 @@ import create from "@/Pages/Pets/Create.vue";
 import show from "@/Pages/Pets/Show.vue";
 import edit from "@/Pages/Pets/Edit.vue";
 import settings from "@/Pages/Pets/Settings.vue";
+import schedule from "@/Pages/Pets/Schedule.vue";
 import useRoute from "@/Composables/useRoute.js";
 import useCurrentData from "@/Composables/useCurrentData.js";
 
@@ -21,15 +22,15 @@ const props = defineProps({
     },
 });
 
-const { currentView, baseRoute, currentRoute } = useRoute(
+const { pageRoute } = useRoute(
     { name: route().current(), params: route().params.pet },
-    { index, create, show, edit, settings }
+    { index, create, show, edit, settings, schedule }
 );
 
-const { currentData } = useCurrentData(currentRoute, props);
+const { currentData } = useCurrentData(() => pageRoute.current, props);
 
 </script>
 
 <template>
-        <component :is="currentView" :meta="meta" :pet="currentData" :pets="data"/>
+    <component :is="pageRoute.view" :meta="meta" :pet="currentData" :pets="data"/>
 </template>

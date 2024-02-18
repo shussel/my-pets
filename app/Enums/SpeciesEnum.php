@@ -67,11 +67,10 @@ enum SpeciesEnum: string
     {
         return match ($this) {
             SpeciesEnum::DOG => $this->toOptions([
-                sleepEnum::INSIDE, sleepEnum::BED, sleepEnum::CRATE, sleepEnum::KENNEL, sleepEnum::DOG_HOUSE,
-                sleepEnum::OUTSIDE
+                sleepEnum::INSIDE, sleepEnum::CRATE, sleepEnum::KENNEL, sleepEnum::DOG_HOUSE
             ]),
             SpeciesEnum::CAT => $this->toOptions([
-                sleepEnum::INSIDE, sleepEnum::BED, sleepEnum::CRATE, sleepEnum::OUTSIDE
+                sleepEnum::INSIDE, sleepEnum::CRATE, sleepEnum::OUTSIDE
             ]),
             SpeciesEnum::FISH => $this->toOptions([sleepEnum::TANK, sleepEnum::POND]),
             SpeciesEnum::BIRD => $this->toOptions([sleepEnum::CAGE, sleepEnum::AVIARY]),

@@ -32,10 +32,10 @@ const settings = ref(props.pet?.settings?.[settingGroup] || {});
 
 const form = useForm({
     [settingGroup]: {
-        activity: settings.value.activity,
-        sociability: settings.value.sociability,
-        intelligence: settings.value.intelligence,
-        noise: settings.value.noise
+        activity: settings.value.activity || null,
+        sociability: settings.value.sociability || null,
+        intelligence: settings.value.intelligence || null,
+        noise: settings.value.noise || null
     }
 });
 
@@ -45,6 +45,11 @@ const isSavable = computed(() => {
 
 const saveSettings = () => {
     suggestValues.value = false;
+    for (const field in form.data()[settingGroup]) {
+        if (!form[settingGroup][field]) {
+            delete form[settingGroup][field];
+        }
+    }
     form.patch(route("pets.saveSettings", props.pet._id), {
         preserveScroll: true,
         onSuccess: () => {

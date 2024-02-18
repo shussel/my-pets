@@ -48,6 +48,10 @@ form {
     padding: 1em;
 }
 
+button {
+    padding: .5em .75em;
+}
+
 .dark form {
     border-color: #94a3b8;
 }

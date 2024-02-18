@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PetController;
+use App\Http\Controllers\ScheduleController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,6 +25,14 @@ Route::get('/pets/{pet}/settings', [PetController::class, 'settings'])->middlewa
 Route::patch('/pets/{pet}/settings', [PetController::class, 'saveSettings'])->middleware([
     'auth', 'verified'
 ])->name('pets.saveSettings');
+
+Route::get('/pets/{pet}/schedule', [PetController::class, 'schedule'])->middleware([
+    'auth', 'verified'
+])->name('pets.schedule');
+
+Route::patch('/pets/{pet}/schedule', [ScheduleController::class, 'update'])->middleware([
+    'auth', 'verified'
+])->name('schedule.update');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

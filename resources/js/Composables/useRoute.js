@@ -1,39 +1,27 @@
-import { ref, computed } from "vue";
+import { ref, computed, reactive } from "vue";
 
-// global singleton data
-const currentRoute = ref({});
-const availableViews = ref({});
+// global singleton
+const pageRoute = reactive({
+    available: ref({}),
+    current: ref({}),
+    base: computed(() => pageRoute.current.name.substring(pageRoute.current.name.indexOf(".") + 1)),
+    view: computed(() => pageRoute.available[pageRoute.base])
+});
 
 export default function useRoute(setRoute = {}, views = {}) {
 
     // set available views
     if (Object.keys(views).length) {
-        availableViews.value = views;
+        pageRoute.available = views;
     }
 
     // init or change route
     if (Object.keys(setRoute).length) {
-        console.log("change route", setRoute);
-        let sameRoute = (JSON.stringify(setRoute) === JSON.stringify(currentRoute.value));
-        let first_route = !Object.keys(currentRoute.value).length;
-        currentRoute.value = setRoute;
-        if (!sameRoute && !first_route) {
-            console.log("history route");
+        if ((JSON.stringify(setRoute) !== JSON.stringify(pageRoute.current)) && Object.keys(pageRoute.current).length) {
             history.pushState(null, null, route(setRoute.name, setRoute.params));
-        } else {
-            console.log("not saved to history");
         }
+        pageRoute.current = setRoute;
     }
 
-    // trim prefix from route name
-    const baseRoute = computed(() => {
-        return currentRoute.value.name.substring(currentRoute.value.name.indexOf(".") + 1);
-    });
-
-    // lookup view for route name
-    const currentView = computed(() => {
-        return availableViews.value[baseRoute.value];
-    });
-
-    return { currentView, baseRoute, currentRoute };
+    return { pageRoute };
 }

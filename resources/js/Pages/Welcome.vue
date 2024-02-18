@@ -23,7 +23,7 @@ const props = defineProps({
     }
 });
 
-const { currentView } = useRoute(
+const { pageRoute } = useRoute(
     { name: route().current() },
     { home, login, register, request }
 );
@@ -31,7 +31,7 @@ const { currentView } = useRoute(
 </script>
 
 <template>
-    <component :is="currentView" :canLogin="canLogin" :canRegister="canRegister" :canResetPassword="canResetPassword"
+    <component :is="pageRoute.view" :canLogin="canLogin" :canRegister="canRegister" :canResetPassword="canResetPassword"
                :status="status"/>
 </template>
 

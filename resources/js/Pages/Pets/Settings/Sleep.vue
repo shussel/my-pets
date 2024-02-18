@@ -40,58 +40,36 @@ const settings = ref(props.pet?.settings?.[settingGroup] || {});
 
 const form = useForm({
     [settingGroup]: {
-        location: settings.value.location,
-        time_1: settings.value.time_1,
-        time_2: settings.value.time_2,
-        assist: settings.value.assist,
+        location: settings.value.location || null,
+        time_1: settings.value.time_1 || null,
+        time_2: settings.value.time_2 || null,
+        assist: settings.value.assist || null,
     }
 });
 
 // suggest based on location
 watch(() => form[settingGroup].location, () => {
 
-    switch (form[settingGroup].location) {
-        case "bed":
-            form[settingGroup].assist = null;
-        case "inside":
-        case "crate":
-        case "stable":
-            if (!form[settingGroup].time_1 || form[settingGroup].time_1 === "00:00") {
+    if (["inside", "crate", "kennel", "cage", "stable", "tank", "outside", "dog_house"].includes(form[settingGroup].location)) {
+        if (form[settingGroup].assist || ["inside", "crate"].includes(form[settingGroup].location)) {
+            if (!form[settingGroup].time_1) {
                 form[settingGroup].time_1 = "22:00";
                 suggestValues.value = true;
             }
-            if (!form[settingGroup].time_2 || form[settingGroup].time_2 === "00:00") {
+            if (!form[settingGroup].time_2) {
                 form[settingGroup].time_2 = "07:00";
                 suggestValues.value = true;
             }
-            break;
-        case "kennel":
-        case "cage":
-        case "tank":
-        case "outside":
-        case "dog_house":
-            if (form[settingGroup].assist) {
-                if (!form[settingGroup].time_1 || form[settingGroup].time_1 === "00:00") {
-                    form[settingGroup].time_1 = "22:00";
-                    suggestValues.value = true;
-                }
-                if (!form[settingGroup].time_2 || form[settingGroup].time_2 === "00:00") {
-                    form[settingGroup].time_2 = "07:00";
-                    suggestValues.value = true;
-                }
-            } else {
-                delete form[settingGroup].time_1;
-                delete form[settingGroup].time_2;
-            }
-            break;
-        case "pond":
-        case "aviary":
-        case "pasture":
-            delete form[settingGroup].time_1;
-            delete form[settingGroup].time_2;
-            form[settingGroup].assist = null;
-            break;
-        default:
+        } else {
+            form[settingGroup].time_1 = null;
+            form[settingGroup].time_2 = null;
+            suggestValues.value = false;
+        }
+    } else if (["pond", "aviary", "pasture"].includes(form[settingGroup].location)) {
+        form[settingGroup].time_1 = null;
+        form[settingGroup].time_2 = null;
+        form[settingGroup].assist = null;
+        suggestValues.value = false;
     }
 });
 
@@ -102,49 +80,28 @@ const assistSleep = computed(() => {
 // suggest based on assist
 watch(() => form[settingGroup].assist, () => {
 
-    if (form[settingGroup].assist) {
-        if (!form[settingGroup].time_1 || form[settingGroup].time_1 === "00:00") {
+    if (form[settingGroup].assist || ["inside", "crate"].includes(form[settingGroup].location)) {
+        if (!form[settingGroup].time_1) {
             form[settingGroup].time_1 = "22:00";
             suggestValues.value = true;
         }
-        if (!form[settingGroup].time_2 || form[settingGroup].time_2 === "00:00") {
+        if (!form[settingGroup].time_2) {
             form[settingGroup].time_2 = "07:00";
             suggestValues.value = true;
         }
     } else {
-
-        switch (form[settingGroup].location) {
-            case "kennel":
-            case "cage":
-            case "tank":
-            case "outside":
-            case "dog_house":
-            case "stable":
-                delete form[settingGroup].time_1;
-                delete form[settingGroup].time_2;
-                break;
-            case "inside":
-            case "bed":
-            case "crate":
-                if (!form[settingGroup].time_1 || form[settingGroup].time_1 === "00:00") {
-                    form[settingGroup].time_1 = "22:00";
-                    suggestValues.value = true;
-                }
-                if (!form[settingGroup].time_2 || form[settingGroup].time_2 === "00:00") {
-                    form[settingGroup].time_2 = "07:00";
-                    suggestValues.value = true;
-                }
-                break;
-            default:
-        }
+        form[settingGroup].time_1 = null;
+        form[settingGroup].time_2 = null;
+        suggestValues.value = false;
     }
+
 });
 
 const assistTitle = computed(() => {
     switch (form[settingGroup].location) {
         case "inside":
         case "stable":
-            return "Let in to Sleep";
+            return "Let In";
         case "crate":
             return "Put in Crate";
         case "kennel":
@@ -162,8 +119,7 @@ const assistTitle = computed(() => {
 });
 
 const showTimes = computed(() => {
-    return ["inside", "bed", "crate", "kennel", "dog_house", "tank", "cage", "stable", "outside"].includes(form[settingGroup].location) &&
-        (!["tank", "kennel", "cage", "outside", "dog_house", "stable"].includes(form[settingGroup].location) || form[settingGroup].assist);
+    return ["inside", "crate", "kennel", "dog_house", "tank", "cage", "stable", "outside"].includes(form[settingGroup].location) && (form[settingGroup].assist || ["inside", "crate"].includes(form[settingGroup].location));
 });
 
 const timeTitle1 = computed(() => {
@@ -171,6 +127,7 @@ const timeTitle1 = computed(() => {
     if (form[settingGroup].assist) {
         switch (form[settingGroup].location) {
             case "outside":
+            case "dog_house":
                 return "Let Out At";
             case "inside":
             case "stable":
@@ -186,15 +143,8 @@ const timeTitle1 = computed(() => {
             default:
                 return null;
         }
-    } else {
-        switch (form[settingGroup].location) {
-            case "inside":
-            case "crate":
-            case "bed":
-                return "Sleep Time";
-            default:
-                return null;
-        }
+    } else if (["inside", "crate"].includes(form[settingGroup].location)) {
+        return "Sleep Time";
     }
 });
 
@@ -202,9 +152,8 @@ const timeTitle2 = computed(() => {
 
     if (form[settingGroup].assist) {
         switch (form[settingGroup].location) {
-            case "bed":
-                return "Sleep Time";
             case "outside":
+            case "dog_house":
                 return "Let In At";
             case "inside":
             case "stable":
@@ -220,15 +169,8 @@ const timeTitle2 = computed(() => {
             default:
                 return null;
         }
-    } else {
-        switch (form[settingGroup].location) {
-            case "inside":
-            case "crate":
-            case "bed":
-                return "Wake Time";
-            default:
-                return null;
-        }
+    } else if (["inside", "crate"].includes(form[settingGroup].location)) {
+        return "Wake Time";
     }
 });
 
@@ -238,8 +180,10 @@ const isSavable = computed(() => {
 
 const saveSettings = () => {
     suggestValues.value = false;
-    if (!form[settingGroup].assist) {
-        delete form[settingGroup].assist;
+    for (const field in form.data()[settingGroup]) {
+        if (!form[settingGroup][field]) {
+            delete form[settingGroup][field];
+        }
     }
     form.patch(route("pets.saveSettings", props.pet._id), {
         preserveScroll: true,

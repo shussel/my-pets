@@ -17,7 +17,7 @@ const props = defineProps({
 <template>
     <Card>
         <div class="flex justify-start gap-2">
-            <PetImage :pet="pet" @click="useRoute({ name: 'pets.show', params: pet._id })"/>
+            <PetImage :pet="pet" @click="useRoute({ name: 'pets.schedule', params: pet._id })"/>
             <div class="grow">
                 <div class="flex justify-between">
                     <h2 class="-ml-[20px] bg-transparent">

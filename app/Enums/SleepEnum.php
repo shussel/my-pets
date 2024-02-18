@@ -9,7 +9,6 @@ enum SleepEnum: string
     use EnumTraits;
 
     case INSIDE = 'inside';
-    case BED = 'bed';
     case CRATE = 'crate';
     case KENNEL = 'kennel';
     case DOG_HOUSE = 'dog_house';

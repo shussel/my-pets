@@ -37,6 +37,7 @@ enum ChipRegistryEnum: string
                 'value' => $case->value,
                 'label' => Str::title($label),
                 'phone' => $case->phone(),
+                'prefixes' => $case->prefixes(),
             ];
         }
         return $options;
@@ -54,6 +55,21 @@ enum ChipRegistryEnum: string
             ChipRegistryEnum::PEEVA => '833.733.8226',
             ChipRegistryEnum::PETKEY => '734.600.3463',
             ChipRegistryEnum::OTHER => '',
+        };
+    }
+
+    public function prefixes(): array
+    {
+        return match ($this) {
+            ChipRegistryEnum::PETWATCH => ['982'],
+            ChipRegistryEnum::AKC_Reunite => ['956', 'TVN'],
+            ChipRegistryEnum::AVID => ['977'],
+            ChipRegistryEnum::PETLINK => ['981'],
+            ChipRegistryEnum::BUDDY_ID => ['7E1'],
+            ChipRegistryEnum::HOME_AGAIN => ['985'],
+            ChipRegistryEnum::PEEVA => ['900', '990', '991', '992'],
+            ChipRegistryEnum::PETKEY => ['941'],
+            ChipRegistryEnum::OTHER => [],
         };
     }
 }

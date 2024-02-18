@@ -30,7 +30,8 @@ defineExpose({focus: () => input.value.focus()});
                 dark:border-slate-600
             bg-white
                 dark:bg-slate-900
-            focus:border-lt/50 focus:ring-lt/50"
+            focus:border-lt/50 focus:ring-lt/50
+            placeholder:text-slate-400"
             @input="$emit('update:modelValue', $event.target.value)"
     />
 </template>

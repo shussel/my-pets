@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Enums\ChipRegistryEnum;
 use App\Enums\CollarColorEnum;
+use App\Enums\GpsProviderEnum;
+use App\Enums\RepeatsEnum;
+use App\Enums\IntervalEnum;
 use App\Http\Requests\PetRequest;
 use App\Http\Requests\PetSettingsRequest;
 use Illuminate\Http\RedirectResponse;
@@ -28,8 +31,14 @@ class PetController extends Controller
             'meta' => fn() => [
                 'species' => SpeciesEnum::options(),
                 'sexes' => SexEnum::options(),
+                'schedule' => [
+                    'repeats' => RepeatsEnum::options(),
+                    'intervals' => IntervalEnum::options(),
+                    'presets' => [
+                        'feed' => FeedEnum::options(),
+                    ]
+                ],
                 'settings' => [
-                    'feed' => FeedEnum::options(),
                     'behavior' => [
                         'activity' => ActivityEnum::options(),
                         'sociability' => SociabilityEnum::options(),
@@ -39,6 +48,7 @@ class PetController extends Controller
                     'identity' => [
                         'collar' => CollarColorEnum::options(),
                         'registry' => ChipRegistryEnum::options(),
+                        'gps_provider' => GpsProviderEnum::options(),
                     ]
                 ]
             ]
@@ -86,6 +96,14 @@ class PetController extends Controller
     }
 
     /**
+     * Show the form for editing pet settings.
+     */
+    public function schedule($pet_id): Response
+    {
+        return $this->petsResponse();
+    }
+
+    /**
      * Store a newly created resource in storage.
      */
     public function store(PetRequest $request): RedirectResponse
@@ -128,10 +146,26 @@ class PetController extends Controller
 
     public function saveSettings(PetSettingsRequest $request, $pet_id): RedirectResponse
     {
-        $validated = $request->validated();
+        $save_settings = [];
+        foreach ($request->validated() as $category => $settings) {
+            if ($category === 'schedule') {
+                $save_event = $settings;
+            } else {
+                $save_settings[$category] = $settings;
+            }
+        }
 
         $pet = auth()->user()->pets()->find($pet_id);
-        $pet->settings = array_replace(is_array($pet->settings) ? $pet->settings : [], $validated);
+
+        if (count($save_settings)) {
+            $pet->settings = array_replace_recursive(is_array($pet->settings) ? $pet->settings : [], $save_settings);
+        }
+        if ($save_event) {
+            $pet->schedule = array_filter($pet->schedule ?: [], function ($event) use ($save_event) {
+                return $event['category'] !== $save_event['category'];
+            })[] = [$save_event];
+        }
+
         $pet->save();
 
         return redirect()->route('pets.settings', $pet_id);
