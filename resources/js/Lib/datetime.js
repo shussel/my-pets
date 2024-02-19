@@ -94,10 +94,10 @@ function getClockTime(hours = 0, minutes = 0, startTime = "00:00") {
 
 function clock12hours(clockTime) {
     let [hours = "00", minutes = "00"] = clockTime.split(":");
-    return (!(hours = parseInt(hours))) ? "midnight" :
-        (hours > 12) ? (hours - 12).toString() + ":" + minutes + "PM" :
-            (hours === 12) ? "noon" :
-                String(hours) + ":" + minutes + "AM";
+    return (!(hours = parseInt(hours)) && minutes === "00") ? "midnight" :
+        (hours === 12 && minutes === "00") ? "noon" :
+            (hours >= 12) ? (hours - 12 || 12).toString() + ":" + minutes + "pm" :
+                String(hours || 12) + ":" + minutes + "am";
 }
 
 // get list of daily times at interval between start and end

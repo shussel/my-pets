@@ -7,7 +7,8 @@ use MongoDB\Laravel\Eloquent\Model;
 use Carbon\Carbon;
 use App\Enums\SexEnum;
 use App\Enums\SpeciesEnum;
-use App\Casts\PetSettings;
+use App\Casts\SettingsCast;
+use App\Casts\ScheduleCast;
 
 class Pet extends Model
 {
@@ -29,8 +30,8 @@ class Pet extends Model
         'sex' => SexEnum::class,
         'species' => SpeciesEnum::class,
         'birth_date' => 'date:Y-m-d',
-        'settings' => PetSettings::class,
-        'schedule' => PetSettings::class
+        'settings' => SettingsCast::class,
+        'schedule' => ScheduleCast::class
     ];
 
     /**

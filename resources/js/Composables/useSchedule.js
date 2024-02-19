@@ -22,10 +22,5 @@ export default function useSchedule(scheduleData, useCategory) {
         return scheduleItem;
     }
 
-    function deleteItem(deleteId) {
-        const index = schedule.findIndex(({ _id }) => _id === deleteId);
-        if (index > -1) schedule.splice(index, 1);
-    }
-
-    return { schedule, items, newItem, deleteItem };
+    return { schedule, items, newItem };
 }

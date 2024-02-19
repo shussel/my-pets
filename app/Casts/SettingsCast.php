@@ -6,7 +6,7 @@ use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
 use \MongoDB\BSON;
 
-class PetSettings implements CastsAttributes
+class SettingsCast implements CastsAttributes
 {
     /**
      * Cast the given value.

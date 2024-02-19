@@ -17,9 +17,13 @@ export default function useRoute(setRoute = {}, views = {}) {
 
     // init or change route
     if (Object.keys(setRoute).length) {
-        if ((JSON.stringify(setRoute) !== JSON.stringify(pageRoute.current)) && Object.keys(pageRoute.current).length) {
+        if (Object.keys(pageRoute.current).length &&
+            (JSON.stringify(setRoute) !== JSON.stringify(pageRoute.current) ||
+                route().current() !== setRoute.name)
+        ) {
             history.pushState(null, null, route(setRoute.name, setRoute.params));
         }
+        console.log("set url");
         pageRoute.current = setRoute;
     }
 

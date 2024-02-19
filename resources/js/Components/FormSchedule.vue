@@ -28,7 +28,7 @@ const props = defineProps({
 });
 
 const { schedule, category } = toRefs(props);
-const { schedule: formSchedule, items, newItem, deleteItem } = useSchedule(schedule, category);
+const { schedule: formSchedule, newItem } = useSchedule(schedule, category);
 
 const form = useForm({
     category: category.value,
@@ -50,21 +50,36 @@ if (presets.has) {
     });
 }
 
+function deleteItem(deleteId) {
+    const index = form.schedule.findIndex(({ _id }) => _id === deleteId);
+    console.log("deleting", index);
+    if (index > -1) {
+        form.schedule.splice(index, 1);
+        console.log(schedule);
+    }
+}
+
 const isSavable = computed(() => form.isDirty);
 
 const saveSchedule = () => {
     console.log("saving", form.data());
     presets.using = false;
     const { pageRoute } = useRoute();
+    // const fromRoute = { name: pageRoute.current.name, params: pageRoute.current.params }
     form.transform((data) => {
         return {
             category: data.category,
-            schedule: data.schedule.map(saveItem => dt.objectLocalToUtc({ ...saveItem }))
+            schedule: data.schedule.map(saveItem => {
+                delete saveItem.editing;
+                delete saveItem.manage;
+                return dt.objectLocalToUtc({ ...saveItem });
+            })
         };
     }).patch(route("schedule.update", pageRoute.current.params), {
         preserveScroll: true,
         onSuccess: () => {
             //usePetAI(pet, { name: category });
+            console.log(pageRoute);
             useRoute(pageRoute.current);
         },
         onError: () => {
@@ -91,9 +106,9 @@ const saveSchedule = () => {
             <FormScheduleItem v-for="(item, index) in form.schedule"
                               :key="item._id"
                               v-model:schedule-item="form.schedule[index]"
-                              :itemCount="items.count"
+                              :itemCount="form.schedule.length"
             >
-                <div v-if="items.count > 1" class="font-bold flex justify-between border-b border-slate-700">
+                <div v-if="form.schedule.length > 1" class="font-bold flex justify-between border-b border-slate-700">
                     <div>Schedule {{ 1 + index }}</div>
                     <div @click="deleteItem(item._id)">
                         <FAIcon class="text-base" name="trash"/>
@@ -103,7 +118,7 @@ const saveSchedule = () => {
 
             <FormFooter :form="form" :isSavable="isSavable" :message="presets.message"/>
 
-            <div v-show="items.has" class="p3 text-center" @click="presets.add=true">
+            <div v-show="form.schedule.length" class="p3 text-center" @click="presets.add=true">
                 Add Another Schedule
             </div>
 

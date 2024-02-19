@@ -1,4 +1,4 @@
-import { reactive, toValue, isReactive, computed, toRef, watchEffect, watch } from "vue";
+import { reactive, toValue, isReactive, computed, toRef, watchEffect, watch, ref } from "vue";
 import ObjectID from "bson-objectid";
 import dt from "@/Lib/datetime.js";
 
@@ -46,11 +46,12 @@ export default function useScheduleItem(itemData) {
         title: computed(() => scheduleItem.action || "Repeat"),
         once: computed(() => !scheduleItem.repeat || scheduleItem.repeat === "once"),
         repeating: computed(() => !repeat.once && scheduleItem.interval && scheduleItem.count),
-        interval: computed(() => !scheduleItem.interval ? null : Object.keys(dt.intervals).find(key => dt.intervals[key] === scheduleItem.interval) + (repeat.multi ? "s" : "")),
+        interval: computed(() => !scheduleItem.interval ? null : Object.keys(dt.intervals).find(key => dt.intervals[key] === scheduleItem.interval) + (repeat.everyMulti ? "s" : "")),
         weekly: computed(() => scheduleItem.repeat === "every" && scheduleItem.interval === 1440),
         multi: computed(() => scheduleItem.count > 1),
         everyMulti: computed(() => scheduleItem.repeat === "every" && repeat.multi),
         timesAny: computed(() => scheduleItem.repeat === "times-per" && scheduleItem.count),
+        showTimes: computed(() => repeat.multi && scheduleItem.interval < 1440),
         showCount: computed(() => repeat.everyMulti || repeat.timesAny),
         maxCount: computed(() =>
             scheduleItem.repeat === "every" ? (scheduleItem.interval === 60 ? 12 : 90) :
@@ -144,7 +145,7 @@ export default function useScheduleItem(itemData) {
         },
         description: computed(() =>
             scheduleItem.repeat === "times-per" && scheduleItem.times?.length ?
-                "at " + scheduleItem.times.map(time => dt.clock12hours(time)).join(scheduleItem.times?.length === 2 ? " & " : ", ") :
+                (scheduleItem.times.length < 2 ? "at " : "") + scheduleItem.times.map(time => dt.clock12hours(time)).join(scheduleItem.times?.length === 2 ? " & " : ", ") :
                 !hours.all && scheduleItem.repeat !== "times-per" ? hours.period : ""
         )
     });
@@ -162,15 +163,35 @@ export default function useScheduleItem(itemData) {
             [scheduleItem.action, repeat.description, days.description, hours.description].join(" ") : ""
     );
 
-    function pickTimes() {
-        if (repeat.repeating) {
-            scheduleItem.times = (scheduleItem.repeat === "every") ? [] : dt.getDailyTimes(scheduleItem.count);
+    function adjustTimesCount(newCount) {
+        // change existing times
+        if (scheduleItem.times.length) {
+            const diff = scheduleItem.times.length - newCount;
+            if (diff < 0) {
+                // add x times
+                for (let i = 0; i > diff; i--) scheduleItem.times.push("12:00");
+            } else if (diff > 0) {
+                // remove last x times
+                scheduleItem.times.splice(scheduleItem.times.length - diff,
+                    diff);
+            }
+            // keep times sorted
+            scheduleItem.times.sort();
+        } else {
+            // all new times
+            scheduleItem.times = dt.getDailyTimes(newCount);
         }
     }
 
     // adjust times
     watchEffect(() => {
-        pickTimes();
+        if (repeat.repeating) {
+            if (scheduleItem.repeat === "every") {
+                scheduleItem.times = [];
+            } else {
+                adjustTimesCount(scheduleItem.count);
+            }
+        }
     });
 
     function updateLast() {
@@ -199,15 +220,6 @@ export default function useScheduleItem(itemData) {
             scheduleItem.count = repeat.minCount;
         }
     });
-
-    // // swap times out of order
-    // watch([() => scheduleItem.time1, () => scheduleItem.time2], () => {
-    //     if (scheduleItem.time2 && scheduleItem.time2 < scheduleItem.time1) {
-    //         const swap = scheduleItem.time1;
-    //         scheduleItem.time1 = scheduleItem.time2;
-    //         scheduleItem.time2 = swap;
-    //     }
-    // });
 
     return { scheduleItem, repeat, hours, days, description, isValid };
 }
