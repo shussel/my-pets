@@ -1,9 +1,9 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use Illuminate\Foundation\Application;
+use App\Http\Controllers\PetController;
+use App\Http\Controllers\ScheduleController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,17 +16,27 @@ use Inertia\Inertia;
 |
 */
 
-/*Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'canResetPassword' => Route::has('password.request'),
-    ]);
-});*/
+Route::resource('pets', PetController::class)->middleware(['auth', 'verified']);
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/pets/{pet}/settings', [PetController::class, 'settings'])->middleware([
+    'auth', 'verified'
+])->name('pets.settings');
+
+Route::patch('/pets/{pet}/settings', [PetController::class, 'saveSettings'])->middleware([
+    'auth', 'verified'
+])->name('pets.saveSettings');
+
+Route::get('/pets/{pet}/schedule', [PetController::class, 'schedule'])->middleware([
+    'auth', 'verified'
+])->name('pets.schedule');
+
+Route::patch('/pets/{pet}/schedule', [ScheduleController::class, 'update'])->middleware([
+    'auth', 'verified'
+])->name('schedule.update');
+
+Route::delete('/pets/{pet}/schedule/{item}', [ScheduleController::class, 'destroy'])->middleware([
+    'auth', 'verified'
+])->name('schedule.delete');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

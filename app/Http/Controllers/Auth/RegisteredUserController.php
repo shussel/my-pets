@@ -34,12 +34,14 @@ class RegisteredUserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'password' => ['required', 'confirmed', Rules\Password::min(8)->mixedCase()->numbers()->symbols()],
+            'zip_code' => ['nullable', 'string', 'regex:/^\d{5}(?:-\d{4})?$/'],
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
+            'zip_code' => $request->zip_code,
             'password' => Hash::make($request->password),
         ]);
 

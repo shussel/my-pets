@@ -8,6 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -52,6 +53,17 @@ class ProfileController extends Controller
         $user = $request->user();
 
         Auth::logout();
+
+        // move files to deleted
+        if ($files = Storage::disk('public')->files('users/'.$user->_id)) {
+            foreach ($files as $file) {
+                Storage::disk('local')->put(
+                    'deleted/'.$file,
+                    Storage::disk('public')->get($file));
+                Storage::disk('public')->delete($file);
+            }
+        }
+        Storage::disk('public')->deleteDirectory('users/'.$user->_id);
 
         $user->delete();
 
