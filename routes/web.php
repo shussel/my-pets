@@ -34,6 +34,10 @@ Route::patch('/pets/{pet}/schedule', [ScheduleController::class, 'update'])->mid
     'auth', 'verified'
 ])->name('schedule.update');
 
+Route::delete('/pets/{pet}/schedule/{item}', [ScheduleController::class, 'destroy'])->middleware([
+    'auth', 'verified'
+])->name('schedule.delete');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

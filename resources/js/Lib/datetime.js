@@ -6,22 +6,27 @@
     - server will save as UTC: 2024-02-05T20:44:44Z
  */
 
-const intervals = {
-    minute: 1,
-    hour: 60,
-    day: 1440,
-    week: 10080,
-    month: 302400,
-    year: 3628800
-};
+const DAYS = ["Su", "M", "Tu", "W", "Th", "F", "Sa"];
+const WEEKDAYS = ["M", "Tu", "W", "Th", "F"];
+const WEEKEND = ["Su", "Sa"];
 
-const repeats = {
-    "x per": "times-per",
-    every: "every",
-    once: "once"
-};
+const intervals = [
+    { label: "minute", value: 1 },
+    { label: "hour", value: 60 },
+    { label: "day", value: 1440 },
+    { label: "week", value: 10080 },
+    { label: "month", value: 302400 },
+    { label: "year", value: 3628800 },
+];
+
+const repeats = [
+    { label: "x per", value: "times-per" },
+    { label: "every", value: "every" },
+    { label: "once", value: "once" },
+];
 
 const utcDatePattern = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[\s\S]+$/;
+const localDatePattern = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/;
 
 // convert date UTC for datetime-local input
 function utcToLocal(utcDate) {
@@ -44,8 +49,6 @@ function objectUtcToLocal(data) {
     }
     return data;
 }
-
-const localDatePattern = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/;
 
 // add user time offset to datetime-local values
 function localToUtc(datetimeLocal) {
@@ -74,6 +77,11 @@ function getTzOffset() {
     return (tzOffset >= 0 ? "-" : "+") + getClockTime((tzOffset / 60), (tzOffset % 60));
 }
 
+function addDays(addDays, addDate) {
+    const now = addDate ? new Date(addDate) : new Date();
+    return new Date(now.setDate(now.getDate() + parseInt(addDays)));
+}
+
 // get hours/minutes as ##:##, defaulting to current time, as optional start time offset
 function getClockTime(hours = 0, minutes = 0, startTime = "00:00") {
     let clockHour, clockMinute;
@@ -84,7 +92,7 @@ function getClockTime(hours = 0, minutes = 0, startTime = "00:00") {
     } else {
         startTime = startTime || "00:00";
         const [startHour = "00", startMinute = "00"] = startTime?.split(":");
-        let totalMinutes = (60 * parseInt(startHour)) + parseInt(startMinute) + (60 * parseInt(hours)) + parseInt(minutes);
+        let totalMinutes = (60 * parseInt(startHour)) + parseInt(startMinute) + (60 * Number(hours)) + Number(minutes);
         totalMinutes = totalMinutes < 1440 ? totalMinutes : 0;
         clockHour = parseInt(totalMinutes / 60);
         clockMinute = parseInt(totalMinutes % 60);
@@ -100,71 +108,143 @@ function clock12hours(clockTime) {
                 String(hours || 12) + ":" + minutes + "am";
 }
 
+function clockMinutes(clockTime) {
+    const [hours = "00", minutes = "00"] = clockTime.split(":");
+    return parseInt(minutes) + parseInt(hours) * 60;
+}
+
+function shortTime(datetimeLocal) {
+    if (!localDatePattern.test(datetimeLocal)) {
+        return null;
+    }
+    const [hours, minutes] = clock12hours(datetimeLocal.slice(11, 16)).split(":");
+    return !minutes ? hours :
+        (hours + (parseInt(minutes.slice(0, 2)) ? ":" + minutes : minutes.slice(-2))).toLowerCase();
+}
+
+function shortDate(datetimeLocal) {
+    if (!localDatePattern.test(datetimeLocal)) {
+        return null;
+    }
+    const today = new Date(utcToLocal().slice(0, 10) + "T00:00" + getTzOffset()),
+        checkDay = new Date(datetimeLocal.slice(0, 10) + "T00:00" + getTzOffset());
+    const daysDiff = (checkDay - today) / (1000 * 60 * 60 * 24);
+    return !daysDiff ? "today" : daysDiff === 1 ? "tomorrow" : daysDiff === -1 ? "yesterday" :
+        Math.abs(daysDiff) < 8 ? DAYS[checkDay.getDay()] :
+            checkDay.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+}
+
 // get list of daily times at interval between start and end
 function dailyIntervalHours(between, count, interval = 60) {
 
     const timeList = [];
     let start, end, time;
     [start = "00:00", end = "00:00"] = between.sort();
+    if (!start) start = "00:00";
+    if (!end) end = "00:00";
     time = start;
 
+    if (!interval) {
+        interval = parseInt((clockMinutes(end) - clockMinutes(start)) / (count - 1));
+    }
+
     // 1 interval minimum except minutes min 15
-    count = interval === 1 && count < 15 ? 15 : (count < 1 ? 1 : count);
-    // 90 interval maximum except hours 8
-    count = interval === 60 && count > 8 ? 8 : (count > 90 ? 90 : count);
+    count = interval === 1 && count < 15 ? 15 : (!count ? 1 : count);
+    // 90 interval maximum except hours 12
+    count = interval === 60 && count > 12 ? 12 : (count > 90 ? 90 : count);
 
     // add interval counts from start until end or clock returns to 0
     while (time && (!timeList.length || ((time <= end || end === "00:00") && time !== "00:00"))) {
         timeList.push(time);
         time = interval === 60 ? getClockTime(count, 0, time) :
-            (interval === 1 ? getClockTime(0, count, time) : null);
+            (interval === 1 ? getClockTime(0, count, time) :
+                getClockTime(0, interval, time));
     }
     return timeList;
 }
 
-// last time in a list of times which has elapsed today, or yesterday if none have elapsed
-function lastTimeElapsed(between, count, interval, times = []) {
-    const timeList = times.length ? times : ((count ? dailyIntervalHours(between, count, interval) : between?.sort()) || []).filter(Boolean);
-    console.log("timeList", timeList);
-    let lastHours, yesterday = 0;
-    const hoursNow = getClockTime();
+// last time in a list of times which has elapsed today, or daysAgo if none have elapsed
+function lastTimeElapsed(between, count, interval, times = [], repeat = "times-per", dow = []) {
+
+    // daily times or 00:00
+    const timeList = times.length ? times :
+        ((count ? dailyIntervalHours(between, count, interval) : between?.sort()) || []).filter(Boolean);
+
+    // last time
+    const nowTime = getClockTime();
+    let lastTime, daysAgo = 0;
     for (const time of timeList) {
-        if (hoursNow > time) {
-            lastHours = time;
-        } else if (!lastHours || yesterday) {
-            lastHours = time;
-            yesterday = 1;
+        if (nowTime > time) {
+            lastTime = time;
+        } else if (!lastTime || daysAgo) {
+            lastTime = time;
+            daysAgo = 1;
         }
     }
-    // get today or yesterday
-    const lastDate = utcToLocal(
-        (d => new Date(d.setDate(d.getDate() - yesterday)))(new Date).toISOString()
-    );
-    return lastHours ? lastDate.substring(0, 11) + lastHours : lastDate;
+
+    daysAgo =
+        dow.length ? (d => {
+                if (dow.includes(DAYS[d.getDay()])) {
+                    // today if one of chosen days
+                    return (count - 1) * 7;
+                } else {
+                    // days since last occurance of last chosen day
+                    return (d.getDay() - DAYS.indexOf(dow[dow.length - 1]) + 6) % 7 + 1 + (count - 1) * 7;
+                }
+            })(new Date) :
+            repeat === "every" && parseInt(interval) >= 1440 ? 0 :
+                daysAgo;
+
+    if (daysAgo) {
+        lastTime = timeList[timeList.length - 1] || "00:00";
+    }
+
+    // get date
+    const lastDate = utcToLocal(addDays(-daysAgo).toISOString());
+    return lastTime ? lastDate.substring(0, 11) + lastTime : lastDate;
 }
 
-function nextTime(between, count, interval, times = []) {
-    const timeList = times.length ? times : ((count ? dailyIntervalHours(between, count, interval) : between?.sort()) || []).filter(Boolean);
-    console.log("timeList", timeList);
-    let nextHours, tomorrow = 0;
-    const hoursNow = getClockTime();
+function nextTime(between, count, interval, times = [], repeat = "times-per", dow = [], last = null) {
+
+    // daily times or 00:00
+    const timeList = times.length ? times :
+        ((count ? dailyIntervalHours(between, count, interval) : between?.sort()) || []).filter(Boolean);
+
+    // next time
+    const nowTime = getClockTime();
+    let nextTime, daysUntil = 0;
     for (const time of timeList) {
-        if (hoursNow < time && !nextHours) {
-            nextHours = time;
+        if (nowTime < time && !nextTime) {
+            nextTime = time;
         }
     }
-    if (!nextHours) {
-        nextHours = timeList[0];
-        tomorrow = 1;
+    if (!nextTime) {
+        daysUntil = 1;
     }
-    // get today or tomorrow
-    const nextDate = utcToLocal(
-        (d => new Date(d.setDate(d.getDate() + tomorrow)))(new Date).toISOString()
-    );
-    return nextHours ? nextDate.substring(0, 11) + nextHours : nextDate;
+
+    daysUntil =
+        dow.length ? (d => (DAYS.indexOf(dow[0]) + 7 - d.getDay()) % 7)(new Date) + (count - 1) * 7 :
+            repeat === "every" && parseInt(interval) >= 1440 ? (parseInt(count) === 1 ? 1 : daysUntil ? count : 0) :
+                daysUntil;
+
+    if (daysUntil) {
+        nextTime = timeList[0] || "00:00";
+    }
+
+    // get date
+    // start from last date
+    if (repeat === "every" && parseInt(interval) >= 1440 && parseInt(count) > 1) {
+
+    }
+
+    const nextDate = (repeat === "every" && parseInt(interval) >= 1440 && parseInt(count) > 1) ?
+        utcToLocal(addDays(daysUntil).toISOString()) :
+        utcToLocal(addDays(daysUntil).toISOString());
+    return nextTime ? nextDate.substring(0, 11) + nextTime : nextDate;
 }
 
-function getDailyTimes(count) {
+function getDailyTimes(count, between = []) {
+
     count = parseInt(count);
     return count === 1 ? ["06:00"] :
         (count === 2 ? ["06:00", "18:00"] :
@@ -173,6 +253,9 @@ function getDailyTimes(count) {
 }
 
 export default {
+    DAYS,
+    WEEKDAYS,
+    WEEKEND,
     intervals,
     repeats,
     utcToLocal,
@@ -185,5 +268,7 @@ export default {
     objectLocalToUtc,
     clock12hours,
     getDailyTimes,
-    nextTime
+    nextTime,
+    shortTime,
+    shortDate,
 };

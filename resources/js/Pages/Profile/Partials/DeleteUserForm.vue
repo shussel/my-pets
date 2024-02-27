@@ -65,7 +65,7 @@ const closeModal = () => {
 
         <Modal :paw="true" :show="confirmingUserDeletion" maxWidth="sq" @close="closeModal">
 
-            <h2 class="bg-transparent text-lg">
+            <h2 class="w-full text-center bg-transparent text-lg">
                 Confirm Account Deletion
             </h2>
 
@@ -91,7 +91,6 @@ const closeModal = () => {
             </div>
 
             <div class="mt-6 flex justify-center gap-4">
-                <ButtonDefault @click="closeModal">Cancel</ButtonDefault>
 
                 <ButtonPrimary
                         :class="{ 'opacity-25': form.processing }"
@@ -100,6 +99,9 @@ const closeModal = () => {
                         @click="deleteUser"
                 >Delete
                 </ButtonPrimary>
+
+                <ButtonDefault @click="closeModal">Cancel</ButtonDefault>
+
             </div>
         </Modal>
     </section>

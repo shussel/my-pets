@@ -193,11 +193,10 @@ const { message } = useFlashMessage();
                 </main>
             </div>
         </div>
+        <Modal :paw="false" :show="showSettings" maxWidth="sm">
+            <SettingsForm @closeSettings="showSettings = false"/>
+        </Modal>
     </div>
-
-    <Modal :paw="false" :show="showSettings" maxWidth="sm">
-        <SettingsForm @closeSettings="showSettings = false"/>
-    </Modal>
 
     <Loading/>
 </template>

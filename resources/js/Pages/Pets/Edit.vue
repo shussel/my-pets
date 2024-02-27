@@ -243,7 +243,7 @@ const closeModal = () => {
         </form>
     </Card>
 
-    <ModalConfirm :show="confirmingPetDeletion" @closeModal="closeModal" @confirm="deletePet()">
+    <ModalConfirm :show="confirmingPetDeletion" @closeModal="closeModal" @confirm="deletePet">
         Are you sure you want to delete this pet? All pet data will be lost permanently.
     </ModalConfirm>
 </template>

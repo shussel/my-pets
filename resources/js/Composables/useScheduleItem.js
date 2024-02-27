@@ -1,4 +1,4 @@
-import { reactive, toValue, isReactive, computed, toRef, watchEffect, watch, ref } from "vue";
+import { reactive, toValue, isReactive, computed } from "vue";
 import ObjectID from "bson-objectid";
 import dt from "@/Lib/datetime.js";
 
@@ -21,14 +21,6 @@ const defaultScheduleItem = {
     endDate: null,
 };
 
-function toSelectList(items) {
-    const list = [];
-    for (const key in items) {
-        list.push({ label: key, value: items[key] });
-    }
-    return list;
-}
-
 export default function useScheduleItem(itemData) {
 
     // don't make item data reactive twice
@@ -37,89 +29,76 @@ export default function useScheduleItem(itemData) {
         ...(typeof toValue(itemData) === "object" && toValue(itemData) !== null ? toValue(itemData) : {}),
     });
 
-    if (!scheduleItem._id) {
-        scheduleItem._id = ObjectID().toHexString();
-        scheduleItem.startDate = dt.utcToLocal();
-    }
-
     const repeat = reactive({
-        title: computed(() => scheduleItem.action || "Repeat"),
-        once: computed(() => !scheduleItem.repeat || scheduleItem.repeat === "once"),
-        repeating: computed(() => !repeat.once && scheduleItem.interval && scheduleItem.count),
-        interval: computed(() => !scheduleItem.interval ? null : Object.keys(dt.intervals).find(key => dt.intervals[key] === scheduleItem.interval) + (repeat.everyMulti ? "s" : "")),
-        weekly: computed(() => scheduleItem.repeat === "every" && scheduleItem.interval === 1440),
-        multi: computed(() => scheduleItem.count > 1),
-        everyMulti: computed(() => scheduleItem.repeat === "every" && repeat.multi),
-        timesAny: computed(() => scheduleItem.repeat === "times-per" && scheduleItem.count),
-        showTimes: computed(() => repeat.multi && scheduleItem.interval < 1440),
-        showCount: computed(() => repeat.everyMulti || repeat.timesAny),
-        maxCount: computed(() =>
-            scheduleItem.repeat === "every" ? (scheduleItem.interval === 60 ? 12 : 90) :
-                scheduleItem.repeat === "times-per" ? (scheduleItem.interval === 1440 ? 4 : 1) : 1
+        isSet: computed(() => scheduleItem.repeat),
+        none: computed(() => repeat.isSet && scheduleItem.repeat === "once"),
+        repeating: computed(() => repeat.isSet && scheduleItem.repeat !== "once"),
+        once: computed(() => repeat.repeating && parseInt(scheduleItem.count) === 1),
+        multi: computed(() => repeat.repeating && parseInt(scheduleItem.count) > 1),
+        timesPer: computed(() => scheduleItem.repeat === "times-per"),
+        oncePer: computed(() => repeat.timesPer && repeat.once),
+        every: computed(() => scheduleItem.repeat === "every"),
+        everyOne: computed(() => repeat.every && repeat.once),
+        minutes: computed(() => parseInt(scheduleItem.interval) === 1),
+        hourly: computed(() => parseInt(scheduleItem.interval) === 60),
+        lessThanDaily: computed(() => parseInt(scheduleItem.interval) < 1440),
+        daily: computed(() => parseInt(scheduleItem.interval) === 1440),
+        dayOrMore: computed(() => parseInt(scheduleItem.interval) >= 1440),
+        lastPossible: computed(() =>
+            repeat.repeating ? dt.lastTimeElapsed([scheduleItem.startTime, scheduleItem.endTime], scheduleItem.count, scheduleItem.interval, scheduleItem.times, scheduleItem.repeat, scheduleItem.dow) : null
         ),
-        minCount: computed(() =>
-            scheduleItem.repeat === "every" && scheduleItem.interval === 1 ? 15 : 1
+        lastTime: computed(() => dt.shortTime(scheduleItem.last || repeat.lastPossible)),
+        lastDay: computed(() => dt.shortDate(scheduleItem.last || repeat.lastPossible)),
+        nextRegular: computed(() =>
+            repeat.repeating ? dt.nextTime([scheduleItem.startTime, scheduleItem.endTime], scheduleItem.count, scheduleItem.interval, scheduleItem.times, scheduleItem.repeat, scheduleItem.dow, scheduleItem.last) : null
         ),
-        last: computed(() =>
-            repeat.repeating ? dt.lastTimeElapsed([scheduleItem.startTime, scheduleItem.endTime], scheduleItem.count, scheduleItem.interval, scheduleItem.times) : null
+        nextTime: computed(() => dt.shortTime(scheduleItem.next || repeat.nextRegular)),
+        nextDay: computed(() => dt.shortDate(scheduleItem.next || repeat.nextRegular)),
+        intervalName: computed(() =>
+            !scheduleItem.interval ? "" :
+                dt.intervals.find(({ value }) => value === scheduleItem.interval).label + (repeat.every && repeat.multi ? "s" : "")
         ),
-        next: computed(() =>
-            repeat.repeating ? dt.nextTime([scheduleItem.startTime, scheduleItem.endTime], scheduleItem.count, scheduleItem.interval, scheduleItem.times) : null
+        dailyCount: computed(() => !repeat.repeating ? 0 :
+            // times specified
+            times.chosen ? scheduleItem.times.length :
+                // once per day
+                repeat.dayOrMore && (repeat.once || repeat.every) ? 1 :
+                    // every less than a day
+                    repeat.every ? dt.dailyIntervalHours([scheduleItem.startTime, scheduleItem.endTime], scheduleItem.count, scheduleItem.interval).length :
+                        // multiple times per day or more
+                        repeat.dayOrMore ? scheduleItem.count :
+                            // multi times per interval less than a day
+                            dt.dailyIntervalHours([scheduleItem.startTime, scheduleItem.endTime], 1 / scheduleItem.count, scheduleItem.interval).length
         ),
         description: computed(() =>
-            (scheduleItem.repeat === "every" ? "every " : "") +
-            (repeat.showCount ? scheduleItem.count + " " : "") +
-            (scheduleItem.repeat === "times-per" ? "time" + (repeat.multi ? "s" : "") + " per " : "") +
-            (repeat.weekly && days.chosen ? days.on : repeat.interval)
+            !repeat.repeating ? "" :
+                (repeat.every ? "every " : "") +
+                (repeat.repeating ? (repeat.everyOne ? "" : scheduleItem.count + " ") : "") +
+                (repeat.timesPer ? "time" + (repeat.multi ? "s" : "") + " per " : "") +
+                (!(repeat.every && repeat.multi && !days.all && repeat.dayOrMore) ? repeat.intervalName || "" : "")
         ),
-        useIntervals: computed(() => {
-            return {
-                3628800: false,
-                302400: false,
-                10080: false,
-                1440: ((scheduleItem.repeat === "times-per") && (scheduleItem.count <= repeat.maxCount)) ||
-                    ((scheduleItem.repeat === "every") && scheduleItem.count <= repeat.maxCount),
-                60: ((scheduleItem.repeat === "times-per") && !repeat.multi) ||
-                    ((scheduleItem.repeat === "every") && (scheduleItem.count <= repeat.maxCount)),
-                1: (scheduleItem.repeat === "every") && (scheduleItem.count >= repeat.minCount),
-            };
-        }),
-        intervals: computed(() => toSelectList(dt.intervals)?.filter((item) => repeat.useIntervals[item.value])),
-        useRepeats: computed(() => {
-            return {
-                "times-per": true,
-                every: true,
-                once: true,
-            };
-        }),
-        repeats: computed(() => toSelectList(dt.repeats)?.filter((item) => repeat.useRepeats[item.value])),
-        dailyCount: computed(() =>
-            scheduleItem.interval && scheduleItem.repeat === "every" && scheduleItem.startTime && scheduleItem.endTime ? dt.dailyIntervalHours([scheduleItem.startTime, scheduleItem.endTime], scheduleItem.count, scheduleItem.interval).length : 0
-        )
     });
 
+    // new item
+    if (!scheduleItem._id) {
+        scheduleItem.new = true;
+        scheduleItem._id = ObjectID().toHexString();
+        scheduleItem.startDate = dt.utcToLocal();
+        scheduleItem.last = repeat.lastPossible;
+    }
+
     const days = reactive({
-        days: ["M", "Tu", "W", "Th", "F", "Sa", "Su"],
-        weekdays: ["M", "Tu", "W", "Th", "F"],
-        weekend: ["Sa", "Su"],
-        isWeekdays: computed(() => scheduleItem.dow?.length === 5 && (scheduleItem.dow.filter((day) => days.weekdays.includes(day))).length === 5),
-        isWeekend: computed(() => scheduleItem.dow?.length === 2 && (scheduleItem.dow.filter((day) => days.weekend.includes(day))).length === 2),
-        toDays(useDays) {
-            scheduleItem.dow = [...days[useDays]];
-            console.log("weekend shit", scheduleItem.dow.map((day) => days.weekend.includes(day)));
-        },
-        all: computed(() => !scheduleItem.dow?.length),
-        title: computed(() => days.all ? "Every Day" : "On Days"),
-        action: computed(() => days.all ? "days" : "every day"),
-        toggle() {
-            scheduleItem.dow = (days.all ? [...days.days] : []);
-        },
-        setting: computed(() => scheduleItem.dow?.length === 7),
-        multi: computed(() => scheduleItem.dow?.length > 1),
-        chosen: computed(() => days.multi && !days.setting),
+        count: computed(() => scheduleItem.dow?.length),
+        all: computed(() => !days.count),
+        setting: computed(() => days.count === 7),
+        chosen: computed(() => days.count && !days.setting),
+        isWeekdays: computed(() => days.count === 5 && (scheduleItem.dow.filter((day) => dt.WEEKDAYS.includes(day))).length === 5),
+        isWeekend: computed(() => days.count === 2 && (scheduleItem.dow.filter((day) => dt.WEEKEND.includes(day))).length === 2),
         on: computed(() => days.isWeekdays ? "weekdays" : days.isWeekend ? "weekends" :
-            (scheduleItem.dow?.length === 2 ? scheduleItem.dow.join(" and ") : scheduleItem.dow.join(", "))),
-        description: computed(() => days.chosen && !repeat.weekly ? "on " + days.on : ""),
+            (days.count === 2 ? scheduleItem.dow.join(" & ") : scheduleItem.dow.join(", "))),
+        description: computed(() => days.chosen ?
+            (!(repeat.every && repeat.multi && !days.all && repeat.dayOrMore) ? "on " : "") +
+            days.on : ""),
     });
 
     const hours = reactive({
@@ -132,94 +111,40 @@ export default function useScheduleItem(itemData) {
         period: computed(() =>
             hours.before ? "before " + dt.clock12hours(scheduleItem.endTime) :
                 hours.after ? "after " + dt.clock12hours(scheduleItem.startTime) :
-                    "between " + dt.clock12hours(scheduleItem.startTime) + " and " + dt.clock12hours(scheduleItem.endTime)
+                    "between " + dt.clock12hours(scheduleItem.startTime) + " & " + dt.clock12hours(scheduleItem.endTime)
         ),
-        title: computed(() => hours.all && !hours.set ? "All Day" : "Between"),
-        set: toRef(false),
-        action: computed(() => hours.all && !hours.set ? "between" : "any time"),
-        toggle: () => {
-            if (hours.set) {
-                scheduleItem.startTime = scheduleItem.endTime = "00:00";
-            }
-            hours.set = !hours.set;
-        },
         description: computed(() =>
-            scheduleItem.repeat === "times-per" && scheduleItem.times?.length ?
-                (scheduleItem.times.length < 2 ? "at " : "") + scheduleItem.times.map(time => dt.clock12hours(time)).join(scheduleItem.times?.length === 2 ? " & " : ", ") :
-                !hours.all && scheduleItem.repeat !== "times-per" ? hours.period : ""
+            !hours.all && !times.chosen ? hours.period : ""
         )
     });
+
+    const times = reactive({
+        chosen: computed(() => scheduleItem.times.length),
+        multi: computed(() => times.chosen > 1),
+        description: computed(() => times.chosen ?
+            (!times.multi ? "at " : "") + scheduleItem.times.map(time =>
+                dt.clock12hours(time)
+            ).join(times.chosen === 2 ? " & " : ", ") : "")
+    });
+
+    const status = computed(() =>
+        scheduleItem.endDate && scheduleItem.endDate <= dt.utcToLocal() ? "done" :
+            scheduleItem.startDate && scheduleItem.startDate <= dt.utcToLocal() ? "active" :
+                scheduleItem.startDate && scheduleItem.last ? "paused" : "pending"
+    );
 
     const isValid = computed(() =>
             // repeating schedule
             repeat.repeating ||
             // one time scheduled event
-            (scheduleItem.action && repeat.once && !repeat.multi && !scheduleItem.interval)) ||
+            (scheduleItem.action && !repeat.repeating && !repeat.multi && !scheduleItem.interval)) ||
         // task
         (scheduleItem.action && !repeat.multi && !scheduleItem.interval);
 
     const description = computed(() =>
         isValid ?
-            [scheduleItem.action, repeat.description, days.description, hours.description].join(" ") : ""
+            [scheduleItem.action, repeat.description, days.description, hours.description, times.description].join(" ") : ""
     );
 
-    function adjustTimesCount(newCount) {
-        // change existing times
-        if (scheduleItem.times.length) {
-            const diff = scheduleItem.times.length - newCount;
-            if (diff < 0) {
-                // add x times
-                for (let i = 0; i > diff; i--) scheduleItem.times.push("12:00");
-            } else if (diff > 0) {
-                // remove last x times
-                scheduleItem.times.splice(scheduleItem.times.length - diff,
-                    diff);
-            }
-            // keep times sorted
-            scheduleItem.times.sort();
-        } else {
-            // all new times
-            scheduleItem.times = dt.getDailyTimes(newCount);
-        }
-    }
-
-    // adjust times
-    watchEffect(() => {
-        if (repeat.repeating) {
-            if (scheduleItem.repeat === "every") {
-                scheduleItem.times = [];
-            } else {
-                adjustTimesCount(scheduleItem.count);
-            }
-        }
-    });
-
-    function updateLast() {
-        scheduleItem.last = repeat.last;
-    }
-
-    // adjust next
-    watchEffect(() => {
-        updateLast();
-    });
-
-    function updateNext() {
-        scheduleItem.next = repeat.next;
-    }
-
-    // adjust next
-    watchEffect(() => {
-        updateNext();
-    });
-
-    // prevent exceeding count bounds
-    watchEffect(() => {
-        if (scheduleItem.count > repeat.maxCount) {
-            scheduleItem.count = repeat.maxCount;
-        } else if (scheduleItem.count < repeat.minCount) {
-            scheduleItem.count = repeat.minCount;
-        }
-    });
-
-    return { scheduleItem, repeat, hours, days, description, isValid };
+    return { scheduleItem, repeat, hours, days, times, description, status, isValid };
 }

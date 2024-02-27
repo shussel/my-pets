@@ -71,10 +71,11 @@ usePageTitle("Pet Schedule");
     <Card>
         <FormScheduleFeed
                 :options="{
-                intervals: meta.schedule.intervals,
-                repeats: meta.schedule.repeats,
-            }"
-                :schedule="pet.schedule"/>
+                    intervals: meta.schedule.intervals,
+                    repeats: meta.schedule.repeats,
+                }"
+                :pet="pet"
+        />
     </Card>
 
     <Card>

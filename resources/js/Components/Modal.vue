@@ -65,7 +65,7 @@ const maxWidthClass = computed(() => {
 </script>
 
 <template>
-    <Teleport to="#page">
+    <Teleport :disabled="!document?.querySelector('#page')" to="#page">
         <Transition leave-active-class="duration-200">
             <div v-show="show" class="fixed inset-0 overflow-y-auto px-4 py-6 sm:px-0 z-50" scroll-region>
                 <Transition

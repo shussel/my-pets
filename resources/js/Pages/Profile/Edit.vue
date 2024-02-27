@@ -18,7 +18,7 @@ const props = defineProps({
     },
 });
 
-usePageTitle("Settings");
+usePageTitle("Profile");
 
 function toHome() {
     router.get(route("pets.index"));

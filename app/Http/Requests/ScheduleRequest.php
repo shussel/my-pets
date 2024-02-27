@@ -40,7 +40,7 @@ class ScheduleRequest extends FormRequest
             'schedule.*.startDate' => 'sometimes|date|nullable',
             'schedule.*.repeat' => ['sometimes', 'nullable', Rule::enum(RepeatsEnum::class), 'required_with:interval'],
             'schedule.*.count' => 'sometimes|integer|nullable|min:1|max:100|required_with:interval',
-            'schedule.*.interval' => ['sometimes', 'nullable', Rule::enum(IntervalEnum::class)],
+            'schedule.*.interval' => ['sometimes', 'nullable', Rule::enum(IntervalEnum::class), 'required_with:repeat'],
             'schedule.*.dow' => 'sometimes|array',
             'schedule.*.startTime' => 'sometimes|nullable|date_format:H:i',
             'schedule.*.endTime' => 'sometimes|nullable|date_format:H:i',

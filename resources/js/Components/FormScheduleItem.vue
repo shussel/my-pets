@@ -1,10 +1,11 @@
 <script setup>
-import { computed, toRefs, ref } from "vue";
+import { computed, toRefs, ref, watchEffect, watch } from "vue";
 import dt from "@/Lib/datetime.js";
 import InputLabel from "@/Components/InputLabel.vue";
 import InputText from "@/Components/InputText.vue";
 import InputButtons from "@/Components/InputButtons.vue";
 import ButtonDefault from "@/Components/ButtonDefault.vue";
+import FormFooter from "@/Components/FormFooter.vue";
 import FAIcon from "@/Components/FAIcon.vue";
 
 import useScheduleItem from "@/Composables/useScheduleItem.js";
@@ -14,41 +15,184 @@ const props = defineProps({
         type: Object,
         default: () => ({}),
     },
+    editState: {
+        type: Object,
+        default: () => ({}),
+    },
+    form: {
+        type: Object,
+        default: () => ({}),
+    },
     options: {
         type: Object,
         default: () => ({}),
     },
 });
 
-const emit = defineEmits(["update:scheduleItem"]);
+const emit = defineEmits(["update:scheduleItem", "update:editState"]);
 
 const { scheduleItem: propsItem } = toRefs(props);
-const { scheduleItem: useItem, repeat, hours, days, description } = useScheduleItem(propsItem);
+const { scheduleItem: useItem, repeat, hours, days, times, description, status, isValid } = useScheduleItem(propsItem);
 
 // v-model proxy
 const editItem = computed({
     get: () => useItem,
     set: (value) => emit("update:scheduleItem", value),
 });
+
+// v-model proxy
+const edit = computed({
+    get: () => props.editState,
+    set: (value) => emit("update:editState", value),
+});
+const editing = computed(() => edit.value.editing === editItem.value._id);
+const managing = computed(() => edit.value.managing === editItem.value._id);
+
+const minCount = computed(() => repeat.every && repeat.minutes ? 15 :
+    (repeat.every && repeat.dayOrMore ? 1 : 1));
+
+const maxCount = computed(() => repeat.every ? (repeat.hourly ? 12 : 90) :
+    repeat.timesPer ? (repeat.daily ? 4 : 1) : 1);
+
+const useIntervals = computed(() => {
+    return {
+        3628800: false,
+        302400: false,
+        10080: false,
+        1440: (repeat.repeating && editItem.value.count <= maxCount.value),
+        60: (repeat.timesPer && !repeat.multi) ||
+            (repeat.every && editItem.value.count <= maxCount.value),
+        1: (repeat.every && editItem.value.count >= minCount.value),
+    };
+});
+const selectInterval = computed(() => [...dt.intervals]?.filter(({ value }) => useIntervals.value[value]));
+
+const useRepeats = computed(() => {
+    return {
+        "times-per": true,
+        every: true,
+        once: true,
+    };
+});
+const selectRepeat = computed(() => dt.repeats?.filter(({ value }) => useRepeats.value[value]));
+
+const statusColor = computed(() => status.value === "active" ? "text-green-600" :
+    status.value === "done" ? "text-red-600" : "text-yellow-600"
+);
+
+const setHours = ref(false);
+const showHours = computed(() => !hours.all || setHours.value);
+
+function toggleHours() {
+    if (setHours.value) {
+        editItem.value.startTime = editItem.value.endTime = "00:00";
+    }
+    setHours.value = !setHours.value;
+}
+
+const setTimes = ref(false);
+
+function toggleTimes() {
+    if (times.chosen) {
+        editItem.value.times = [];
+        if (repeat.oncePer) {
+            editItem.value.repeat = "every";
+        }
+    } else {
+        if (repeat.everyOne) {
+            editItem.value.repeat = "times-per";
+        } else if (repeat.every) {
+            editItem.value.times = dt.getDailyTimes(1);
+        } else {
+            editItem.value.times = dt.getDailyTimes(editItem.value.count);
+        }
+    }
+    setHours.value = false;
+    setTimes.value = !setTimes.value;
+}
+
+// update timelist
+watch([() => editItem.value.count, () => editItem.value.interval, () => editItem.value.repeat, () => editItem.value.startTime, () => editItem.value.endTime], () => {
+    if (repeat.dayOrMore && repeat.timesPer) {
+        if (repeat.timesPer && (!hours.all || editItem.value.count !== editItem.value.times.length)) {
+            editItem.value.times = !hours.all ? dt.dailyIntervalHours([editItem.value.startTime, editItem.value.endTime], editItem.value.count, 0) :
+                dt.getDailyTimes(editItem.value.count);
+            console.log("adjusting times count", editItem.value.times);
+        }
+    } else if (times.chosen) {
+        console.log("clearing times");
+        editItem.value.times = [];
+    }
+});
+
+// update count keep min/max values depending on count, interval and repeat
+watch([() => editItem.value.count, () => editItem.value.interval, () => editItem.value.repeat], () => {
+    if (editItem.value.count < minCount.value) {
+        editItem.value.count = minCount.value;
+        console.log("enforcing min count");
+    } else if (editItem.value.count > maxCount.value) {
+        console.log("enforcing max count");
+        editItem.value.count = maxCount.value;
+    }
+    if (repeat.repeating) {
+        if (!editItem.value.interval) {
+            editItem.value.interval = 1440;
+            console.log("set default interval");
+        } else if (editItem.value.interval < 60) {
+            editItem.value.interval = 60;
+            editItem.value.count = 1;
+            console.log("enforcing no times per minute");
+        }
+    }
+});
+
+// reset all parameters to non-repeating event
+watch(() => editItem.value.repeat, () => {
+    if (repeat.none) {
+        console.log("clearing to once");
+        if (times.chosen) {
+            editItem.value.times = [];
+        }
+        editItem.value.interval = null;
+        editItem.value.count = 1;
+        editItem.value.startTime = editItem.value.endTime = "00:00";
+        editItem.value.last = editItem.value.next = null;
+    }
+});
+
+// update last date when parameters change
+watch([() => editItem.value.count, () => editItem.value.interval, () => editItem.value.repeat, () => editItem.value.times, () => editItem.value.dow, () => editItem.value.startTime, () => editItem.value.endTime], () => {
+    // update last
+    if (editItem.value.last !== repeat.lastPossible) {
+        console.log("update last", editItem.value.last, repeat.lastPossible);
+        editItem.value.last = repeat.lastPossible;
+    }
+});
+
+function updateNext() {
+    if (editItem.value.next !== repeat.nextRegular) {
+        console.log("update next");
+        editItem.value.next = repeat.nextRegular;
+    }
+}
 </script>
 
 <template>
     <div class="space-y-3">
 
-        <slot/>
-
-        <div v-if="!editItem.editing" class="py-2 text-lg leading-6 flex flex-wrap justify-center items-center gap-1">
-            <div>{{ editItem.action }}</div>
-            <div>{{ repeat.description }}</div>
-            <div>{{ days.description }}</div>
-            <div>{{ hours.description }}</div>
-            <ButtonDefault @click.prevent="editItem.editing=true">Edit</ButtonDefault>
+        <div v-if="editItem.repeat"
+             class="pt-2 pb-1 text-lg text-center flex flex-wrap justify-center items-center gap-x-2">
+            <div v-if="editItem.action">{{ editItem.action }}</div>
+            <div v-if="repeat.description">{{ repeat.description }}</div>
+            <div v-if="days.description">{{ days.description }}</div>
+            <div v-if="hours.description">{{ hours.description }}</div>
+            <div v-if="times.description">{{ times.description }}</div>
         </div>
 
-        <template v-else>
+        <template v-if="editing">
 
-            <div v-if="false" class="flex items-center gap-2">
-                <div class="w-1/3">
+            <div v-if="repeat.none" class="flex items-center gap-2">
+                <div class="w-1/2">
                     <InputLabel for="action" value="Action"/>
                     <InputText
                             id="action"
@@ -58,17 +202,7 @@ const editItem = computed({
                             type="text"
                     />
                 </div>
-                <div class="w-1/3">
-                    <InputLabel for="with" value="With"/>
-                    <InputText
-                            id="with"
-                            v-model="editItem.with"
-                            autocomplete="off"
-                            class="block w-full mt-1"
-                            type="text"
-                    />
-                </div>
-                <div class="w-1/3">
+                <div class="w-1/2">
                     <InputLabel for="location" value="Location"/>
                     <InputText
                             id="location"
@@ -80,63 +214,74 @@ const editItem = computed({
                 </div>
             </div>
 
-            <template v-if="editItem.repeat !== 'once'">
+            <!-- repeat params -->
+            <template v-if="repeat.repeating || !repeat.isSet">
                 <div class="flex justify-center items-center gap-2">
-                    <div>{{ repeat.title }}</div>
+                    <div>{{ [editItem.action, editItem.with].filter(Boolean).join(" ") || "Repeat" }}</div>
                     <InputText
-                            v-if="editItem.repeat === 'times-per'"
+                            v-if="repeat.timesPer"
                             id="count"
                             v-model="editItem.count"
-                            :max="repeat.maxCount"
-                            :min="repeat.minCount"
+                            :max="maxCount"
+                            :min="minCount"
                             autocomplete="off"
                             class="block mt-1"
                             type="number"
                     />
                     <InputButtons
                             id="repeat"
+                            :key="editItem.repeat"
                             v-model="editItem.repeat"
-                            :options="repeat.repeats"
+                            :options="selectRepeat"
                             class="gap-0"
                     />
                     <InputText
-                            v-if="editItem.repeat === 'every'"
+                            v-if="repeat.every"
                             id="count"
                             v-model="editItem.count"
-                            :max="repeat.maxCount"
-                            :min="repeat.minCount"
+                            :max="maxCount"
+                            :min="minCount"
                             autocomplete="off"
                             class="block mt-1"
                             type="number"
                     />
                     <InputButtons
                             id="interval"
+                            :key="editItem.interval"
                             v-model="editItem.interval"
-                            :options="repeat.intervals"
+                            :options="selectInterval"
                             class="gap-0"
                     />
                 </div>
             </template>
 
-            <template v-if="editItem.repeat && editItem.repeat !== 'once'">
+            <template v-if="repeat.repeating">
 
-                <div class="flex flex-wrap justify between gap-y-3">
+                <div class="flex flex-wrap justify-around items-center gap-x-2 gap-y-3">
 
-                    <div v-if="repeat.showTimes" class="grow min-w-1/2 text-center">
+                    <!-- daily count -->
+                    <div v-if="repeat.lessThanDaily" class="text-center">
                         <Label>{{ repeat.dailyCount }}x</Label>
                     </div>
 
-                    <div class="grow min-w-1/2 text-center">
-                        <span class="font-medium mr-2">{{ days.title }} </span>
-                        <span class="text-sm underline" @click="days.toggle">{{ days.action }}</span>
+                    <!-- days of week -->
+                    <div class="text-center align-middle">
+                        <span class="font-medium mr-1">{{ days.all ? "Every Day" : "On Days" }}</span>
+                        <span class="text-sm underline"
+                              @click="editItem.dow = (days.all ? [...dt.DAYS] : [])">
+                                {{ days.all ? "days" : "every" }}</span>
                         <template v-if="!days.all">
-                            | <span class="text-sm underline" @click="days.toDays('weekdays')">weekdays</span>
-                            | <span class="text-sm underline" @click="days.toDays('weekend')">weekend</span>
+                            | <span class="text-sm underline"
+                                    @click="editItem.dow = [...dt.WEEKDAYS]"
+                        >weekdays</span>
+                            | <span class="text-sm underline"
+                                    @click="editItem.dow = [...dt.WEEKEND]"
+                        >weekend</span>
                         </template>
                     </div>
 
                     <div v-if="!days.all" class="w-full shrink-0 text-center font-bold flex gap-2 items-center">
-                        <div v-for="(day) of days.days" class="mr-1">
+                        <div v-for="(day) of dt.DAYS">
                             <label>
                                 <input
                                         :id="'dow' + day"
@@ -150,16 +295,16 @@ const editItem = computed({
                         </div>
                     </div>
 
-                    <template v-if="!repeat.timesAny">
-
-                        <div class="grow min-w-1/2 text-center">
-                            <span class="font-medium mr-2">{{ hours.title }}</span>
-                            <span class="text-sm underline" @click="hours.toggle">
-                        {{ hours.action }}
-                    </span>
+                    <!-- hours of the day -->
+                    <template v-if="!times.chosen">
+                        <div class="text-center align-middle">
+                            <span class="font-medium mr-1">{{ showHours ? "Between" : "All Day" }}</span>
+                            <span class="text-sm underline" @click="toggleHours">
+                                {{ showHours ? "all day" : "hours" }}
+                            </span>
                         </div>
 
-                        <div v-if="hours.set || !hours.all" class="w-full flex items-center gap-2">
+                        <div v-if="showHours" class="w-full flex items-center gap-2">
                             <div class="grow min-w-1/2">
                                 <InputLabel for="startTime" value="Start Time"/>
                                 <InputText
@@ -181,17 +326,21 @@ const editItem = computed({
                                 />
                             </div>
                         </div>
-
                     </template>
 
-                </div>
+                    <!-- time list -->
+                    <template v-if="editItem.interval >= 1440">
+                        <div class="text-center align-middle">
+                            <span class="font-medium mr-1">{{ !times.chosen ? "Any Time" : "Time" + (repeat.timesPer && times.multi ? "s" : "")
+                                }}</span>
+                            <span class="text-sm underline" @click="toggleTimes">
+                                {{ !times.chosen ? "time" + (repeat.timesPer && times.multi ? "s" : "") : "any" }}
+                            </span>
+                        </div>
 
-                <div v-if="editItem.repeat === 'times-per'">
-                    <InputLabel :value="'At Time' + (editItem.times?.length > 1 ? 's' : '')"
-                                class="w-full text-center"/>
-                    <div class="flex flex-wrap justify-center items-center gap-2">
-                        <template v-for="(time,index) in editItem.times">
-                            <div class="max-w-1/2">
+                        <div v-if="setTimes || times.chosen"
+                             class="w-full flex flex-wrap justify-center items-center gap-2">
+                            <div v-for="(time,index) in editItem.times" class="max-w-1/2">
                                 <InputText
                                         :id="'time' + index + 1"
                                         v-model="editItem.times[index]"
@@ -200,17 +349,25 @@ const editItem = computed({
                                         type="time"
                                 />
                             </div>
-                        </template>
+                        </div>
+                    </template>
+
+                </div>
+
+                <!-- manage -->
+                <div class="flex justify-between items-center gap-3">
+                    <div class="grow flex justify-around items-center gap-3">
+                        <div :class="'font-bold ' + statusColor ">{{ status }}</div>
+                        <div>last {{ repeat.lastDay }} {{ repeat.lastTime }}</div>
+                        <div>next {{ repeat.nextDay }} {{ repeat.nextTime }}</div>
                     </div>
+                    <ButtonDefault class="w-14"
+                                   @click.prevent="!managing ? edit.managing=editItem._id : edit.managing=null">
+                        <FAIcon class="text-xl" name="sliders"/>
+                    </ButtonDefault>
                 </div>
 
-                <div v-if="!editItem.manage"
-                     class="py-2 text-lg leading-6 flex flex-wrap justify-center items-center gap-1">
-                    <ButtonDefault @click.prevent="editItem.manage=true">Manage</ButtonDefault>
-                </div>
-
-                <template v-else>
-
+                <template v-if="managing">
                     <div>
                         <div class="mb-1 flex justify-between">
                             <InputLabel for="last" value="Last"/>
@@ -223,11 +380,14 @@ const editItem = computed({
                                     autocomplete="off"
                                     class="w-full"
                                     type="datetime-local"
+                                    :disabled="status !== 'active'"
                             />
-                            <ButtonDefault v-if="editItem.last" class="w-14" @click.prevent="editItem.last = null">
+                            <ButtonDefault v-if="editItem.last" :disabled="status !== 'active'" class="w-14"
+                                           @click.prevent="editItem.last = null">
                                 <FAIcon class="text-xl" name="fastForward"/>
                             </ButtonDefault>
-                            <ButtonDefault v-else class="w-14" @click.prevent="editItem.last = dt.utcToLocal()">
+                            <ButtonDefault v-else :disabled="status !== 'active'" class="w-14"
+                                           @click.prevent="editItem.last = dt.utcToLocal()">
                                 <FAIcon class="text-xl" name="stepForward"/>
                             </ButtonDefault>
                         </div>
@@ -245,11 +405,14 @@ const editItem = computed({
                                     autocomplete="off"
                                     class="w-full"
                                     type="datetime-local"
+                                    :disabled="status !== 'active'"
                             />
-                            <ButtonDefault v-if="editItem.next" class="w-14" @click.prevent="editItem.next = null">
+                            <ButtonDefault v-if="editItem.next" :disabled="status !== 'active'" class="w-14"
+                                           @click.prevent="editItem.next = null">
                                 <FAIcon class="text-xl" name="stepForward"/>
                             </ButtonDefault>
-                            <ButtonDefault v-else class="w-14" @click.prevent="editItem.next = dt.utcToLocal()">
+                            <ButtonDefault v-else :disabled="status !== 'active'" class="w-14"
+                                           @click.prevent="editItem.next = dt.utcToLocal()">
                                 <FAIcon class="text-xl" name="fastForward"/>
                             </ButtonDefault>
                         </div>
@@ -257,54 +420,61 @@ const editItem = computed({
                 </template>
             </template>
 
-            <div v-if="!editItem.repeat || editItem.manage">
-                <div class="mb-1 flex justify-between">
-                    <InputLabel :value="repeat.once ? 'Date' : 'Start Date'" for="startDate"/>
-                    <div class="text-sm">in # days</div>
-                </div>
-                <div class="flex items-center gap-2">
-                    <InputText
-                            id="startDate"
-                            v-model="editItem.startDate"
-                            autocomplete="off"
-                            class="w-full"
-                            type="datetime-local"
-                    />
-                    <ButtonDefault v-if="editItem.repeat === 'once'" class="w-14"
-                                   @click.prevent="editItem.repeat = null">
-                        repeat
-                    </ButtonDefault>
-                    <ButtonDefault v-else-if="editItem.startDate" class="w-14"
-                                   @click.prevent="editItem.startDate = null">
-                        <FAIcon class="text-xl" name="pause"/>
-                    </ButtonDefault>
-                    <ButtonDefault v-else class="w-14" @click.prevent="editItem.startDate = dt.utcToLocal()">
-                        <FAIcon class="text-xl" name="play"/>
-                    </ButtonDefault>
-                </div>
-            </div>
+            <template v-if="repeat.none || (managing && repeat.isSet)">
 
-            <div v-if="!editItem.repeat || editItem.manage">
-                <div class="mb-1 flex justify-between">
-                    <InputLabel for="endDate" value="End Date"/>
-                    <div class="text-sm">in # days</div>
+                <div>
+                    <div class="mb-1 flex justify-between">
+                        <InputLabel :value="!repeat.repeating ? 'Date' : 'Start Date'" for="startDate"/>
+                        <div class="text-sm">in # days</div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <InputText
+                                id="startDate"
+                                v-model="editItem.startDate"
+                                :disabled="status === 'done'"
+                                autocomplete="off"
+                                class="w-full"
+                                type="datetime-local"
+                        />
+                        <ButtonDefault v-if="!repeat.repeating" :disabled="status === 'done'"
+                                       class="w-14" @click.prevent="editItem.repeat = null">
+                            repeat
+                        </ButtonDefault>
+                        <ButtonDefault v-else-if="editItem.startDate" :disabled="status === 'done'"
+                                       class="w-14" @click.prevent="editItem.startDate = null">
+                            <FAIcon class="text-xl" name="pause"/>
+                        </ButtonDefault>
+                        <ButtonDefault v-else :disabled="status === 'done'" class="w-14"
+                                       @click.prevent="editItem.startDate = dt.utcToLocal()">
+                            <FAIcon class="text-xl" name="play"/>
+                        </ButtonDefault>
+                    </div>
                 </div>
-                <div class="flex items-center gap-2">
-                    <InputText
-                            id="endDate"
-                            v-model="editItem.endDate"
-                            autocomplete="off"
-                            class="w-full"
-                            type="datetime-local"
-                    />
-                    <ButtonDefault v-if="editItem.endDate" class="w-14" @click.prevent="editItem.endDate = null">
-                        <FAIcon class="text-xl" name="play"/>
-                    </ButtonDefault>
-                    <ButtonDefault v-else class="w-14" @click.prevent="editItem.endDate = dt.utcToLocal()">
-                        <FAIcon class="text-xl" name="stop"/>
-                    </ButtonDefault>
+
+                <div>
+                    <div class="mb-1 flex justify-between">
+                        <InputLabel for="endDate" value="End Date"/>
+                        <div class="text-sm">in # days</div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <InputText
+                                id="endDate"
+                                v-model="editItem.endDate"
+                                autocomplete="off"
+                                class="w-full"
+                                type="datetime-local"
+                        />
+                        <ButtonDefault v-if="editItem.endDate" class="w-14" @click.prevent="editItem.endDate = null">
+                            <FAIcon class="text-xl" name="play"/>
+                        </ButtonDefault>
+                        <ButtonDefault v-else class="w-14" @click.prevent="editItem.endDate = dt.utcToLocal()">
+                            <FAIcon class="text-xl" name="stop"/>
+                        </ButtonDefault>
+                    </div>
                 </div>
-            </div>
+            </template>
         </template>
+
+        <FormFooter v-if="editing" :form="form" :message="edit.message"/>
     </div>
 </template>

@@ -1,4 +1,5 @@
 <script setup>
+import { ref, toValue, toRaw, reactive, watchEffect } from "vue";
 import InputError from "@/Components/InputError.vue";
 import ButtonPrimary from "@/Components/ButtonPrimary.vue";
 
@@ -7,24 +8,20 @@ const props = defineProps({
         type: Object,
         required: true
     },
-    isSavable: {
-        type: Boolean,
-        required: true
-    },
     message: {
         type: String,
-        required: true
-    },
+        default: null
+    }
 });
 </script>
 
 <template>
-    <div v-show="isSavable || form.recentlySuccessful || form.hasErrors"
-         class="text-center pb-2 flex justify-center items-center gap-3 font-medium text-slate-400">
-        <div>
+    <div v-if="form.isDirty || form.recentlySuccessful || form.hasErrors"
+         class="text-center pt-2 flex justify-center items-center gap-3 font-medium text-slate-400">
+        <div v-if="form.hasErrors">
             <InputError v-for="error in form.errors" :message="error" class="mb-1"/>
         </div>
-        <div class="">{{ message }}</div>
+        <div>{{ message }}</div>
         <Transition
                 enter-active-class="transition ease-in-out"
                 enter-from-class="opacity-0"

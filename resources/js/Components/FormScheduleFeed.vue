@@ -2,13 +2,13 @@
 import FormSchedule from "@/Components/FormSchedule.vue";
 
 const props = defineProps({
-    schedule: {
-        type: Array,
-        default: () => ([])
+    pet: {
+        type: Object,
+        required: true,
     },
     options: {
         type: Object,
-        required: true
+        default: () => ({})
     },
 });
 </script>
@@ -26,7 +26,6 @@ const props = defineProps({
                     ],
                     default: {
                         action: 'Feed',
-                        with: 'Food',
                         location: 'Home',
                         repeat: 'times-per',
                         interval: 1440,
@@ -46,11 +45,13 @@ const props = defineProps({
                         },
                         free: {
                             action: 'Fill',
-                            location: 'Feeder',
+                            with: 'Bowl',
+                            repeat: 'every',
                         }
-                    }},
+                    }
+                }
             }"
-            :schedule="schedule"
+            :pet="pet"
             category="Feed"
     />
 </template>
