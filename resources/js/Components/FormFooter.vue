@@ -8,6 +8,10 @@ const props = defineProps({
         type: Object,
         required: true
     },
+    isValid: {
+        type: Boolean,
+        required: true
+    },
     message: {
         type: String,
         default: null
@@ -16,7 +20,7 @@ const props = defineProps({
 </script>
 
 <template>
-    <div v-if="form.isDirty || form.recentlySuccessful || form.hasErrors"
+    <div v-if="(form.isDirty && isValid) || form.recentlySuccessful || form.hasErrors"
          class="text-center pt-2 flex justify-center items-center gap-3 font-medium text-slate-400">
         <div v-if="form.hasErrors">
             <InputError v-for="error in form.errors" :message="error" class="mb-1"/>

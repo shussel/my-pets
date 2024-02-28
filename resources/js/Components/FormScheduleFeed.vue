@@ -45,7 +45,7 @@ const props = defineProps({
                         },
                         free: {
                             action: 'Fill',
-                            with: 'Bowl',
+                            with: 'Feeder',
                             repeat: 'every',
                         }
                     }

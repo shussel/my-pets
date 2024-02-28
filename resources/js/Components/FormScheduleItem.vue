@@ -7,7 +7,6 @@ import InputButtons from "@/Components/InputButtons.vue";
 import ButtonDefault from "@/Components/ButtonDefault.vue";
 import FormFooter from "@/Components/FormFooter.vue";
 import FAIcon from "@/Components/FAIcon.vue";
-
 import useScheduleItem from "@/Composables/useScheduleItem.js";
 
 const props = defineProps({
@@ -182,7 +181,7 @@ function updateNext() {
 
         <div v-if="editItem.repeat"
              class="pt-2 pb-1 text-lg text-center flex flex-wrap justify-center items-center gap-x-2">
-            <div v-if="editItem.action">{{ editItem.action }}</div>
+            <div v-if="editItem.action">{{ editItem.action }} {{ editItem.with }}</div>
             <div v-if="repeat.description">{{ repeat.description }}</div>
             <div v-if="days.description">{{ days.description }}</div>
             <div v-if="hours.description">{{ hours.description }}</div>
@@ -355,13 +354,19 @@ function updateNext() {
                 </div>
 
                 <!-- manage -->
-                <div class="flex justify-between items-center gap-3">
+                <div class="flex justify-between items-center gap-4">
                     <div class="grow flex justify-around items-center gap-3">
                         <div :class="'font-bold ' + statusColor ">{{ status }}</div>
-                        <div>last {{ repeat.lastDay }} {{ repeat.lastTime }}</div>
-                        <div>next {{ repeat.nextDay }} {{ repeat.nextTime }}</div>
+                        <div v-if="status === 'done' || status === 'paused'" class="text-center">
+                            <span class="font-bold">last</span> <span class="whitespace-nowrap">{{ repeat.lastCalendar
+                            }}</span>
+                        </div>
+                        <div v-if="status === 'active'" class="text-center">
+                            <span class="font-bold">next</span> <span class="whitespace-nowrap">{{ repeat.nextCalendar
+                            }}</span>
+                        </div>
                     </div>
-                    <ButtonDefault class="w-14"
+                    <ButtonDefault class="w-12"
                                    @click.prevent="!managing ? edit.managing=editItem._id : edit.managing=null">
                         <FAIcon class="text-xl" name="sliders"/>
                     </ButtonDefault>
@@ -371,7 +376,7 @@ function updateNext() {
                     <div>
                         <div class="mb-1 flex justify-between">
                             <InputLabel for="last" value="Last"/>
-                            <div class="text-sm">in # days</div>
+                            <div v-if="editItem.last" class="text-sm">{{ dt.untilAgo(editItem.last) }}</div>
                         </div>
                         <div class="flex items-center gap-2">
                             <InputText
@@ -382,13 +387,10 @@ function updateNext() {
                                     type="datetime-local"
                                     :disabled="status !== 'active'"
                             />
-                            <ButtonDefault v-if="editItem.last" :disabled="status !== 'active'" class="w-14"
-                                           @click.prevent="editItem.last = null">
+                            <ButtonDefault :disabled="status !== 'active' || editItem.last >= repeat.lastPossible"
+                                           class="w-14"
+                                           @click.prevent="editItem.last = repeat.lastPossible">
                                 <FAIcon class="text-xl" name="fastForward"/>
-                            </ButtonDefault>
-                            <ButtonDefault v-else :disabled="status !== 'active'" class="w-14"
-                                           @click.prevent="editItem.last = dt.utcToLocal()">
-                                <FAIcon class="text-xl" name="stepForward"/>
                             </ButtonDefault>
                         </div>
                     </div>
@@ -396,24 +398,33 @@ function updateNext() {
                     <div>
                         <div class="mb-1 flex justify-between">
                             <InputLabel for="next" value="Next"/>
-                            <div class="text-sm">in # days</div>
+                            <div v-if="repeat.started && (editItem.next || repeat.nextRegular) && status !== 'done'"
+                                 class="text-sm">{{ dt.untilAgo(editItem.next || repeat.nextRegular) }}
+                            </div>
                         </div>
                         <div class="flex items-center gap-2">
+                            {{ editItem.next }}
                             <InputText
+                                    v-if="!editItem.next && status === 'active'"
+                                    id="next"
+                                    v-model="repeat.nextRegular"
+                                    :disabled="false"
+                                    autocomplete="off"
+                                    class="w-full"
+                                    type="datetime-local"
+                            />
+                            <InputText
+                                    v-else
                                     id="next"
                                     v-model="editItem.next"
                                     autocomplete="off"
                                     class="w-full"
                                     type="datetime-local"
-                                    :disabled="status !== 'active'"
+                                    :disabled="true"
                             />
-                            <ButtonDefault v-if="editItem.next" :disabled="status !== 'active'" class="w-14"
+                            <ButtonDefault :disabled="status !== 'active'" class="w-14"
                                            @click.prevent="editItem.next = null">
                                 <FAIcon class="text-xl" name="stepForward"/>
-                            </ButtonDefault>
-                            <ButtonDefault v-else :disabled="status !== 'active'" class="w-14"
-                                           @click.prevent="editItem.next = dt.utcToLocal()">
-                                <FAIcon class="text-xl" name="fastForward"/>
                             </ButtonDefault>
                         </div>
                     </div>
@@ -425,7 +436,7 @@ function updateNext() {
                 <div>
                     <div class="mb-1 flex justify-between">
                         <InputLabel :value="!repeat.repeating ? 'Date' : 'Start Date'" for="startDate"/>
-                        <div class="text-sm">in # days</div>
+                        <div v-if="editItem.startDate" class="text-sm">{{ dt.untilAgo(editItem.startDate) }}</div>
                     </div>
                     <div class="flex items-center gap-2">
                         <InputText
@@ -454,7 +465,7 @@ function updateNext() {
                 <div>
                     <div class="mb-1 flex justify-between">
                         <InputLabel for="endDate" value="End Date"/>
-                        <div class="text-sm">in # days</div>
+                        <div v-if="editItem.endDate" class="text-sm">{{ dt.untilAgo(editItem.endDate) }}</div>
                     </div>
                     <div class="flex items-center gap-2">
                         <InputText
@@ -475,6 +486,6 @@ function updateNext() {
             </template>
         </template>
 
-        <FormFooter v-if="editing" :form="form" :message="edit.message"/>
+        <FormFooter v-if="editing" :form="form" :isValid="isValid" :message="edit.message"/>
     </div>
 </template>

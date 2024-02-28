@@ -5,8 +5,17 @@
     - before sending back to the server, seconds and offset must be added back: 2024-02-05T15:44:00+05:00
     - server will save as UTC: 2024-02-05T20:44:44Z
  */
+import dayjs from "dayjs";
+import RelativeTime from "dayjs/plugin/relativeTime";
+
+dayjs.extend(RelativeTime);
+import Calendar from "dayjs/plugin/calendar";
+
+dayjs.extend(Calendar);
 
 const DAYS = ["Su", "M", "Tu", "W", "Th", "F", "Sa"];
+const DAYS_MED = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const DAYS_FULL = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const WEEKDAYS = ["M", "Tu", "W", "Th", "F"];
 const WEEKEND = ["Su", "Sa"];
 
@@ -118,7 +127,7 @@ function shortTime(datetimeLocal) {
         return null;
     }
     const [hours, minutes] = clock12hours(datetimeLocal.slice(11, 16)).split(":");
-    return !minutes ? hours :
+    return !minutes ? (hours === "midnight" ? "" : hours) :
         (hours + (parseInt(minutes.slice(0, 2)) ? ":" + minutes : minutes.slice(-2))).toLowerCase();
 }
 
@@ -130,7 +139,7 @@ function shortDate(datetimeLocal) {
         checkDay = new Date(datetimeLocal.slice(0, 10) + "T00:00" + getTzOffset());
     const daysDiff = (checkDay - today) / (1000 * 60 * 60 * 24);
     return !daysDiff ? "today" : daysDiff === 1 ? "tomorrow" : daysDiff === -1 ? "yesterday" :
-        Math.abs(daysDiff) < 8 ? DAYS[checkDay.getDay()] :
+        Math.abs(daysDiff) < 8 ? DAYS_FULL[checkDay.getDay()] :
             checkDay.toLocaleDateString(undefined, { month: "short", day: "numeric" });
 }
 
@@ -186,10 +195,10 @@ function lastTimeElapsed(between, count, interval, times = [], repeat = "times-p
         dow.length ? (d => {
                 if (dow.includes(DAYS[d.getDay()])) {
                     // today if one of chosen days
-                    return (count - 1) * 7;
+                    return 0;
                 } else {
                     // days since last occurance of last chosen day
-                    return (d.getDay() - DAYS.indexOf(dow[dow.length - 1]) + 6) % 7 + 1 + (count - 1) * 7;
+                    return (d.getDay() - DAYS.indexOf(dow[dow.length - 1]) + 6) % 7 + 1;
                 }
             })(new Date) :
             repeat === "every" && parseInt(interval) >= 1440 ? 0 :
@@ -223,7 +232,7 @@ function nextTime(between, count, interval, times = [], repeat = "times-per", do
     }
 
     daysUntil =
-        dow.length ? (d => (DAYS.indexOf(dow[0]) + 7 - d.getDay()) % 7)(new Date) + (count - 1) * 7 :
+        dow.length ? (d => (DAYS.indexOf(dow[0]) + 7 - d.getDay()) % 7)(new Date) + (repeat === "every" ? (count - 1) * 7 : 0) :
             repeat === "every" && parseInt(interval) >= 1440 ? (parseInt(count) === 1 ? 1 : daysUntil ? count : 0) :
                 daysUntil;
 
@@ -238,7 +247,7 @@ function nextTime(between, count, interval, times = [], repeat = "times-per", do
     }
 
     const nextDate = (repeat === "every" && parseInt(interval) >= 1440 && parseInt(count) > 1) ?
-        utcToLocal(addDays(daysUntil).toISOString()) :
+        utcToLocal(addDays(daysUntil, last || lastTimeElapsed(between, count, interval, times, repeat, dow)).toISOString()) :
         utcToLocal(addDays(daysUntil).toISOString());
     return nextTime ? nextDate.substring(0, 11) + nextTime : nextDate;
 }
@@ -250,6 +259,14 @@ function getDailyTimes(count, between = []) {
         (count === 2 ? ["06:00", "18:00"] :
             (count === 3 ? ["06:00", "12:00", "18:00"] :
                 (count === 4 ? ["06:00", "10:00", "14:00", "18:00"] : [])));
+}
+
+function untilAgo(date) {
+    return dayjs(localToUtc(date)).fromNow();
+}
+
+function statusDate(dateLocal) {
+    return dayjs(localToUtc(dateLocal)).calendar().replace(" at 12:00 AM", "");
 }
 
 export default {
@@ -271,4 +288,6 @@ export default {
     nextTime,
     shortTime,
     shortDate,
+    untilAgo,
+    statusDate
 };

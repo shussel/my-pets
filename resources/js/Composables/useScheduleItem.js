@@ -44,16 +44,19 @@ export default function useScheduleItem(itemData) {
         lessThanDaily: computed(() => parseInt(scheduleItem.interval) < 1440),
         daily: computed(() => parseInt(scheduleItem.interval) === 1440),
         dayOrMore: computed(() => parseInt(scheduleItem.interval) >= 1440),
+        started: computed(() => scheduleItem.startDate || scheduleItem.startDate <= dt.localToUtc()),
         lastPossible: computed(() =>
             repeat.repeating ? dt.lastTimeElapsed([scheduleItem.startTime, scheduleItem.endTime], scheduleItem.count, scheduleItem.interval, scheduleItem.times, scheduleItem.repeat, scheduleItem.dow) : null
         ),
         lastTime: computed(() => dt.shortTime(scheduleItem.last || repeat.lastPossible)),
         lastDay: computed(() => dt.shortDate(scheduleItem.last || repeat.lastPossible)),
+        lastCalendar: computed(() => dt.statusDate(scheduleItem.last || repeat.lastPossible)),
         nextRegular: computed(() =>
             repeat.repeating ? dt.nextTime([scheduleItem.startTime, scheduleItem.endTime], scheduleItem.count, scheduleItem.interval, scheduleItem.times, scheduleItem.repeat, scheduleItem.dow, scheduleItem.last) : null
         ),
         nextTime: computed(() => dt.shortTime(scheduleItem.next || repeat.nextRegular)),
         nextDay: computed(() => dt.shortDate(scheduleItem.next || repeat.nextRegular)),
+        nextCalendar: computed(() => dt.statusDate(scheduleItem.next || repeat.nextRegular)),
         intervalName: computed(() =>
             !scheduleItem.interval ? "" :
                 dt.intervals.find(({ value }) => value === scheduleItem.interval).label + (repeat.every && repeat.multi ? "s" : "")
@@ -83,8 +86,7 @@ export default function useScheduleItem(itemData) {
     if (!scheduleItem._id) {
         scheduleItem.new = true;
         scheduleItem._id = ObjectID().toHexString();
-        scheduleItem.startDate = dt.utcToLocal();
-        scheduleItem.last = repeat.lastPossible;
+        scheduleItem.startDate = scheduleItem.last = repeat.lastPossible;
     }
 
     const days = reactive({
@@ -130,16 +132,14 @@ export default function useScheduleItem(itemData) {
     const status = computed(() =>
         scheduleItem.endDate && scheduleItem.endDate <= dt.utcToLocal() ? "done" :
             scheduleItem.startDate && scheduleItem.startDate <= dt.utcToLocal() ? "active" :
-                scheduleItem.startDate && scheduleItem.last ? "paused" : "pending"
+                scheduleItem.startDate > dt.utcToLocal() || (!scheduleItem.startDate && !scheduleItem.last) ? "pending" : "paused"
     );
 
     const isValid = computed(() =>
-            // repeating schedule
-            repeat.repeating ||
-            // one time scheduled event
-            (scheduleItem.action && !repeat.repeating && !repeat.multi && !scheduleItem.interval)) ||
-        // task
-        (scheduleItem.action && !repeat.multi && !scheduleItem.interval);
+        // repeating schedule
+        (repeat.repeating && scheduleItem.count && scheduleItem.interval) ||
+        // one time scheduled event
+        (repeat.none && scheduleItem.action))
 
     const description = computed(() =>
         isValid ?
