@@ -11,7 +11,7 @@ enum SleepEnum: string
     case INSIDE = 'inside';
     case CRATE = 'crate';
     case KENNEL = 'kennel';
-    case DOG_HOUSE = 'dog_house';
+    case DOG_HOUSE = 'dog-house';
     case OUTSIDE = 'outside';
     case CAGE = 'cage';
     case TANK = 'tank';

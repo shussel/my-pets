@@ -68,9 +68,9 @@ const selectInterval = computed(() => [...dt.intervals]?.filter(({ value }) => u
 
 const useRepeats = computed(() => {
     return {
-        "times-per": true,
+        "times-per": !repeat.toggle,
         every: true,
-        once: true,
+        once: !repeat.toggle,
     };
 });
 const selectRepeat = computed(() => dt.repeats?.filter(({ value }) => useRepeats.value[value]));
@@ -305,7 +305,7 @@ function updateNext() {
 
                         <div v-if="showHours" class="w-full flex items-center gap-2">
                             <div class="grow min-w-1/2">
-                                <InputLabel for="startTime" value="Start Time"/>
+                                <InputLabel for="startTime" :value="hours.startTitle"/>
                                 <InputText
                                         id="startTime"
                                         v-model="editItem.startTime"
@@ -315,7 +315,7 @@ function updateNext() {
                                 />
                             </div>
                             <div class="grow min-w-1/2">
-                                <InputLabel for="endTime" value="End Time"/>
+                                <InputLabel for="endTime" :value="hours.endTitle"/>
                                 <InputText
                                         id="endTime"
                                         v-model="editItem.endTime"
@@ -328,7 +328,7 @@ function updateNext() {
                     </template>
 
                     <!-- time list -->
-                    <template v-if="editItem.interval >= 1440">
+                    <template v-if="editItem.interval >= 1440 && !repeat.toggle">
                         <div class="text-center align-middle">
                             <span class="font-medium mr-1">{{ !times.chosen ? "Any Time" : "Time" + (repeat.timesPer && times.multi ? "s" : "")
                                 }}</span>

@@ -127,6 +127,7 @@ const namedIcons = {
     repeat: "fa-repeat",
     reptile: "fa-dragon",
     sliders: "fa-sliders",
+    sleep: "fa-moon",
     stepForward: "fa-forward-step",
     stop: "fa-stop",
     swatch: "fa-circle",

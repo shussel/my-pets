@@ -7,6 +7,7 @@ const defaultScheduleItem = {
     category: null,
     action: null,
     with: null,
+    toggle: [],
     location: null,
     startDate: null,
     repeat: "once",
@@ -35,6 +36,7 @@ export default function useScheduleItem(itemData) {
         repeating: computed(() => repeat.isSet && scheduleItem.repeat !== "once"),
         once: computed(() => repeat.repeating && parseInt(scheduleItem.count) === 1),
         multi: computed(() => repeat.repeating && parseInt(scheduleItem.count) > 1),
+        toggle: computed(() => scheduleItem.toggle?.length),
         timesPer: computed(() => scheduleItem.repeat === "times-per"),
         oncePer: computed(() => repeat.timesPer && repeat.once),
         every: computed(() => scheduleItem.repeat === "every"),
@@ -115,6 +117,8 @@ export default function useScheduleItem(itemData) {
                 hours.after ? "after " + dt.clock12hours(scheduleItem.startTime) :
                     "between " + dt.clock12hours(scheduleItem.startTime) + " & " + dt.clock12hours(scheduleItem.endTime)
         ),
+        startTitle: computed(() => repeat.toggle ? scheduleItem.toggle[0] : "Start Time"),
+        endTitle: computed(() => repeat.toggle ? scheduleItem.toggle[1] : "End Time"),
         description: computed(() =>
             !hours.all && !times.chosen ? hours.period : ""
         )

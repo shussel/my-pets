@@ -35,7 +35,7 @@ const repeats = [
 const utcDatePattern = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[\s\S]+$/;
 const localDatePattern = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/;
 
-// convert date UTC for datetime-local input
+// get or convert date UTC for datetime-local input
 function utcToLocal(utcDate) {
     if (utcDatePattern.test(utcDate) ^ !utcDate) {
         const localDate = new Date(utcDate || Date.now());
@@ -45,7 +45,7 @@ function utcToLocal(utcDate) {
     return null;
 }
 
-// convert date properties in object to datetime-local
+// convert UTC date properties in object to datetime-local
 function objectUtcToLocal(data) {
     if (data instanceof Object) {
         Object.keys(data).forEach(field => {
@@ -139,6 +139,14 @@ function shortDate(datetimeLocal) {
     return !daysDiff ? "today" : daysDiff === 1 ? "tomorrow" : daysDiff === -1 ? "yesterday" :
         Math.abs(daysDiff) < 8 ? DAYS_FULL[checkDay.getDay()] :
             checkDay.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+}
+
+function untilAgo(date) {
+    return dayjs(localToUtc(date)).fromNow();
+}
+
+function statusDate(dateLocal) {
+    return dayjs(localToUtc(dateLocal)).calendar().replace(" at 12:00 AM", "");
 }
 
 // get list of daily times at interval between start and end
@@ -257,14 +265,6 @@ function getDailyTimes(count, between = []) {
         (count === 2 ? ["06:00", "18:00"] :
             (count === 3 ? ["06:00", "12:00", "18:00"] :
                 (count === 4 ? ["06:00", "10:00", "14:00", "18:00"] : [])));
-}
-
-function untilAgo(date) {
-    return dayjs(localToUtc(date)).fromNow();
-}
-
-function statusDate(dateLocal) {
-    return dayjs(localToUtc(dateLocal)).calendar().replace(" at 12:00 AM", "");
 }
 
 export default {
