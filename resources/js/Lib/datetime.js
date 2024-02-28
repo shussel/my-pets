@@ -7,10 +7,8 @@
  */
 import dayjs from "dayjs";
 import RelativeTime from "dayjs/plugin/relativeTime";
-
 dayjs.extend(RelativeTime);
 import Calendar from "dayjs/plugin/calendar";
-
 dayjs.extend(Calendar);
 
 const DAYS = ["Su", "M", "Tu", "W", "Th", "F", "Sa"];

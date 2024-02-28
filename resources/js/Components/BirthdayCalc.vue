@@ -2,7 +2,7 @@
 import {reactive, watch} from "vue";
 import InputText from "@/Components/InputText.vue";
 import InputButtons from "@/Components/InputButtons.vue";
-import moment from "moment";
+import dayjs from "dayjs";
 
 const props = defineProps({
     modelValue: {
@@ -38,13 +38,13 @@ const ageOptions = [
 function ageFromBirthday(birthday) {
     let birthdayAge = {count: null, units: null};
     if (birthday) {
-        if (birthdayAge.count = moment().diff(birthday, "years")) {
+        if (birthdayAge.count = dayjs().diff(birthday, "year")) {
             birthdayAge.units = "years";
-        } else if (birthdayAge.count = moment().diff(birthday, "months")) {
+        } else if (birthdayAge.count = dayjs().diff(birthday, "month")) {
             birthdayAge.units = "months";
-        } else if (birthdayAge.count = moment().diff(birthday, "weeks")) {
+        } else if (birthdayAge.count = dayjs().diff(birthday, "week")) {
             birthdayAge.units = "weeks";
-        } else if (birthdayAge.count = moment().diff(birthday, "days")) {
+        } else if (birthdayAge.count = dayjs().diff(birthday, "day")) {
             birthdayAge.units = "days";
         }
         birthdayAge.count = String(birthdayAge.count);
@@ -58,7 +58,7 @@ function birthdayFromAge(newAge) {
     if (!newAge.count || !newAge.units) {
         return null;
     } else {
-        return moment().subtract(newAge.count, newAge.units).format("YYYY-MM-DD");
+        return dayjs().subtract(newAge.count, newAge.units).format("YYYY-MM-DD");
     }
 }
 
