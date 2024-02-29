@@ -83,7 +83,7 @@ const setHours = ref(false);
 const showHours = computed(() => !hours.all || setHours.value);
 
 function toggleHours() {
-    if (setHours.value) {
+    if (setHours.value || !hours.all) {
         editItem.value.startTime = editItem.value.endTime = "00:00";
     }
     setHours.value = !setHours.value;
@@ -181,7 +181,9 @@ function updateNext() {
 
         <div v-if="editItem.repeat"
              class="pt-2 pb-1 text-lg text-center flex flex-wrap justify-center items-center gap-x-2">
-            <div v-if="editItem.action">{{ editItem.action }} {{ editItem.with }}</div>
+            <div v-if="editItem.action">
+                {{ repeat.toggle && hours.all ? editItem.toggle[0].state : editItem.action + " " + editItem.with }}
+            </div>
             <div v-if="repeat.description">{{ repeat.description }}</div>
             <div v-if="days.description">{{ days.description }}</div>
             <div v-if="hours.description">{{ hours.description }}</div>

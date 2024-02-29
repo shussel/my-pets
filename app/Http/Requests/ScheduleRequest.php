@@ -36,6 +36,7 @@ class ScheduleRequest extends FormRequest
             'schedule.*.category' => 'sometimes|string|nullable',
             'schedule.*.action' => 'sometimes|string|nullable',
             'schedule.*.with' => 'sometimes|string|nullable',
+            'schedule.*.toggle' => 'sometimes|array',
             'schedule.*.location' => 'sometimes|string|nullable',
             'schedule.*.startDate' => 'sometimes|date|nullable',
             'schedule.*.repeat' => ['sometimes', 'nullable', Rule::enum(RepeatsEnum::class), 'required_with:interval'],

@@ -98,7 +98,7 @@ const saveSchedule = () => {
         preserveScroll: true,
         onSuccess: () => {
             presets.using = editState.editing = editState.manage = false;
-            usePetAI(pet, { name: category });
+            //usePetAI(props.pet, { name: category });
             useRoute(pageRoute.current);
         },
         onError: () => {

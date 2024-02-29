@@ -35,18 +35,19 @@ const speciesOptions = computed(() => {
                         walks: {
                             action: 'Walk',
                             times: ['07:00'],
+                            repeat: 'times-per',
                         },
                         yard: {
                             action: 'Let out',
                             location: 'Yard',
-                            toggle: ['Let Out','Let In'],
+                            toggle: [{ action: 'Let Out', state: 'Outside'},{ action: 'Let In', state: 'Inside'}],
                             startTime: '07:00',
                             endTime: '19:00',
                         },
                         pasture: {
                             action: 'Let out',
                             location: 'Pasture',
-                            toggle: ['Let Out','Let In'],
+                            toggle: [{ action: 'Let Out', state: 'Outside'},{ action: 'Let In', state: 'Inside'}],
                             startTime: '07:00',
                             endTime: '19:00',
                         },

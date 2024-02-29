@@ -4,11 +4,11 @@ import dt from "@/Lib/datetime.js";
 
 const defaultScheduleItem = {
     _id: null,
-    category: null,
-    action: null,
-    with: null,
+    category: "",
+    action: "",
+    with: "",
     toggle: [],
-    location: null,
+    location: "",
     startDate: null,
     repeat: "once",
     count: 1,
@@ -77,6 +77,7 @@ export default function useScheduleItem(itemData) {
         ),
         description: computed(() =>
             !repeat.repeating ? "" :
+                (repeat.toggle && hours.all ? "all day " : "") +
                 (repeat.every ? "every " : "") +
                 (repeat.repeating ? (repeat.everyOne ? "" : scheduleItem.count + " ") : "") +
                 (repeat.timesPer ? "time" + (repeat.multi ? "s" : "") + " per " : "") +
@@ -117,8 +118,8 @@ export default function useScheduleItem(itemData) {
                 hours.after ? "after " + dt.clock12hours(scheduleItem.startTime) :
                     "between " + dt.clock12hours(scheduleItem.startTime) + " & " + dt.clock12hours(scheduleItem.endTime)
         ),
-        startTitle: computed(() => repeat.toggle ? scheduleItem.toggle[0] : "Start Time"),
-        endTitle: computed(() => repeat.toggle ? scheduleItem.toggle[1] : "End Time"),
+        startTitle: computed(() => repeat.toggle ? scheduleItem.toggle[0].action : "Start Time"),
+        endTitle: computed(() => repeat.toggle ? scheduleItem.toggle[1].action : "End Time"),
         description: computed(() =>
             !hours.all && !times.chosen ? hours.period : ""
         )
@@ -147,7 +148,7 @@ export default function useScheduleItem(itemData) {
 
     const description = computed(() =>
         isValid ?
-            [scheduleItem.action, repeat.description, days.description, hours.description, times.description].join(" ") : ""
+            [(repeat.toggle ? scheduleItem.toggle[0].state : scheduleItem.action), repeat.description, days.description, hours.description, times.description].join(" ") : ""
     );
 
     return { scheduleItem, repeat, hours, days, times, description, status, isValid };
